@@ -6,6 +6,6 @@ namespace VehicleRentalSystem.Repositories.interfaces
     {
         List<TbRental> SelectRentals();
 
-        TbRental SelectRentalById(Guid id);
+        TbRental? SelectRentalById(Guid id);
     }
 }

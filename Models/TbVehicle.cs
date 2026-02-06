@@ -9,7 +9,7 @@ public partial class TbVehicle
 
     public string Model { get; set; } = null!;
 
-    public DateOnly Int { get; set; }
+    public int Year { get; set; } 
 
     public string Brand { get; set; } = null!;
 

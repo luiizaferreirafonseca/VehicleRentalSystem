@@ -215,7 +215,7 @@ public partial class PostgresContext : DbContext
             entity.Property(e => e.DailyRate)
                 .HasPrecision(10, 2)
                 .HasColumnName("daily_rate");
-            entity.Property(e => e.Int).HasColumnName("int");
+            entity.Property(e => e.Year).HasColumnName("year"); 
             entity.Property(e => e.LicensePlate)
                 .HasMaxLength(20)
                 .HasColumnName("license_plate");

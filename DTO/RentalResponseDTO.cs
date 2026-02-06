@@ -21,6 +21,10 @@
         public Guid UserId { get; set; }
 
         public decimal DailyRate { get; set; }
+
+        public string UserName { get; set; } = null!;
+        public string VehicleModel { get; set; } = null!;
+
     }
 
 }

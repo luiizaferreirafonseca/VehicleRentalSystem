@@ -6,22 +6,28 @@ namespace VehicleRentalSystem.Repositories
 {
     public class RentalRepository : IRentalRepository
     {
-        private PostgresContext postgresContext;
+        private readonly PostgresContext _postgresContext;
 
         public RentalRepository(PostgresContext postgresContext)
         {
-            postgresContext = postgresContext;
+            _postgresContext = postgresContext;
         }
 
         public List<TbRental> SelectRentals()
         {
-            List<TbRental> tbRentals = postgresContext.TbRentals.ToList();
-            return tbRentals;
+            return _postgresContext.TbRentals
+                .Include(r => r.User)
+                .Include(r => r.Vehicle)
+                .ToList();
         }
+
 
         public TbRental? SelectRentalById(Guid id)
         {
-            return postgresContext.TbRentals.FirstOrDefault(r => r.Id == id);
+            return _postgresContext.TbRentals
+                .Include(r => r.User)
+                .Include(r => r.Vehicle)
+                .FirstOrDefault(r => r.Id == id);
         }
 
     }
