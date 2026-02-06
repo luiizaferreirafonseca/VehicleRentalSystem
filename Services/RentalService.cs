@@ -29,7 +29,7 @@ namespace VehicleRentalSystem.Services
                 UserId = rental.UserId,
                 DailyRate = rental.DailyRate,
 
-                // relacionamentos com os includes
+                // relacionamentos com os includes para trazer as informacoes
                 UserName = rental.User?.Name ?? "",
                 VehicleModel = rental.Vehicle?.Model ?? ""
             }).ToList();
