@@ -30,5 +30,33 @@ namespace VehicleRentalSystem.Repositories
                 .FirstOrDefault(r => r.Id == id);
         }
 
+        public async Task<TbUser?> GetUserById(Guid id)
+        {
+            return await _postgresContext.TbUsers.FindAsync(id);
+        }
+
+        public async Task<TbVehicle?> GetVehicleById(Guid id)
+        {
+            return await _postgresContext.TbVehicles.FindAsync(id);
+        }
+
+        public async Task<TbRental> CreateRentalAsync(TbRental rental)
+        {
+            await _postgresContext.TbRentals.AddAsync(rental);
+            await _postgresContext.SaveChangesAsync();
+            return rental;
+        }
+
+        public async Task<bool> UpdateVehicleStatusAsync(Guid vehicleId, string status)
+        {
+            var vehicle = await _postgresContext.TbVehicles.FindAsync(vehicleId);
+            if (vehicle == null)
+                return false;
+
+            vehicle.Status = status;
+            await _postgresContext.SaveChangesAsync();
+            return true;
+        }
     }
+
 }

@@ -27,4 +27,49 @@ public class RentalController : ControllerBase
     {
         return _service.GetRentalById(id);
     }
+
+    [HttpPost(Name = "CreateRental")]
+    public async Task<IActionResult> Create([FromBody] RentalCreateDTO request)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var createdRental = await _service.CreateRentalAsync(request);
+
+            return CreatedAtAction(nameof(GetById), new { id = createdRental.Id }, createdRental);
+        }
+        catch (InvalidOperationException ex)
+        {
+            var problemDetails = new ProblemDetails
+            {
+                Status = StatusCodes.Status409Conflict,
+                Title = "Conflito",
+                Detail = ex.Message
+            };
+            return Conflict(problemDetails);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            var problemDetails = new ProblemDetails
+            {
+                Status = StatusCodes.Status404NotFound,
+                Title = "Não encontrado",
+                Detail = ex.Message
+            };
+            return NotFound(problemDetails);
+        }
+        catch (Exception ex)
+        {
+            var problemDetails = new ProblemDetails
+            {
+                Status = StatusCodes.Status500InternalServerError,
+                Title = "Erro interno do servidor",
+                Detail = ex.Message
+            };
+            return StatusCode(StatusCodes.Status500InternalServerError, problemDetails);
+        }
+    }
+
 }

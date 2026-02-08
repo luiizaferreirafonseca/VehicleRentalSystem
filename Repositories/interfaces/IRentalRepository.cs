@@ -7,5 +7,13 @@ namespace VehicleRentalSystem.Repositories.interfaces
         List<TbRental> SelectRentals();
 
         TbRental? SelectRentalById(Guid id);
+
+        Task<TbUser?> GetUserById(Guid id);
+
+        Task<TbVehicle?> GetVehicleById(Guid id);
+
+        Task<TbRental> CreateRentalAsync(TbRental rental);
+        Task<bool> UpdateVehicleStatusAsync(Guid vehicleId, string status);
+
     }
 }

@@ -4,9 +4,9 @@
     {
         public enum RentalStatus
         {
-            Active,
-            Completed,
-            Canceled
+            active,
+            completed,
+            canceled
         }
     }
 
