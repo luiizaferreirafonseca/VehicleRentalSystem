@@ -32,8 +32,6 @@ namespace VehicleRentalSystem.Services
                 VehicleId = rental.VehicleId,
                 UserId = rental.UserId,
                 DailyRate = rental.DailyRate,
-
-                // relacionamentos com os includes para trazer as informacoes
                 UserName = rental.User?.Name ?? "",
                 VehicleModel = rental.Vehicle?.Model ?? ""
             }).ToList();
@@ -66,15 +64,13 @@ namespace VehicleRentalSystem.Services
             };
         }
 
-        public async Task<RentalResponseDTO> CreateRentalAsync(RentalCreateDTO dto) // No create, está apenas sendo enviado (pela função adm) dados obrigatorios, o resto como total amount etc estão sendo calculados e manipulados pela logica do backend.
+        public async Task<RentalResponseDTO> CreateRentalAsync(RentalCreateDTO dto)
         {
-            
             if (dto.UserId == Guid.Empty)
                 throw new InvalidOperationException(Messages.UserIdRequired);
 
             if (dto.VehicleId == Guid.Empty)
                 throw new InvalidOperationException(Messages.VehicleIdRequired);
-
 
             if (dto.ExpectedEndDate == default)
                 throw new InvalidOperationException(Messages.ExpectedEndDateRequired);
@@ -91,10 +87,9 @@ namespace VehicleRentalSystem.Services
                 throw new KeyNotFoundException(Messages.VehicleNotFound);
 
             var startDate = dto.StartDate ?? DateTime.UtcNow;
-
             var days = (dto.ExpectedEndDate.Date - startDate.Date).Days;
 
-            if(days <= 0)
+            if (days <= 0)
             {
                 days = 1;
             }
@@ -136,10 +131,47 @@ namespace VehicleRentalSystem.Services
                 UserId = createdRental.UserId,
                 DailyRate = createdRental.DailyRate,
                 UserName = user.Name,
-
                 VehicleModel = vehicle.Model
+            };
+        }
+
+        public async Task<RentalResponseDTO> CancelRentalAsync(Guid id)
+        {
+            if (id == Guid.Empty)
+                throw new InvalidOperationException("O ID da locação é obrigatório.");
+
+            var rental = await _repository.GetRentalByIdAsync(id);
+
+            if (rental == null)
+                throw new KeyNotFoundException("Locação não encontrada.");
+
+            if (rental.Status != RentalStatus.active.ToString())
+                throw new InvalidOperationException($"Não é possível cancelar uma locação com status '{rental.Status}'.");
+
+            rental.Status = RentalStatus.canceled.ToString();
+
+            if (rental.Vehicle != null)
+            {
+                rental.Vehicle.Status = VehicleStatus.available.ToString();
+            }
+
+            await _repository.SaveChangesAsync();
+
+            return new RentalResponseDTO
+            {
+                Id = rental.Id,
+                StartDate = rental.StartDate,
+                ExpectedEndDate = rental.ExpectedEndDate,
+                ActualEndDate = rental.ActualEndDate,
+                TotalAmount = rental.TotalAmount,
+                PenaltyFee = rental.PenaltyFee,
+                Status = rental.Status,
+                VehicleId = rental.VehicleId,
+                UserId = rental.UserId,
+                DailyRate = rental.DailyRate,
+                UserName = rental.User?.Name ?? "",
+                VehicleModel = rental.Vehicle?.Model ?? ""
             };
         }
     }
 }
-

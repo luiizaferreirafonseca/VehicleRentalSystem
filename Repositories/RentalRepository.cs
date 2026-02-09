@@ -57,6 +57,19 @@ namespace VehicleRentalSystem.Repositories
             await _postgresContext.SaveChangesAsync();
             return true;
         }
-    }
 
+
+        public async Task<TbRental?> GetRentalByIdAsync(Guid id)
+        {
+            return await _postgresContext.TbRentals
+                .Include(r => r.Vehicle)
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(r => r.Id == id);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _postgresContext.SaveChangesAsync();
+        }
+    }
 }
