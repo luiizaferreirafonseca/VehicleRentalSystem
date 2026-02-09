@@ -3,16 +3,16 @@
     public static class Messages
     {
         public const string UserIdRequired =
-            "UserId é obrigatório.";
+            "O identificador do usuário é obrigatório.";
 
         public const string VehicleIdRequired =
-            "VehicleId é obrigatório.";
+            "O identificador do veículo é obrigatório.";
 
         public const string ExpectedEndDateRequired =
-            "ExpectedEndDate é obrigatório.";
+            "A data final da locação é obrigatória.";
 
         public const string ExpectedEndDateInvalid =
-            "ExpectedEndDate deve ser maior que StartDate.";
+            "A data final da locação deve ser maior que a data inicial.";
 
         public const string UserNotFound =
             "Usuário não encontrado.";
