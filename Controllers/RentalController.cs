@@ -55,7 +55,7 @@ public class RentalController : ControllerBase
             var problemDetails = new ProblemDetails
             {
                 Status = StatusCodes.Status404NotFound,
-                Title = "N�o encontrado",
+                Title = "No encontrado",
                 Detail = ex.Message
             };
             return NotFound(problemDetails);
@@ -72,4 +72,41 @@ public class RentalController : ControllerBase
         }
     }
 
+    [HttpPatch("{id:guid}/cancel")]
+    public async Task<IActionResult> Cancel(Guid id)
+    {
+        try
+        {
+            var result = await _service.CancelRentalAsync(id);
+            
+            return Ok(result);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new ProblemDetails
+            {
+                Status = StatusCodes.Status404NotFound,
+                Title = "Erro!! Locação não encontrada",
+                Detail = ex.Message
+            });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new ProblemDetails
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Title = "Erro!! Operação Inválida",
+                Detail = ex.Message
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
+            {
+                Status = StatusCodes.Status500InternalServerError,
+                Title = "Erro de servidor",
+                Detail = ex.Message
+            });
+        }
+    }
 }

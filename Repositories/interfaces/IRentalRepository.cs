@@ -13,7 +13,11 @@ namespace VehicleRentalSystem.Repositories.interfaces
         Task<TbVehicle?> GetVehicleById(Guid id);
 
         Task<TbRental> CreateRentalAsync(TbRental rental);
+        
         Task<bool> UpdateVehicleStatusAsync(Guid vehicleId, string status);
 
+        Task<TbRental?> GetRentalByIdAsync(Guid id);
+
+        Task SaveChangesAsync();
     }
 }
