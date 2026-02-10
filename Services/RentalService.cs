@@ -173,5 +173,44 @@ namespace VehicleRentalSystem.Services
                 VehicleModel = rental.Vehicle?.Model ?? ""
             };
         }
+
+        public async Task<RentalResponseDTO> UpdateRentalDatesAsync(Guid id, UpdateRentalDTO updateDto)
+        {
+            var rental = await _repository.GetRentalByIdAsync(id);
+
+            if (rental == null) 
+                throw new KeyNotFoundException("Locação não encontrada.");
+
+            if (rental.Status != RentalStatus.active.ToString())
+                throw new InvalidOperationException($"Só é permitido atualizar locações que estejam 'active'. Status atual: {rental.Status}");
+
+            if (updateDto.NewExpectedEndDate <= rental.StartDate)
+                throw new InvalidOperationException("A nova data de devolução deve ser posterior à data de início.");
+
+            var days = (updateDto.NewExpectedEndDate.Date - rental.StartDate.Date).Days;
+
+            if (days <= 0) days = 1;
+
+            rental.ExpectedEndDate = updateDto.NewExpectedEndDate;
+            rental.TotalAmount = days * rental.DailyRate;
+
+            await _repository.UpdateAsync(rental);
+
+            return new RentalResponseDTO
+            {
+                Id = rental.Id,
+                StartDate = rental.StartDate,
+                ExpectedEndDate = rental.ExpectedEndDate,
+                ActualEndDate = rental.ActualEndDate,
+                TotalAmount = rental.TotalAmount,
+                PenaltyFee = rental.PenaltyFee,
+                Status = rental.Status,
+                VehicleId = rental.VehicleId,
+                UserId = rental.UserId,
+                DailyRate = rental.DailyRate,
+                UserName = rental.User?.Name ?? "",
+                VehicleModel = rental.Vehicle?.Model ?? ""
+            };
+        }
     }
 }
