@@ -117,6 +117,7 @@ public partial class PostgresContext : DbContext
             entity.Property(e => e.ActualEndDate)
                 .HasColumnType("timestamp with time zone")
                 .HasColumnName("actual_end_date");
+
             entity.Property(e => e.DailyRate)
                 .HasPrecision(10, 2)
                 .HasColumnName("daily_rate");
