@@ -149,4 +149,42 @@ public class RentalController : ControllerBase
             });
         }
     }
+
+    [HttpPatch("{id:guid}/return")]
+    public async Task<IActionResult> Return(Guid id)
+    {
+        try
+        {
+            var result = await _service.ReturnRentalAsync(id);
+            return Ok(result);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new ProblemDetails
+            {
+                Status = StatusCodes.Status404NotFound,
+                Title = "Erro! Locação não encontrada",
+                Detail = ex.Message
+            });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new ProblemDetails
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Title = "Erro! Operação Inválida",
+                Detail = ex.Message
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
+            {
+                Status = StatusCodes.Status500InternalServerError,
+                Title = "Erro de servidor",
+                Detail = ex.Message
+            });
+        }
+    }
+
 }

@@ -25,5 +25,14 @@
 
         public const string VehicleStatusUpdateFailed =
             "Falha ao atualizar o status do veículo.";
+
+        public const string RentalIdRequired =
+            "O identificador da locação é obrigatório.";
+
+        public const string RentalNotFound =
+            "Locação não encontrada.";
+
+        public const string RentalNotActive =
+            "Não é possível devolver uma locação que não esteja ativa.";
     }
 }
