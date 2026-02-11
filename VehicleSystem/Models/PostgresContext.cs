@@ -69,7 +69,7 @@ public partial class PostgresContext : DbContext
                 .HasColumnName("amount");
             entity.Property(e => e.PaymentDate)
                 .HasDefaultValueSql("CURRENT_DATE")
-                .HasColumnType("timestamp without time zone")
+                .HasColumnType("timestamp with time zone")
                 .HasColumnName("payment_date");
             entity.Property(e => e.PaymentMethod)
                 .HasMaxLength(50)
@@ -94,7 +94,7 @@ public partial class PostgresContext : DbContext
             entity.Property(e => e.Comment).HasColumnName("comment");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("now()")
-                .HasColumnType("timestamp without time zone")
+                .HasColumnType("timestamp with time zone")
                 .HasColumnName("created_at");
             entity.Property(e => e.Rating).HasColumnName("rating");
             entity.Property(e => e.RentalId).HasColumnName("rental_id");
@@ -115,20 +115,20 @@ public partial class PostgresContext : DbContext
                 .HasDefaultValueSql("gen_random_uuid()")
                 .HasColumnName("id");
             entity.Property(e => e.ActualEndDate)
-                .HasColumnType("timestamp without time zone")
+                .HasColumnType("timestamp with time zone")
                 .HasColumnName("actual_end_date");
             entity.Property(e => e.DailyRate)
                 .HasPrecision(10, 2)
                 .HasColumnName("daily_rate");
             entity.Property(e => e.ExpectedEndDate)
-                .HasColumnType("timestamp without time zone")
+                .HasColumnType("timestamp with time zone")
                 .HasColumnName("expected_end_date");
             entity.Property(e => e.PenaltyFee)
                 .HasPrecision(10, 2)
                 .HasColumnName("penalty_fee");
             entity.Property(e => e.StartDate)
                 .HasDefaultValueSql("CURRENT_DATE")
-                .HasColumnType("timestamp without time zone")
+                .HasColumnType("timestamp with time zone")
                 .HasColumnName("start_date");
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
