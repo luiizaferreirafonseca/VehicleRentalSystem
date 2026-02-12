@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Win32;
+using System.Drawing;
+using System.Runtime.ConstrainedExecution;
 using VehicleRentalSystem;
 using VehicleRentalSystem.DTO;
 using VehicleRentalSystem.Services;
@@ -156,6 +159,47 @@ public class RentalController : ControllerBase
         try
         {
             var result = await _service.ReturnRentalAsync(id);
+            return Ok(result);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new ProblemDetails
+            {
+                Status = StatusCodes.Status404NotFound,
+                Title = "Erro! Locação não encontrada",
+                Detail = ex.Message
+            });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new ProblemDetails
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Title = "Erro! Operação Inválida",
+                Detail = ex.Message
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
+            {
+                Status = StatusCodes.Status500InternalServerError,
+                Title = "Erro de servidor",
+                Detail = ex.Message
+            });
+        }
+    }
+
+    [HttpPatch("{rentalId:guid}/payments")]
+
+    public async Task<IActionResult> RegistersPayment(Guid rentalId, [FromBody] VehicleRentalSystem.DTO.PaymentCreateDTO dto)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _service.RegisterPaymentAsync(rentalId, dto);
             return Ok(result);
         }
         catch (KeyNotFoundException ex)
