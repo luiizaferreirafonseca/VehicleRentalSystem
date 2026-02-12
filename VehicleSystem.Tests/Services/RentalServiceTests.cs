@@ -5,6 +5,7 @@ using VehicleRentalSystem.Models;
 using VehicleRentalSystem.Repositories.interfaces;
 using VehicleRentalSystem.Services;
 using VehicleRentalSystem.Enums;
+using VehicleRentalSystem.Resources;
 
 namespace VehicleSystem.Tests
 {
@@ -74,6 +75,57 @@ namespace VehicleSystem.Tests
                 await _service.UpdateRentalDatesAsync(rentalId, updateDto));
             
             Assert.That(ex.Message, Is.EqualTo("A nova data de devolução deve ser posterior à data de início."));
+        }
+
+        //Create Rental Service Tests - luiza 
+        [Test]
+        public async Task CreateRentalAsync_ShouldReturnDTO_WhenDataIsValid()
+        {
+            var userId = Guid.NewGuid();
+            var vehicleId = Guid.NewGuid();
+
+            var dto = new RentalCreateDTO
+            {
+                UserId = userId,
+                VehicleId = vehicleId,
+                StartDate = new DateTime(2026, 02, 02),
+                ExpectedEndDate = new DateTime(2026, 02, 05)
+            };
+
+            var user = new TbUser { Id = userId, Name = "Thamires" };
+            var vehicle = new TbVehicle { Id = vehicleId, Model = "Onix", DailyRate = 150m };
+
+            _repositoryMock.Setup(x => x.GetUserById(userId)).ReturnsAsync(user);
+            _repositoryMock.Setup(x => x.GetVehicleById(vehicleId)).ReturnsAsync(vehicle);
+            _repositoryMock.Setup(x => x.CreateRentalAsync(It.IsAny<TbRental>()))
+                           .ReturnsAsync((TbRental r) => r);
+            _repositoryMock.Setup(x => x.UpdateVehicleStatusAsync(vehicleId, It.IsAny<string>()))
+                           .ReturnsAsync(true);
+
+            var result = await _service.CreateRentalAsync(dto);
+
+            Assert.That(result.UserId, Is.EqualTo(userId));
+            Assert.That(result.VehicleId, Is.EqualTo(vehicleId));
+            Assert.That(result.UserName, Is.EqualTo(user.Name));
+            Assert.That(result.VehicleModel, Is.EqualTo(vehicle.Model));
+            Assert.That(result.DailyRate, Is.EqualTo(vehicle.DailyRate));
+            Assert.That(result.TotalAmount, Is.EqualTo(450m));
+            Assert.That(result.PenaltyFee, Is.EqualTo(0m));
+        }
+
+        [Test]
+        public void CreateRentalAsync_ShouldThrow_WhenUserIdIsEmpty()
+        {
+            var dto = new RentalCreateDTO
+            {
+                UserId = Guid.Empty,
+                VehicleId = Guid.NewGuid(),
+                StartDate = new DateTime(2026, 02, 02),
+                ExpectedEndDate = new DateTime(2026, 02, 05)
+            };
+
+            Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _service.CreateRentalAsync(dto));
         }
     }
 }
