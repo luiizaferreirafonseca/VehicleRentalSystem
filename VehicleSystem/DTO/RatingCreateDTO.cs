@@ -1,10 +1,9 @@
-namespace VehicleSystem.DTO
+namespace VehicleRentalSystem.DTO // Adicionei o "Rental" aqui
 {
     public class RatingCreateDTO
     {
-        public int RentalId { get; set; }
-        public int Score { get; set; } 
+        public Guid RentalId { get; set; } // Mudamos para Guid
+        public int Rating { get; set; }    // Mudamos de Score para Rating
         public string? Comment { get; set; } 
     }
 }
-
