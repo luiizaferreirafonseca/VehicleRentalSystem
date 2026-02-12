@@ -5,6 +5,7 @@ using VehicleRentalSystem.Models;
 using VehicleRentalSystem.Repositories;
 using VehicleRentalSystem.Repositories.interfaces;
 using VehicleRentalSystem.Services;
+using VehicleRentalSystem.Services.interfaces;
 using Microsoft.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 using Microsoft.Extensions.Configuration;
@@ -22,6 +23,9 @@ builder.Services.AddDbContext<PostgresContext>(options =>
 
 builder.Services.AddScoped<IRentalRepository, RentalRepository>();
 builder.Services.AddScoped<IRentalService, RentalService>();
+
+builder.Services.AddScoped<IRatingRepository, RatingRepository>();
+builder.Services.AddScoped<IRatingService, RatingService>();
 
 var app = builder.Build();
 
