@@ -24,7 +24,6 @@ namespace VehicleSystem.Tests
         [Test]
         public async Task UpdateRentalDatesAsync_ValidData_ReturnsUpdatedRental()
         {
-            // Arrange
             var rentalId = Guid.NewGuid();
             var startDate = DateTime.UtcNow.AddDays(-2);
             var oldExpectedDate = DateTime.UtcNow.AddDays(2);
@@ -44,10 +43,8 @@ namespace VehicleSystem.Tests
 
             var updateDto = new UpdateRentalDTO { NewExpectedEndDate = newExpectedDate };
 
-            // Act
             var result = await _service.UpdateRentalDatesAsync(rentalId, updateDto);
 
-            // Assert
             Assert.IsNotNull(result);
             Assert.That(result.ExpectedEndDate, Is.EqualTo(newExpectedDate));
             Assert.That(result.TotalAmount, Is.EqualTo(700)); 
