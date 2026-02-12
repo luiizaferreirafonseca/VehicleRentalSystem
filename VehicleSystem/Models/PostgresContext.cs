@@ -115,21 +115,22 @@ public partial class PostgresContext : DbContext
                 .HasDefaultValueSql("gen_random_uuid()")
                 .HasColumnName("id");
             entity.Property(e => e.ActualEndDate)
-                .HasColumnType("timestamp without time zone")
+                .HasColumnType("timestamp with time zone")
                 .HasColumnName("actual_end_date");
+
             entity.Property(e => e.DailyRate)
                 .HasPrecision(10, 2)
                 .HasColumnName("daily_rate");
             entity.Property(e => e.ExpectedEndDate)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("expected_end_date");
+      .HasColumnType("timestamp with time zone")
+      .HasColumnName("expected_end_date");
             entity.Property(e => e.PenaltyFee)
                 .HasPrecision(10, 2)
                 .HasColumnName("penalty_fee");
             entity.Property(e => e.StartDate)
-                .HasDefaultValueSql("CURRENT_DATE")
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("start_date");
+           .HasDefaultValueSql("CURRENT_DATE")
+           .HasColumnType("timestamp with time zone")
+           .HasColumnName("start_date");
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .HasColumnName("status");

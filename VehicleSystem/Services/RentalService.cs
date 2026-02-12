@@ -178,7 +178,7 @@ namespace VehicleRentalSystem.Services
         {
             var rental = await _repository.GetRentalByIdAsync(id);
 
-            if (rental == null) 
+            if (rental == null)
                 throw new KeyNotFoundException("Locação não encontrada.");
 
             if (rental.Status != RentalStatus.active.ToString())
@@ -212,5 +212,56 @@ namespace VehicleRentalSystem.Services
                 VehicleModel = rental.Vehicle?.Model ?? ""
             };
         }
+
+        public async Task<RentalResponseDTO> ReturnRentalAsync(Guid id)
+        {
+            if (id == Guid.Empty)
+                throw new InvalidOperationException(Messages.RentalIdRequired);
+
+            var rental = await _repository.GetRentalByIdAsync(id);
+
+            if (rental == null)
+                throw new KeyNotFoundException(Messages.RentalNotFound);
+
+            if (rental.Status != RentalStatus.active.ToString())
+                throw new InvalidOperationException(Messages.RentalNotActive);
+
+            var actualEndDate = DateTime.UtcNow;
+            rental.ActualEndDate = actualEndDate;
+
+            int penaltyDays = (actualEndDate.Date - rental.ExpectedEndDate.Date).Days;
+            if (penaltyDays < 0)
+                penaltyDays = 0;
+
+            decimal penaltyFee = 0m;
+            if (penaltyDays > 0)
+                penaltyFee = rental.DailyRate * penaltyDays;
+
+            rental.PenaltyFee = penaltyFee;
+
+            rental.Status = RentalStatus.completed.ToString();
+
+            rental.Vehicle.Status = VehicleStatus.available.ToString();
+
+            await _repository.SaveChangesAsync();
+
+            return new RentalResponseDTO
+            {
+                Id = rental.Id,
+                StartDate = rental.StartDate,
+                ExpectedEndDate = rental.ExpectedEndDate,
+                ActualEndDate = rental.ActualEndDate,
+                TotalAmount = rental.TotalAmount,
+                PenaltyFee = rental.PenaltyFee,
+                Status = rental.Status,
+                VehicleId = rental.VehicleId,
+                UserId = rental.UserId,
+                DailyRate = rental.DailyRate,
+                UserName = rental.User?.Name ?? "",
+                VehicleModel = rental.Vehicle?.Model ?? ""
+            };
+        }
+
+
     }
 }

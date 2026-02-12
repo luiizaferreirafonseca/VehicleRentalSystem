@@ -1,4 +1,5 @@
-﻿using VehicleRentalSystem.Models;
+﻿using VehicleRentalSystem.DTO;
+using VehicleRentalSystem.Models;
 
 namespace VehicleRentalSystem.Repositories.interfaces
 {

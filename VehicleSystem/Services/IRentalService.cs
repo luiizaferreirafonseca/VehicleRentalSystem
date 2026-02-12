@@ -1,4 +1,5 @@
-﻿using VehicleRentalSystem.DTO;
+﻿using System.Threading.Tasks;
+using VehicleRentalSystem.DTO;
 
 namespace VehicleRentalSystem.Services
 {
@@ -9,6 +10,7 @@ namespace VehicleRentalSystem.Services
         Task<RentalResponseDTO> CreateRentalAsync(RentalCreateDTO dto);
         Task<RentalResponseDTO> CancelRentalAsync(Guid id);
         Task<RentalResponseDTO> UpdateRentalDatesAsync(Guid id, UpdateRentalDTO updateDto);
-        
+        Task<RentalResponseDTO> ReturnRentalAsync(Guid id);
+
     }
 }
