@@ -9,11 +9,13 @@ namespace VehicleRentalSystem.Services
 {
     public class PaymentService : IPaymentService
     {
-        private readonly IRentalRepository _repository;
+        private readonly IRentalRepository _rentalRepository;
+        private readonly IPaymentRepository _paymentRepository;
 
-        public PaymentService(IRentalRepository repository)
+        public PaymentService(IRentalRepository rentalRepository, IPaymentRepository paymentRepository)
         {
-            _repository = repository;
+            _rentalRepository = rentalRepository;
+            _paymentRepository = paymentRepository;
         }
 
         public async Task<RentalResponseDTO> RegisterPaymentAsync(Guid rentalId, PaymentCreateDTO dto)
@@ -21,7 +23,7 @@ namespace VehicleRentalSystem.Services
             if (rentalId == Guid.Empty)
                 throw new ArgumentException("O identificador da locação é obrigatório.");
 
-            var rental = await _repository.GetRentalByIdAsync(rentalId);
+            var rental = await _rentalRepository.GetRentalByIdAsync(rentalId);
 
             if (rental == null)
                 throw new KeyNotFoundException(Messages.RentalNotFound);
@@ -32,7 +34,7 @@ namespace VehicleRentalSystem.Services
             if (dto.Amount <= 0)
                 throw new InvalidOperationException("O valor do pagamento deve ser maior que zero.");
 
-            var totalPayments = await _repository.GetTotalPaymentsAsync(rentalId);
+            var totalPayments = await _paymentRepository.GetTotalPaymentsAsync(rentalId);
             var remaining = (rental.TotalAmount ?? 0m) - totalPayments;
 
             if (dto.Amount > remaining)
@@ -49,10 +51,10 @@ namespace VehicleRentalSystem.Services
                 PaymentDate = DateTime.UtcNow
             };
 
-            await _repository.AddPaymentAsync(payment);
-            await _repository.SaveChangesAsync();
+            await _paymentRepository.AddPaymentAsync(payment);
+            await _paymentRepository.SaveChangesAsync();
 
-            rental = await _repository.GetRentalByIdAsync(rentalId);
+            rental = await _rentalRepository.GetRentalByIdAsync(rentalId);
 
             return new RentalResponseDTO
             {
