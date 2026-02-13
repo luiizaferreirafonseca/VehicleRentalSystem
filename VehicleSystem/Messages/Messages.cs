@@ -34,5 +34,12 @@
 
         public const string RentalNotActive =
             "Não é possível devolver uma locação que não esteja ativa.";
+
+        public const string VehicleBrandRequired = "A marca do veículo é obrigatória.";
+        public const string VehicleModelRequired = "O modelo do veículo é obrigatório.";
+        public const string VehicleYearInvalid = "O ano do veículo é inválido.";
+        public const string VehicleDailyRateInvalid = "O valor da diária deve ser maior que zero.";
+        public const string VehicleLicensePlateRequired = "A placa do veículo é obrigatória.";
+        public const string VehicleLicensePlateAlreadyExists = "Já existe um veículo cadastrado com essa placa.";
     }
 }
