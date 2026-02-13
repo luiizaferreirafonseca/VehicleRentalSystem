@@ -1,7 +1,7 @@
 ﻿using VehicleRentalSystem.DTO;
 using VehicleRentalSystem.Enums;
 using VehicleRentalSystem.Models;
-using VehicleRentalSystem.Repositories;
+using VehicleRentalSystem.Repositories.interfaces;
 using VehicleRentalSystem.Resources;
 using VehicleRentalSystem.Services.interfaces;
 
@@ -62,6 +62,24 @@ namespace VehicleRentalSystem.Services
                 Status = created.Status,
                 LicensePlate = created.LicensePlate
             };
+        }
+
+        public async Task RemoveVehicleAsync(Guid vehicleId)
+        {
+            if (vehicleId == Guid.Empty)
+                throw new InvalidOperationException(Messages.VehicleIdRequired);
+
+            var vehicle = await _repository.GetVehicleByIdAsync(vehicleId);
+            if (vehicle == null)
+                throw new KeyNotFoundException(Messages.VehicleNotFound);
+
+            if (vehicle.Status == VehicleStatus.rented.ToString())
+                throw new InvalidOperationException(Messages.VehicleCannotBeDeletedWhenRented);
+
+            var deleted = await _repository.DeleteVehicleAsync(vehicle);
+
+            if (!deleted)
+                throw new InvalidOperationException(Messages.VehicleDeleteFailed);
         }
     }
 }

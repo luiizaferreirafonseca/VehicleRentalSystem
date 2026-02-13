@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using VehicleRentalSystem.Models;
+using VehicleRentalSystem.Repositories.interfaces;
 
-namespace VehicleRentalSystem.Repositories.interfaces
+namespace VehicleRentalSystem.Repositories
 {
     public class VehicleRepository : IVehicleRepository
     {
@@ -23,6 +24,18 @@ namespace VehicleRentalSystem.Repositories.interfaces
             await _postgresContext.TbVehicles.AddAsync(vehicle);
             await _postgresContext.SaveChangesAsync();
             return vehicle;
+        }
+        public async Task<TbVehicle?> GetVehicleByIdAsync(Guid id)
+        {
+            return await _postgresContext.TbVehicles
+                .FirstOrDefaultAsync(v => v.Id == id);
+        }
+
+        public async Task<bool> DeleteVehicleAsync(TbVehicle vehicle)
+        {
+            _postgresContext.TbVehicles.Remove(vehicle);
+            var affected = await _postgresContext.SaveChangesAsync();
+            return affected > 0;
         }
     }
 }

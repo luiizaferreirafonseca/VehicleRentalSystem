@@ -76,20 +76,5 @@ namespace VehicleRentalSystem.Repositories
         {
             await _postgresContext.SaveChangesAsync();
         }
-
-        public async Task<bool> ExistsByLicensePlateAsync(string licensePlate)
-        {
-            return await _postgresContext.TbVehicles
-                .AnyAsync(v => v.LicensePlate == licensePlate);
-        }
-
-        public async Task<TbVehicle> CreateVehicleAsync(TbVehicle vehicle)
-        {
-            await _postgresContext.TbVehicles.AddAsync(vehicle);
-            await _postgresContext.SaveChangesAsync();
-            return vehicle;
-        }
-
-
     }
 }
