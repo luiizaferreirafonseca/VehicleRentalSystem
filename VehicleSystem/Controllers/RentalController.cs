@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Win32;
+using System.Drawing;
+using System.Runtime.ConstrainedExecution;
 using VehicleRentalSystem;
 using VehicleRentalSystem.DTO;
 using VehicleRentalSystem.Services.interfaces;
@@ -204,5 +207,6 @@ public class RentalController : ControllerBase
             });
         }
     }
+    
 
 }
