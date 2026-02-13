@@ -8,5 +8,7 @@ namespace VehicleRentalSystem.Services
         RentalResponseDTO? GetRentalById(Guid id);
         Task<RentalResponseDTO> CreateRentalAsync(RentalCreateDTO dto);
         Task<RentalResponseDTO> CancelRentalAsync(Guid id);
+        Task<RentalResponseDTO> UpdateRentalDatesAsync(Guid id, UpdateRentalDTO updateDto);
+        
     }
 }
