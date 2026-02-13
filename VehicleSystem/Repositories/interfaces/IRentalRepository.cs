@@ -23,5 +23,6 @@ namespace VehicleRentalSystem.Repositories.interfaces
         Task UpdateAsync(TbRental rental);
 
         Task SaveChangesAsync();
+
     }
 }
