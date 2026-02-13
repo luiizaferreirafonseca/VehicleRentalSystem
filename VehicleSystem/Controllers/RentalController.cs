@@ -16,18 +16,27 @@ public class RentalController : ControllerBase
         _service = service;
     }
 
+    /// <summary>
+    /// Returns the list of rentals.
+    /// </summary>
     [HttpGet(Name = "GetAllRentals")]
     public List<RentalResponseDTO> Get()
     {
         return _service.GetRentals();
     }
 
+    /// <summary>
+    /// Returns a rental by its identifier.
+    /// </summary>
     [HttpGet("{id:guid}")]
     public RentalResponseDTO GetById(Guid id)
     {
         return _service.GetRentalById(id);
     }
 
+    /// <summary>
+    /// Creates a new rental.
+    /// </summary>
     [HttpPost(Name = "CreateRental")]
     public async Task<IActionResult> Create([FromBody] RentalCreateDTO request)
     {
@@ -72,6 +81,9 @@ public class RentalController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Cancels a rental.
+    /// </summary>
     [HttpPatch("{id:guid}/cancel")]
     public async Task<IActionResult> Cancel(Guid id)
     {
@@ -110,6 +122,9 @@ public class RentalController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Updates the rental dates.
+    /// </summary>
     [HttpPatch("{id:guid}/update-dates")]
     public async Task<IActionResult> UpdateDates(Guid id, [FromBody] UpdateRentalDTO dto)
     {
@@ -150,6 +165,9 @@ public class RentalController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Returns a rental.
+    /// </summary>
     [HttpPatch("{id:guid}/return")]
     public async Task<IActionResult> Return(Guid id)
     {

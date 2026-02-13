@@ -15,6 +15,9 @@ namespace API_SistemaLocacao.Controllers
             _service = service;
         }
 
+        /// <summary>
+        /// Creates a new vehicle.
+        /// </summary>
         [HttpPost(Name = "CreateVehicle")]
         public async Task<IActionResult> Create([FromBody] VehicleCreateDTO request)
         {
@@ -47,6 +50,9 @@ namespace API_SistemaLocacao.Controllers
             }
         }
 
+        /// <summary>
+        /// Deletes a vehicle by its identifier.
+        /// </summary>
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
