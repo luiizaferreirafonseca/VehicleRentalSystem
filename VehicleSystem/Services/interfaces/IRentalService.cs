@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using VehicleRentalSystem.DTO;
 
-namespace VehicleRentalSystem.Services
+namespace VehicleRentalSystem.Services.interfaces
 {
-    public interface IRentalService 
+    public interface IRentalService
     {
         List<RentalResponseDTO> GetRentals();
         RentalResponseDTO? GetRentalById(Guid id);
