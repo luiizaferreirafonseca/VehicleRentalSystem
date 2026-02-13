@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Runtime.ConstrainedExecution;
 using VehicleRentalSystem;
 using VehicleRentalSystem.DTO;
-using VehicleRentalSystem.Services;
+using VehicleRentalSystem.Services.interfaces;
 
 namespace API_SistemaLocacao.Controllers;
 
@@ -13,26 +13,33 @@ namespace API_SistemaLocacao.Controllers;
 public class RentalController : ControllerBase
 {
     private IRentalService _service;
-    private IPaymentService _paymentService;
 
-    public RentalController(IRentalService service, IPaymentService paymentService)
+    public RentalController(IRentalService service)
     {
         _service = service;
-        _paymentService = paymentService;
     }
 
+    /// <summary>
+    /// Returns the list of rentals.
+    /// </summary>
     [HttpGet(Name = "GetAllRentals")]
     public List<RentalResponseDTO> Get()
     {
         return _service.GetRentals();
     }
 
+    /// <summary>
+    /// Returns a rental by its identifier.
+    /// </summary>
     [HttpGet("{id:guid}")]
     public RentalResponseDTO GetById(Guid id)
     {
         return _service.GetRentalById(id);
     }
 
+    /// <summary>
+    /// Creates a new rental.
+    /// </summary>
     [HttpPost(Name = "CreateRental")]
     public async Task<IActionResult> Create([FromBody] RentalCreateDTO request)
     {
@@ -77,6 +84,9 @@ public class RentalController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Cancels a rental.
+    /// </summary>
     [HttpPatch("{id:guid}/cancel")]
     public async Task<IActionResult> Cancel(Guid id)
     {
@@ -115,6 +125,9 @@ public class RentalController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Updates the rental dates.
+    /// </summary>
     [HttpPatch("{id:guid}/update-dates")]
     public async Task<IActionResult> UpdateDates(Guid id, [FromBody] UpdateRentalDTO dto)
     {
@@ -155,6 +168,9 @@ public class RentalController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Returns a rental.
+    /// </summary>
     [HttpPatch("{id:guid}/return")]
     public async Task<IActionResult> Return(Guid id)
     {
@@ -191,46 +207,6 @@ public class RentalController : ControllerBase
             });
         }
     }
-
-    [HttpPatch("{rentalId:guid}/payments")]
-
-    public async Task<IActionResult> RegistersPayment([FromRoute] Guid rentalId, [FromBody] VehicleRentalSystem.DTO.PaymentCreateDTO dto)
-    {
-        try
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var result = await _paymentService.RegisterPaymentAsync(rentalId, dto);
-            return Ok(result);
-        }
-        catch (KeyNotFoundException ex)
-        {
-            return NotFound(new ProblemDetails
-            {
-                Status = StatusCodes.Status404NotFound,
-                Title = "Erro! Locação não encontrada",
-                Detail = ex.Message
-            });
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new ProblemDetails
-            {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Erro! Operação Inválida",
-                Detail = ex.Message
-            });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Erro de servidor",
-                Detail = ex.Message
-            });
-        }
-    }
+    
 
 }

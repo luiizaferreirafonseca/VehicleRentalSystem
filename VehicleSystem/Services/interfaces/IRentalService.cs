@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using VehicleRentalSystem.DTO;
 
-namespace VehicleRentalSystem.Services
+namespace VehicleRentalSystem.Services.interfaces
 {
     public interface IRentalService
     {

@@ -1,6 +1,6 @@
 ﻿using VehicleRentalSystem.DTO;
 
-namespace VehicleRentalSystem.Services
+namespace VehicleRentalSystem.Services.interfaces
 {
     public interface IPaymentService
     {

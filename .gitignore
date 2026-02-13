@@ -3,6 +3,14 @@ obj/
 .vs/
 *.user
 *.suo
+<<<<
+<<< HEAD
+
+=======
 appsettings.Development.json
 coveragereport/
 TestResults/
+<<<<<<< HEAD
+>>>>>>> d00d7672be6deae7d328dd481e1e3837c4a72a2f
+=======
+>>>>>>> 7d7bb673fbd1ac79ea87f76acdd0bce66b8374db

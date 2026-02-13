@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat Code Coverage">
+        <Configuration>
+          <Format>cobertura</Format>
+          <!-- Ignora todos os arquivos dentro de pastas Repositories -->
+          <ExcludeByFile>**/Repositories/**/*.cs</ExcludeByFile>
+          <!-- Ignora namespaces/assemblies específicos (ajuste o assembly se necessário) -->
+          <Exclude>[Aula24EfCore]Aula24EfCore.Repositories.*</Exclude>
+          <!-- Ignora membros/ classes marcadas com [ExcludeFromCodeCoverage] -->
+          <ExcludeByAttribute>^ExcludeFromCodeCoverageAttribute$</ExcludeByAttribute>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

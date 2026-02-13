@@ -4,6 +4,7 @@ using VehicleRentalSystem.Enums.VehicleRentalSystem.Enums;
 using VehicleRentalSystem.Models;
 using VehicleRentalSystem.Repositories.interfaces;
 using VehicleRentalSystem.Resources;
+using VehicleRentalSystem.Services.interfaces;
 
 namespace VehicleRentalSystem.Services
 {
