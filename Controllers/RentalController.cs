@@ -109,44 +109,4 @@ public class RentalController : ControllerBase
             });
         }
     }
-
-    [HttpPatch("{id:guid}/update-dates")]
-    public async Task<IActionResult> UpdateDates(Guid id, [FromBody] UpdateRentalDTO dto)
-    {
-        try
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var result = await _service.UpdateRentalDatesAsync(id, dto);
-            return Ok(result);
-        }
-        catch (KeyNotFoundException ex)
-        {
-            return NotFound(new ProblemDetails
-            {
-                Status = StatusCodes.Status404NotFound,
-                Title = "Locação não encontrada",
-                Detail = ex.Message
-            });
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new ProblemDetails
-            {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Operação Inválida",
-                Detail = ex.Message
-            });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Erro de servidor",
-                Detail = ex.Message
-            });
-        }
-    }
 }

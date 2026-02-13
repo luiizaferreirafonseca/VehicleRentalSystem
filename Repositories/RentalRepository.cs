@@ -21,6 +21,7 @@ namespace VehicleRentalSystem.Repositories
                 .ToList();
         }
 
+
         public TbRental? SelectRentalById(Guid id)
         {
             return _postgresContext.TbRentals
@@ -64,12 +65,6 @@ namespace VehicleRentalSystem.Repositories
                 .Include(r => r.Vehicle)
                 .Include(r => r.User)
                 .FirstOrDefaultAsync(r => r.Id == id);
-        }
-
-        public async Task UpdateAsync(TbRental rental)
-        {
-            _postgresContext.TbRentals.Update(rental);
-            await _postgresContext.SaveChangesAsync();
         }
 
         public async Task SaveChangesAsync()
