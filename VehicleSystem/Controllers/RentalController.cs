@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using VehicleRentalSystem;
 using VehicleRentalSystem.DTO;
-using VehicleRentalSystem.Services;
+using VehicleRentalSystem.Services.interfaces;
 
 namespace API_SistemaLocacao.Controllers;
 
