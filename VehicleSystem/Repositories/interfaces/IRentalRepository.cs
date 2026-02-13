@@ -19,6 +19,10 @@ namespace VehicleRentalSystem.Repositories.interfaces
 
         Task<TbRental?> GetRentalByIdAsync(Guid id);
 
+        Task AddPaymentAsync(TbPayment payment);
+
+        Task<decimal> GetTotalPaymentsAsync(Guid rentalId);
+
         Task UpdateAsync(TbRental rental);
 
         Task SaveChangesAsync();

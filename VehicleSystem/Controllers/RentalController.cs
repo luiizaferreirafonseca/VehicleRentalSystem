@@ -13,10 +13,12 @@ namespace API_SistemaLocacao.Controllers;
 public class RentalController : ControllerBase
 {
     private IRentalService _service;
+    private IPaymentService _paymentService;
 
-    public RentalController(IRentalService service)
+    public RentalController(IRentalService service, IPaymentService paymentService)
     {
         _service = service;
+        _paymentService = paymentService;
     }
 
     [HttpGet(Name = "GetAllRentals")]
@@ -192,14 +194,14 @@ public class RentalController : ControllerBase
 
     [HttpPatch("{rentalId:guid}/payments")]
 
-    public async Task<IActionResult> RegistersPayment(Guid rentalId, [FromBody] VehicleRentalSystem.DTO.PaymentCreateDTO dto)
+    public async Task<IActionResult> RegistersPayment([FromRoute] Guid rentalId, [FromBody] VehicleRentalSystem.DTO.PaymentCreateDTO dto)
     {
         try
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _service.RegisterPaymentAsync(rentalId, dto);
+            var result = await _paymentService.RegisterPaymentAsync(rentalId, dto);
             return Ok(result);
         }
         catch (KeyNotFoundException ex)
