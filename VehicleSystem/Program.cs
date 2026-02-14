@@ -29,6 +29,8 @@ builder.Services.AddScoped<IVehicleService, VehicleService>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IAccessoryRepository, AccessoryRepository>();
+builder.Services.AddScoped<IAccessoryService, AccessoryService>();
 
 var app = builder.Build();
 
