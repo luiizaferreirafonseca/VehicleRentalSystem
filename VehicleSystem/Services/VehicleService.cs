@@ -94,5 +94,18 @@ namespace VehicleRentalSystem.Services
                 LicensePlate = v.LicensePlate
             }).ToList();
         }
+
+        public async Task<VehicleListResponseDTO> GetAvailableVehiclesAsync(int page)
+        {
+            var vehicles = await SearchVehiclesAsync(VehicleStatus.available.ToString(), page);
+
+            var response = new VehicleListResponseDTO
+            {
+                Vehicles = vehicles ?? new List<VehicleResponseDTO>(),
+                Message = (vehicles == null || vehicles.Count == 0) ? "Não há veículos disponíveis para locação." : null
+            };
+
+            return response;
+        }
     }
 }
