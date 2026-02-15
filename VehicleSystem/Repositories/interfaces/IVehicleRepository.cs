@@ -7,6 +7,7 @@ namespace VehicleRentalSystem.Repositories.interfaces
         Task<bool> ExistsByLicensePlateAsync(string licensePlate);
         Task<TbVehicle> CreateVehicleAsync(TbVehicle vehicle);
         Task<TbVehicle?> GetVehicleByIdAsync(Guid id);
-        Task<bool> DeleteVehicleAsync(TbVehicle vehicle);
+        Task DeleteVehicleAsync(TbVehicle vehicle);
+        Task<List<TbVehicle>> SearchVehiclesAsync(string? status, int page);
     }
 }

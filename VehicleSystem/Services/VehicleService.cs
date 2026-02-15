@@ -41,7 +41,7 @@ namespace VehicleRentalSystem.Services
 
             var vehicle = new TbVehicle
             {
-                Id = Guid.NewGuid(), 
+                Id = Guid.NewGuid(),
                 Brand = dto.Brand.Trim(),
                 Model = dto.Model.Trim(),
                 Year = dto.Year,
@@ -76,10 +76,23 @@ namespace VehicleRentalSystem.Services
             if (vehicle.Status == VehicleStatus.rented.ToString())
                 throw new InvalidOperationException(Messages.VehicleCannotBeDeletedWhenRented);
 
-            var deleted = await _repository.DeleteVehicleAsync(vehicle);
+            await _repository.DeleteVehicleAsync(vehicle);
+        }
 
-            if (!deleted)
-                throw new InvalidOperationException(Messages.VehicleDeleteFailed);
+        public async Task<List<VehicleResponseDTO>> SearchVehiclesAsync(string? status, int page)
+        {
+            var vehicles = await _repository.SearchVehiclesAsync(status, page);
+
+            return vehicles.Select(v => new VehicleResponseDTO
+            {
+                Id = v.Id,
+                Brand = v.Brand,
+                Model = v.Model,
+                Year = v.Year,
+                DailyRate = v.DailyRate,
+                Status = v.Status,
+                LicensePlate = v.LicensePlate
+            }).ToList();
         }
     }
 }

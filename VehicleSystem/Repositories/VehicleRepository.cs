@@ -31,11 +31,36 @@ namespace VehicleRentalSystem.Repositories
                 .FirstOrDefaultAsync(v => v.Id == id);
         }
 
-        public async Task<bool> DeleteVehicleAsync(TbVehicle vehicle)
+        public async Task DeleteVehicleAsync(TbVehicle vehicle)
         {
             _postgresContext.TbVehicles.Remove(vehicle);
-            var affected = await _postgresContext.SaveChangesAsync();
-            return affected > 0;
+            await _postgresContext.SaveChangesAsync();
         }
+
+
+        public async Task<List<TbVehicle>> SearchVehiclesAsync(string? status, int page)
+        {
+            const int pageSize = 5;
+
+            if (page < 1)
+                page = 1;
+
+            var query = _postgresContext.TbVehicles.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                var correctStatusName = status.Trim().ToLower();
+                query = query.Where(v => v.Status.ToLower() == correctStatusName);
+            }
+
+            return await query
+                .OrderBy(v => v.Brand)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
     }
+
+
 }

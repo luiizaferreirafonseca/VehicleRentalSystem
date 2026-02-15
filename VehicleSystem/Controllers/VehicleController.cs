@@ -89,6 +89,37 @@ namespace API_SistemaLocacao.Controllers
                 });
             }
         }
+
+        /// <summary>
+        /// Searches vehicles by status with pagination.
+        /// </summary>
+        [HttpGet("search")]
+        public async Task<IActionResult> Search([FromQuery] string? status, [FromQuery] int page = 1)
+        {
+            try
+            {
+                var result = await _service.SearchVehiclesAsync(status, page);
+                return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new ProblemDetails
+                {
+                    Status = StatusCodes.Status400BadRequest,
+                    Title = "Operação inválida",
+                    Detail = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
+                {
+                    Status = StatusCodes.Status500InternalServerError,
+                    Title = "Erro interno do servidor",
+                    Detail = ex.Message
+                });
+            }
+        }
     }
 }
 

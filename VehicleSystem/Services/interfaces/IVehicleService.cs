@@ -8,5 +8,7 @@ namespace VehicleRentalSystem.Services.interfaces
     {
         Task<VehicleResponseDTO> CreateVehicleAsync(VehicleCreateDTO dto);
         Task RemoveVehicleAsync(Guid vehicleId);
+        Task<List<VehicleResponseDTO>> SearchVehiclesAsync(string? status, int page);
     }
 }
+

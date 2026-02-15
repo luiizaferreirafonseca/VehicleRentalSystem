@@ -76,5 +76,30 @@ namespace VehicleRentalSystem.Repositories
         {
             await _postgresContext.SaveChangesAsync();
         }
+        public async Task<List<TbRental>> SearchRentalsByUserAsync(Guid userId, string? status, int page)
+        {
+            const int pageSize = 5;
+
+            if (page < 1)
+                page = 1;
+
+            var query = _postgresContext.TbRentals
+                .Include(r => r.User)
+                .Include(r => r.Vehicle)
+                .Where(r => r.UserId == userId)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                var normalized = status.Trim().ToLower();
+                query = query.Where(r => r.Status.ToLower() == normalized);
+            }
+
+            return await query
+                .OrderByDescending(r => r.StartDate)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
     }
 }
