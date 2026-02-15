@@ -60,7 +60,11 @@ namespace VehicleRentalSystem.Repositories
                 .ToListAsync();
         }
 
+        // ADICIONADO: Método necessário para salvar as atualizações
+        public async Task UpdateVehicleAsync(TbVehicle vehicle)
+        {
+            _postgresContext.TbVehicles.Update(vehicle);
+            await _postgresContext.SaveChangesAsync();
+        }
     }
-
-
 }

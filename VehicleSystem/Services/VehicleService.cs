@@ -94,5 +94,49 @@ namespace VehicleRentalSystem.Services
                 LicensePlate = v.LicensePlate
             }).ToList();
         }
+
+        public async Task<VehicleResponseDTO?> UpdateVehicleAsync(Guid vehicleId, VehicleUpdateDTO dto)
+{
+    // 1. Validar ID
+    if (vehicleId == Guid.Empty)
+        throw new InvalidOperationException(Messages.VehicleIdRequired);
+
+    // 2. Buscar veículo
+    var vehicle = await _repository.GetVehicleByIdAsync(vehicleId);
+    if (vehicle == null)
+        throw new KeyNotFoundException(Messages.VehicleNotFound);
+
+    // 3. Validar Ano (Usando a mensagem do grupo)
+    if (dto.Year <= 1900 || dto.Year > DateTime.Now.Year + 1)
+        throw new InvalidOperationException(Messages.VehicleYearInvalid);
+
+    // 4. Validar Diária (Usando a mensagem do grupo)
+    if (dto.DailyRate <= 0)
+        throw new InvalidOperationException(Messages.VehicleDailyRateInvalid);
+
+    // 5. Validar Status (Comparando com o Enum que você me mandou)
+    if (!Enum.TryParse<VehicleStatus>(dto.Status.ToLower(), out var statusEnum))
+    {
+        throw new InvalidOperationException("Status inválido. Use: available, rented ou maintenance.");
+    }
+
+    // Atualização
+    vehicle.Year = dto.Year;
+    vehicle.DailyRate = dto.DailyRate;
+    vehicle.Status = statusEnum.ToString(); // Garante que salva exatamente como o enum
+
+    await _repository.UpdateVehicleAsync(vehicle);
+
+    return new VehicleResponseDTO
+    {
+        Id = vehicle.Id,
+        Brand = vehicle.Brand,
+        Model = vehicle.Model,
+        Year = vehicle.Year,
+        DailyRate = vehicle.DailyRate,
+        Status = vehicle.Status,
+        LicensePlate = vehicle.LicensePlate
+    };
+}
     }
 }
