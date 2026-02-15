@@ -93,7 +93,7 @@ public class RentalController : ControllerBase
         try
         {
             var result = await _service.CancelRentalAsync(id);
-            
+
             return Ok(result);
         }
         catch (KeyNotFoundException ex)
@@ -207,6 +207,37 @@ public class RentalController : ControllerBase
             });
         }
     }
-    
+
+    /// <summary>
+    /// Searches rentals by user (and optional status) with pagination.
+    /// </summary>
+    [HttpGet("search")]
+    public async Task<IActionResult> Search([FromQuery] Guid userId, [FromQuery] string? status, [FromQuery] int page = 1)
+    {
+        try
+        {
+            var result = await _service.SearchRentalsByUserAsync(userId, status, page);
+            return Ok(result);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new ProblemDetails
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Title = "Operação inválida",
+                Detail = ex.Message
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
+            {
+                Status = StatusCodes.Status500InternalServerError,
+                Title = "Erro interno do servidor",
+                Detail = ex.Message
+            });
+        }
+    }
+
 
 }

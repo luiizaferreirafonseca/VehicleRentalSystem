@@ -262,6 +262,34 @@ namespace VehicleRentalSystem.Services
                 VehicleModel = rental.Vehicle?.Model ?? ""
             };
         }
+
+        public async Task<List<RentalResponseDTO>> SearchRentalsByUserAsync(Guid userId, string? status, int page)
+        {
+            if (userId == Guid.Empty)
+                throw new InvalidOperationException(Messages.UserIdRequired);
+
+            if (page < 1)
+                throw new InvalidOperationException(Messages.PageInvalid);
+
+            var rentals = await _repository.SearchRentalsByUserAsync(userId, status, page);
+
+            return rentals.Select(r => new RentalResponseDTO
+            {
+                Id = r.Id,
+                StartDate = r.StartDate,
+                ExpectedEndDate = r.ExpectedEndDate,
+                ActualEndDate = r.ActualEndDate,
+                TotalAmount = r.TotalAmount,
+                PenaltyFee = r.PenaltyFee,
+                Status = r.Status,
+                VehicleId = r.VehicleId,
+                UserId = r.UserId,
+                DailyRate = r.DailyRate,
+                UserName = r.User?.Name ?? "",
+                VehicleModel = r.Vehicle?.Model ?? ""
+            }).ToList();
+        }
+
     }
 
 }

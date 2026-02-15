@@ -58,5 +58,16 @@
 
         public const string VehicleDeleteFailed =
             "Falha ao remover o veículo.";
+
+        public const string UserNameMissing =
+            "Existe usuário cadastrado sem nome.";
+
+        public const string UserEmailMissing =
+            "Existe usuário cadastrado sem e-mail.";
+
+        public const string PageInvalid =
+    "A página deve ser maior ou igual a 1.";
+
+
     }
 }
