@@ -38,5 +38,33 @@ namespace VehicleRentalSystem.Repositories
         {
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<TbPayment>> GetAllPaymentsAsync(Guid? rentalId, string? method, DateTime? startDate, DateTime? endDate)
+        {
+            var query = _context.TbPayments.AsQueryable();
+
+            if (rentalId.HasValue)
+                query = query.Where(p => p.RentalId == rentalId.Value);
+
+            if (!string.IsNullOrWhiteSpace(method))
+            {
+                var methodFilter = method.Trim().ToLower();
+                query = query.Where(p => p.PaymentMethod.ToLower() == methodFilter);
+            }
+
+            if (startDate.HasValue)
+            {
+                var startUtc = DateTime.SpecifyKind(startDate.Value, DateTimeKind.Utc);
+                query = query.Where(p => p.PaymentDate >= startUtc);
+            }
+
+            if (endDate.HasValue)
+            {
+                var endUtc = DateTime.SpecifyKind(endDate.Value, DateTimeKind.Utc);
+                query = query.Where(p => p.PaymentDate <= endUtc);
+            }
+
+            return await query.ToListAsync();
+        }
     }
 }

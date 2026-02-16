@@ -2,6 +2,7 @@
 using VehicleRentalSystem.Enums;
 using VehicleRentalSystem.Enums.VehicleRentalSystem.Enums;
 using VehicleRentalSystem.Models;
+using VehicleRentalSystem.Repositories;
 using VehicleRentalSystem.Repositories.interfaces;
 using VehicleRentalSystem.Resources;
 using VehicleRentalSystem.Services.interfaces;
@@ -57,6 +58,9 @@ namespace VehicleRentalSystem.Services
 
             rental = await _rentalRepository.GetRentalByIdAsync(rentalId);
 
+            if (rental == null)
+                throw new KeyNotFoundException(Messages.RentalNotFound);
+
             return new RentalResponseDTO
             {
                 Id = rental.Id,
@@ -72,6 +76,25 @@ namespace VehicleRentalSystem.Services
                 UserName = rental.User?.Name ?? "",
                 VehicleModel = rental.Vehicle?.Model ?? ""
             };
+        }
+
+        public async Task<IEnumerable<PaymentResponseDto>> GetAllPaymentsAsync(
+        Guid? rentalId = null,
+        string? method = null,
+        DateTime? startDate = null,
+        DateTime? endDate = null)
+        {
+            var payments = await _paymentRepository.GetAllPaymentsAsync(rentalId, method, startDate, endDate)
+                           ?? Enumerable.Empty<TbPayment>();
+
+            return payments.Select(pay => new PaymentResponseDto
+            {
+                Id = pay.Id,
+                RentalId = pay.RentalId,
+                Amount = pay.Amount,
+                PaymentMethod = pay.PaymentMethod,
+                PaymentDate = pay.PaymentDate
+            });
         }
     }
 }
