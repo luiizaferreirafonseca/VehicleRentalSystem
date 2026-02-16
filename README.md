@@ -3,6 +3,9 @@
 API REST para um sistema de locação de veículos.  
 Projeto **backend-only**, desenvolvido com ASP.NET Core, contendo regras de negócio, testes unitários e suporte a paginação e filtros.
 
+---
+## ⚙️ Funcionalidades
+---
 ## 🛠️ Tecnologias Utilizadas
 
 - .NET 8
@@ -55,6 +58,8 @@ dotnet run --project VehicleSystem
 ``````
 
 
+---
+## API
 
 
 
