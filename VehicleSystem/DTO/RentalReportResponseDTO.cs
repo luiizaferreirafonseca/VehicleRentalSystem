@@ -32,7 +32,6 @@ namespace VehicleRentalSystem.DTO
         public decimal TotalPrice { get; set; }
         public decimal DailyRate { get; set; }
 
-        // The rental period where this accessory was used
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
     }

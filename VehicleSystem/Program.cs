@@ -32,6 +32,8 @@ builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<IAccessoryRepository, AccessoryRepository>();
 builder.Services.AddScoped<IAccessoryService, AccessoryService>();
+builder.Services.AddScoped<IRentalReportRepository, RentalReportRepository>();
+builder.Services.AddScoped<IRentalReportService, RentalReportService>();
 
 builder.Services.AddScoped<IRatingRepository, RatingRepository>();
 builder.Services.AddScoped<IRatingService, RatingService>();

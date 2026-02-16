@@ -16,10 +16,8 @@ namespace VehicleRentalSystem.Services
 
         public async Task<RentalReportResponseDTO?> GetRentalReportAsync(Guid id)
         {
-            // Busca a entidade completa com os Includes (Joins) no repositório
             var rental = await _reportRepository.GetRentalWithDetailsAsync(id);
 
-            // Se não encontrar, retorna null (o Controller tratará como 404)
             if (rental == null)
             {
                 return null;
