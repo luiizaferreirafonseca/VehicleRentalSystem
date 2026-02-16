@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VehicleRentalSystem.DTO;
+using VehicleRentalSystem.Enums;
 using VehicleRentalSystem.Models;
 using VehicleRentalSystem.Repositories.interfaces;
 using VehicleRentalSystem.Resources;
@@ -73,5 +74,27 @@ namespace VehicleSystem.Tests.Services
 
             Assert.That(ex.Message, Is.EqualTo(Messages.VehicleLicensePlateAlreadyExists));
         }
+
+        [Test]
+        public void RemoveVehicleAsync_WhenVehicleIsRented_ShouldThrowException()
+        {
+            var vehicleId = Guid.NewGuid();
+
+            var vehicle = new TbVehicle
+            {
+                Id = vehicleId,
+                Status = VehicleStatus.rented.ToString()
+            };
+
+            _repositoryMock.Setup(r => r.GetVehicleByIdAsync(vehicleId))
+                           .ReturnsAsync(vehicle);
+
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(
+                async () => await _service.RemoveVehicleAsync(vehicleId)
+            );
+
+            Assert.That(ex.Message, Is.EqualTo(Messages.VehicleCannotBeDeletedWhenRented));
+        }
+
     }
 }
