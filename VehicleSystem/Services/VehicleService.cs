@@ -95,48 +95,55 @@ namespace VehicleRentalSystem.Services
             }).ToList();
         }
 
+        public async Task<VehicleListResponseDTO> GetAvailableVehiclesAsync(int page)
+        {
+            var vehicles = await SearchVehiclesAsync(VehicleStatus.available.ToString(), page);
+
+            var response = new VehicleListResponseDTO
+            {
+                Vehicles = vehicles ?? new List<VehicleResponseDTO>(),
+                Message = (vehicles == null || vehicles.Count == 0) ? "Não há veículos disponíveis para locação." : null
+            };
+
+            return response;
+        }
+
         public async Task<VehicleResponseDTO?> UpdateVehicleAsync(Guid vehicleId, VehicleUpdateDTO dto)
-{
-    // 1. Validar ID
-    if (vehicleId == Guid.Empty)
-        throw new InvalidOperationException(Messages.VehicleIdRequired);
+        {
+            if (vehicleId == Guid.Empty)
+                throw new InvalidOperationException(Messages.VehicleIdRequired);
 
-    // 2. Buscar veículo
-    var vehicle = await _repository.GetVehicleByIdAsync(vehicleId);
-    if (vehicle == null)
-        throw new KeyNotFoundException(Messages.VehicleNotFound);
+            var vehicle = await _repository.GetVehicleByIdAsync(vehicleId);
+            if (vehicle == null)
+                throw new KeyNotFoundException(Messages.VehicleNotFound);
 
-    // 3. Validar Ano (Usando a mensagem do grupo)
-    if (dto.Year <= 1900 || dto.Year > DateTime.Now.Year + 1)
-        throw new InvalidOperationException(Messages.VehicleYearInvalid);
+            if (dto.Year <= 1900 || dto.Year > DateTime.Now.Year + 1)
+                throw new InvalidOperationException(Messages.VehicleYearInvalid);
 
-    // 4. Validar Diária (Usando a mensagem do grupo)
-    if (dto.DailyRate <= 0)
-        throw new InvalidOperationException(Messages.VehicleDailyRateInvalid);
+            if (dto.DailyRate <= 0)
+                throw new InvalidOperationException(Messages.VehicleDailyRateInvalid);
 
-    // 5. Validar Status (Comparando com o Enum que você me mandou)
-    if (!Enum.TryParse<VehicleStatus>(dto.Status.ToLower(), out var statusEnum))
-    {
-        throw new InvalidOperationException("Status inválido. Use: available, rented ou maintenance.");
-    }
+            if (!Enum.TryParse<VehicleStatus>(dto.Status.ToLower(), out var statusEnum))
+            {
+                throw new InvalidOperationException("Status inválido. Use: available, rented ou maintenance.");
+            }
 
-    // Atualização
-    vehicle.Year = dto.Year;
-    vehicle.DailyRate = dto.DailyRate;
-    vehicle.Status = statusEnum.ToString(); // Garante que salva exatamente como o enum
+            vehicle.Year = dto.Year;
+            vehicle.DailyRate = dto.DailyRate;
+            vehicle.Status = statusEnum.ToString();
 
-    await _repository.UpdateVehicleAsync(vehicle);
+            await _repository.UpdateVehicleAsync(vehicle);
 
-    return new VehicleResponseDTO
-    {
-        Id = vehicle.Id,
-        Brand = vehicle.Brand,
-        Model = vehicle.Model,
-        Year = vehicle.Year,
-        DailyRate = vehicle.DailyRate,
-        Status = vehicle.Status,
-        LicensePlate = vehicle.LicensePlate
-    };
-}
-    }
+            return new VehicleResponseDTO
+            {
+                Id = vehicle.Id,
+                Brand = vehicle.Brand,
+                Model = vehicle.Model,
+                Year = vehicle.Year,
+                DailyRate = vehicle.DailyRate,
+                Status = vehicle.Status,
+                LicensePlate = vehicle.LicensePlate
+            };
+        }
+    } 
 }

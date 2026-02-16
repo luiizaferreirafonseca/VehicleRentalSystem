@@ -121,6 +121,25 @@ namespace API_SistemaLocacao.Controllers
             }
         }
 
+        [HttpGet("available")]
+        public async Task<IActionResult> GetAvailable([FromQuery] int page = 1)
+        {
+            try
+            {
+                var result = await _service.GetAvailableVehiclesAsync(page);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
+                {
+                    Status = StatusCodes.Status500InternalServerError,
+                    Title = "Erro interno do servidor",
+                    Detail = ex.Message
+                });
+            }
+        }
+
         /// <summary>
         /// Updates an existing vehicle.
         /// </summary>
