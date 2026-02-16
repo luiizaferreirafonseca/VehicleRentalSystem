@@ -6,6 +6,7 @@ using VehicleRentalSystem.Repositories.interfaces;
 using VehicleRentalSystem.Services;
 using VehicleRentalSystem.Enums;
 using VehicleRentalSystem.Resources;
+using VehicleRentalSystem.Enums.VehicleRentalSystem.Enums;
 
 namespace VehicleSystem.Tests
 {
@@ -74,7 +75,6 @@ namespace VehicleSystem.Tests
             Assert.That(ex.Message, Is.EqualTo("A nova data de devolução deve ser posterior à data de início."));
         }
 
-        //Create Rental Service Tests - luiza 
         [Test]
         public async Task CreateRentalAsync_ShouldReturnDTO_WhenDataIsValid()
         {
@@ -124,5 +124,53 @@ namespace VehicleSystem.Tests
             Assert.ThrowsAsync<InvalidOperationException>(async () =>
                 await _service.CreateRentalAsync(dto));
         }
+
+        [Test]
+        public void ReturnRentalAsync_ShouldThrow_WhenRentalNotFound()
+        {
+            var rentalId = Guid.NewGuid();
+
+            _repositoryMock.Setup(r => r.GetRentalByIdAsync(rentalId))
+                           .ReturnsAsync((TbRental?)null);
+
+            var ex = Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+                await _service.ReturnRentalAsync(rentalId));
+
+            Assert.That(ex.Message, Is.EqualTo(Messages.RentalNotFound));
+        }
+
+        [Test]
+        public async Task ReturnRentalAsync_WithPenalty_WhenReturnedAfterExpectedDate()
+        {
+            var rentalId = Guid.NewGuid();
+
+            var rental = new TbRental
+            {
+                Id = rentalId,
+                StartDate = DateTime.UtcNow.AddDays(-10),
+                ExpectedEndDate = DateTime.UtcNow.AddDays(-3), 
+                ActualEndDate = null,
+                TotalAmount = 1000m,
+                DailyRate = 100m,
+                PenaltyFee = 0m,
+                Status = RentalStatus.active.ToString(),
+                VehicleId = Guid.NewGuid(),
+                UserId = Guid.NewGuid(),
+                Vehicle = new TbVehicle { Status = VehicleStatus.rented.ToString() }
+            };
+
+            _repositoryMock.Setup(r => r.GetRentalByIdAsync(rentalId))
+                           .ReturnsAsync(rental);
+
+            _repositoryMock.Setup(r => r.SaveChangesAsync())
+                           .Returns(Task.CompletedTask);
+
+            var result = await _service.ReturnRentalAsync(rentalId);
+
+            Assert.That(result.PenaltyFee, Is.GreaterThan(0m));
+            Assert.That(result.Status, Is.EqualTo(RentalStatus.completed.ToString()));
+            Assert.That(rental.Vehicle.Status, Is.EqualTo(VehicleStatus.available.ToString()));
+        }
+
     }
 }
