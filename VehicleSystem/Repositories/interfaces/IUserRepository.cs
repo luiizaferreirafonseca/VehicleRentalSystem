@@ -5,5 +5,10 @@ namespace VehicleRentalSystem.Repositories.interfaces
     public interface IUserRepository
     {
         Task<List<TbUser>> GetAllUsersAsync();
+
+        Task<bool> ExistsByEmailAsync(string email);
+
+        Task<TbUser> CreateUserAsync(TbUser user);
+
     }
 }

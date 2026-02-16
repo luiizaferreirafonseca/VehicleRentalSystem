@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using VehicleRentalSystem.DTO;
 using VehicleRentalSystem.Services.interfaces;
 
 namespace API_SistemaLocacao.Controllers
@@ -24,6 +25,34 @@ namespace API_SistemaLocacao.Controllers
             {
                 var result = await _service.GetAllUsersAsync();
                 return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
+                {
+                    Status = StatusCodes.Status500InternalServerError,
+                    Title = "Erro interno do servidor",
+                    Detail = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] UserCreateDTO dto)
+        {
+            try
+            {
+                var result = await _service.CreateUserAsync(dto);
+                return CreatedAtAction(nameof(Get), new { id = result.Id }, result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new ProblemDetails
+                {
+                    Status = StatusCodes.Status400BadRequest,
+                    Title = "Erro de validação",
+                    Detail = ex.Message
+                });
             }
             catch (Exception ex)
             {
