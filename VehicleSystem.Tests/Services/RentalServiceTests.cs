@@ -68,7 +68,6 @@ namespace VehicleSystem.Tests
 
             var updateDto = new UpdateRentalDTO { NewExpectedEndDate = DateTime.UtcNow };
 
-      
             var ex = Assert.ThrowsAsync<InvalidOperationException>(async () => 
                 await _service.UpdateRentalDatesAsync(rentalId, updateDto));
             
@@ -172,5 +171,47 @@ namespace VehicleSystem.Tests
             Assert.That(rental.Vehicle.Status, Is.EqualTo(VehicleStatus.available.ToString()));
         }
 
+
+        [Test]
+        public void GetRentalById_ShouldReturnRentalDTO_WhenIdExists()
+        {
+            // Arrange
+            var rentalId = Guid.NewGuid();
+            var rentalFromDb = new TbRental
+            {
+                Id = rentalId,
+                StartDate = DateTime.UtcNow,
+                User = new TbUser { Name = "Ale Teste" },
+                Vehicle = new TbVehicle { Model = "Onix" },
+                Status = "active"
+            };
+
+            _repositoryMock.Setup(r => r.SelectRentalById(rentalId))
+                           .Returns(rentalFromDb);
+
+            // Act
+            var result = _service.GetRentalById(rentalId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.That(result.Id, Is.EqualTo(rentalId));
+            Assert.That(result.UserName, Is.EqualTo("Ale Teste"));
+            Assert.That(result.VehicleModel, Is.EqualTo("Onix"));
+        }
+
+        [Test]
+        public void GetRentalById_ShouldReturnNull_WhenIdDoesNotExist()
+        {
+            // Arrange
+            var rentalId = Guid.NewGuid();
+            _repositoryMock.Setup(r => r.SelectRentalById(rentalId))
+                           .Returns((TbRental?)null);
+
+            // Act
+            var result = _service.GetRentalById(rentalId);
+
+            // Assert
+            Assert.IsNull(result);
+        }
     }
 }
