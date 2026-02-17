@@ -9,5 +9,6 @@ namespace VehicleRentalSystem.Repositories.interfaces
         Task<TbVehicle?> GetVehicleByIdAsync(Guid id);
         Task DeleteVehicleAsync(TbVehicle vehicle);
         Task<List<TbVehicle>> SearchVehiclesAsync(string? status, int page);
+        Task UpdateVehicleAsync(TbVehicle vehicle);
     }
 }

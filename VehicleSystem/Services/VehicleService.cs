@@ -107,5 +107,43 @@ namespace VehicleRentalSystem.Services
 
             return response;
         }
-    }
+
+        public async Task<VehicleResponseDTO?> UpdateVehicleAsync(Guid vehicleId, VehicleUpdateDTO dto)
+        {
+            if (vehicleId == Guid.Empty)
+                throw new InvalidOperationException(Messages.VehicleIdRequired);
+
+            var vehicle = await _repository.GetVehicleByIdAsync(vehicleId);
+            if (vehicle == null)
+                throw new KeyNotFoundException(Messages.VehicleNotFound);
+
+            if (dto.Year <= 1900 || dto.Year > DateTime.Now.Year + 1)
+                throw new InvalidOperationException(Messages.VehicleYearInvalid);
+
+            if (dto.DailyRate <= 0)
+                throw new InvalidOperationException(Messages.VehicleDailyRateInvalid);
+
+            if (!Enum.TryParse<VehicleStatus>(dto.Status.ToLower(), out var statusEnum))
+            {
+                throw new InvalidOperationException("Status inválido. Use: available, rented ou maintenance.");
+            }
+
+            vehicle.Year = dto.Year;
+            vehicle.DailyRate = dto.DailyRate;
+            vehicle.Status = statusEnum.ToString();
+
+            await _repository.UpdateVehicleAsync(vehicle);
+
+            return new VehicleResponseDTO
+            {
+                Id = vehicle.Id,
+                Brand = vehicle.Brand,
+                Model = vehicle.Model,
+                Year = vehicle.Year,
+                DailyRate = vehicle.DailyRate,
+                Status = vehicle.Status,
+                LicensePlate = vehicle.LicensePlate
+            };
+        }
+    } 
 }

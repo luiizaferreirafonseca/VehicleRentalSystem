@@ -19,5 +19,17 @@ namespace VehicleRentalSystem.Repositories
                 .Include(u => u.TbRentals)
                 .ToListAsync();
         }
+
+        public async Task<bool> ExistsByEmailAsync(string email)
+        {
+            return await _postgresContext.TbUsers.AnyAsync(u => u.Email == email);
+        }
+
+        public async Task<TbUser> CreateUserAsync(TbUser user)
+        {
+            await _postgresContext.TbUsers.AddAsync(user);
+            await _postgresContext.SaveChangesAsync();
+            return user;
+        }
     }
 }

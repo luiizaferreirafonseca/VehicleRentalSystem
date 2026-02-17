@@ -1,4 +1,5 @@
 ﻿using VehicleRentalSystem.DTO;
+using VehicleRentalSystem.Models;
 using VehicleRentalSystem.Repositories.interfaces;
 using VehicleRentalSystem.Resources;
 using VehicleRentalSystem.Services.interfaces;
@@ -36,6 +37,38 @@ namespace VehicleRentalSystem.Services
                     VehicleId = r.VehicleId
                 }).ToList()
             }).ToList();
+        }
+
+        public async Task<UserResponseDTO> CreateUserAsync(UserCreateDTO dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Name))
+                throw new InvalidOperationException(Messages.UserNameMissing);
+
+            if (string.IsNullOrWhiteSpace(dto.Email))
+                throw new InvalidOperationException(Messages.UserEmailMissing);
+
+            var emailExists = await _repository.ExistsByEmailAsync(dto.Email);
+            if (emailExists)
+                throw new InvalidOperationException("Este e-mail já está cadastrado no sistema.");
+
+            var newUser = new TbUser
+            {
+                Id = Guid.NewGuid(),
+                Name = dto.Name.Trim(),
+                Email = dto.Email.Trim().ToLower(),
+                Active = true
+            };
+
+            var createdUser = await _repository.CreateUserAsync(newUser);
+
+            return new UserResponseDTO
+            {
+                Id = createdUser.Id,
+                Name = createdUser.Name,
+                Email = createdUser.Email,
+                Active = createdUser.Active,
+                Rentals = new List<UserRentalItemDTO>()
+            };
         }
     }
 }
