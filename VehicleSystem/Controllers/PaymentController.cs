@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using VehicleRentalSystem.DTO;
 using VehicleRentalSystem.Services;
 using VehicleRentalSystem.Services.interfaces;
+using VehicleRentalSystem.Resources;
 
 namespace API_SistemaLocacao.Controllers;
 
@@ -28,7 +29,7 @@ public class PaymentController : ControllerBase
         return Ok(payments);
     }
 
-    [HttpPatch("{rentalId:guid}/payments")]
+    [HttpPatch("{rentalId:guid}")]
     public async Task<IActionResult> RegisterPayment([FromRoute] Guid rentalId, [FromBody] PaymentCreateDTO dto)
     {
         try
@@ -44,7 +45,7 @@ public class PaymentController : ControllerBase
             return NotFound(new ProblemDetails
             {
                 Status = StatusCodes.Status404NotFound,
-                Title = "Erro! Locação não encontrada",
+                Title = Messages.RentalNotFound,
                 Detail = ex.Message
             });
         }
@@ -53,7 +54,7 @@ public class PaymentController : ControllerBase
             return BadRequest(new ProblemDetails
             {
                 Status = StatusCodes.Status400BadRequest,
-                Title = "Erro! Operação Inválida",
+                Title = Messages.InvalidOperation,
                 Detail = ex.Message
             });
         }
@@ -62,7 +63,7 @@ public class PaymentController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,
-                Title = "Erro de servidor",
+                Title = Messages.ServerError,
                 Detail = ex.Message
             });
         }

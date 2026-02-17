@@ -66,8 +66,34 @@
             "Existe usuário cadastrado sem e-mail.";
 
         public const string PageInvalid =
-    "A página deve ser maior ou igual a 1.";
+            "A página deve ser maior ou igual a 1.";
+
+        public const string PaymentRegisteredSuccess = 
+            "Pagamento registrado com sucesso.";
+
+        public const string PaymentRegisterFailed = 
+            "Falha ao registrar o pagamento.";
+        public const string AccessoryLinkedSuccess = 
+            "Acessório vinculado com sucesso à locação.";
+
+        public const string AccessoryUnlinkedSuccess = 
+            "Acessório desvinculado com sucesso da locação.";
+
+        // Mensagens específicas para relatórios/exports
+        public const string InvalidFormat = "Formato inválido.";
+        public const string ReportNotFound = "Relatório não encontrado.";
+        public const string ReportNotFoundDetailFormat = "Relatório {0} não encontrado.";
 
 
+        // Mensagens genéricas/situacionais para controllers adicionadas para padronização
+        public const string InvalidOperation = "Operação inválida.";
+        public const string ServerError = "Erro de servidor.";
+        public const string NotFound = "Não encontrado";
+        public const string Conflict = "Conflito";
+        public const string ServerInternalError = "Erro interno do servidor";
+        public const string UnexpectedServerErrorDetail = "Ocorreu um erro inesperado ao processar sua solicitação.";
+        public const string RequestInvalid = "Requisição inválida";
+        public const string RequestBodyEmptyDetail = "O corpo da requisição está vazio ou inválido.";
+        public const string IdsInvalid = "Identificador inválido";
     }
 }

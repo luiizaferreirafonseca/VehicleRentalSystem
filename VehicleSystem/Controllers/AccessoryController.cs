@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using VehicleRentalSystem.DTO;
 using VehicleRentalSystem.Services.interfaces;
+using VehicleRentalSystem.Resources;
 
 namespace API_SistemaLocacao.Controllers;
 
@@ -26,7 +27,7 @@ public class AccessoryController : ControllerBase
         return Ok(accessories);
     }
 
-    [HttpGet("{id:guid}")] 
+    [HttpGet("{id:guid}")]
     public async Task<ActionResult<AccessoryResponseDto>> GetById(Guid id)
     {
         try
@@ -43,7 +44,7 @@ public class AccessoryController : ControllerBase
             var problemDetails = new ProblemDetails
             {
                 Status = StatusCodes.Status404NotFound,
-                Title = "Não encontrado",
+                Title = Messages.NotFound,
                 Detail = ex.Message
             };
             return NotFound(problemDetails);
@@ -53,7 +54,7 @@ public class AccessoryController : ControllerBase
             var problemDetails = new ProblemDetails
             {
                 Status = StatusCodes.Status409Conflict,
-                Title = "Conflito",
+                Title = Messages.Conflict,
                 Detail = ex.Message
             };
             return Conflict(problemDetails);
@@ -63,14 +64,14 @@ public class AccessoryController : ControllerBase
             var problemDetails = new ProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,
-                Title = "Erro interno do servidor",
-                Detail = "Ocorreu um erro inesperado ao processar sua solicitação."
+                Title = Messages.ServerInternalError,
+                Detail = Messages.UnexpectedServerErrorDetail
             };
             return StatusCode(StatusCodes.Status500InternalServerError, problemDetails);
         }
     }
 
-    [HttpPost("CreateAccessory")] 
+    [HttpPost("add")]
     public async Task<ActionResult<AccessoryResponseDto>> Create([FromBody] AccessoryCreateDto request)
     {
         if (!ModelState.IsValid)
@@ -87,7 +88,7 @@ public class AccessoryController : ControllerBase
             return Conflict(new ProblemDetails
             {
                 Status = StatusCodes.Status409Conflict,
-                Title = "Conflito",
+                Title = Messages.Conflict,
                 Detail = ex.Message
             });
         }
@@ -96,14 +97,14 @@ public class AccessoryController : ControllerBase
             var problemDetails = new ProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,
-                Title = "Erro interno do servidor",
+                Title = Messages.ServerInternalError,
                 Detail = ex.Message
             };
             return StatusCode(StatusCodes.Status500InternalServerError, problemDetails);
         }
     }
 
-    [HttpPost("AddToRental")]
+    [HttpPost]
     public async Task<ActionResult> AddAccessoryToRental([FromBody] RentalAccessoryRequestDto request)
     {
         try
@@ -117,8 +118,8 @@ public class AccessoryController : ControllerBase
                 return BadRequest(new ProblemDetails
                 {
                     Status = StatusCodes.Status400BadRequest,
-                    Title = "Requisição inválida",
-                    Detail = "O corpo da requisição está vazio ou inválido. Envie JSON com 'rentalId' e 'accessoryId'."
+                    Title = Messages.RequestInvalid,
+                    Detail = Messages.RequestBodyEmptyDetail
                 });
             }
 
@@ -131,8 +132,8 @@ public class AccessoryController : ControllerBase
                 return BadRequest(new ProblemDetails
                 {
                     Status = StatusCodes.Status400BadRequest,
-                    Title = "Ids inválidos",
-                    Detail = "Os campos 'rentalId' e 'accessoryId' devem ser GUIDs válidos e não vazios."
+                    Title = Messages.IdsInvalid,
+                    Detail = Messages.IdsInvalid
                 });
             }
 
@@ -140,7 +141,7 @@ public class AccessoryController : ControllerBase
 
             _logger.LogInformation("AddAccessoryToRental succeeded for RentalId={rentalId} AccessoryId={accessoryId}", request.RentalId, request.AccessoryId);
 
-            return Ok(new { Message = "Acessório vinculado com sucesso à locação." });
+            return Ok(new { Message = Messages.AccessoryLinkedSuccess });
         }
         catch (KeyNotFoundException ex)
         {
@@ -148,7 +149,7 @@ public class AccessoryController : ControllerBase
             var problemDetails = new ProblemDetails
             {
                 Status = StatusCodes.Status404NotFound,
-                Title = "Não encontrado",
+                Title = Messages.NotFound,
                 Detail = ex.Message
             };
             return NotFound(problemDetails);
@@ -159,7 +160,7 @@ public class AccessoryController : ControllerBase
             var problemDetails = new ProblemDetails
             {
                 Status = StatusCodes.Status409Conflict,
-                Title = "Conflito",
+                Title = Messages.Conflict,
                 Detail = ex.Message
             };
             return Conflict(problemDetails);
@@ -170,8 +171,8 @@ public class AccessoryController : ControllerBase
             var problemDetails = new ProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,
-                Title = "Erro interno do servidor",
-                Detail = "Ocorreu um erro inesperado ao processar sua solicitação."
+                Title = Messages.ServerInternalError,
+                Detail = Messages.UnexpectedServerErrorDetail
             };
             return StatusCode(StatusCodes.Status500InternalServerError, problemDetails);
         }
@@ -192,7 +193,7 @@ public class AccessoryController : ControllerBase
             var problemDetails = new ProblemDetails
             {
                 Status = StatusCodes.Status404NotFound,
-                Title = "Não encontrado",
+                Title = Messages.NotFound,
                 Detail = ex.Message
             };
             return NotFound(problemDetails);
@@ -202,7 +203,7 @@ public class AccessoryController : ControllerBase
             var problemDetails = new ProblemDetails
             {
                 Status = StatusCodes.Status409Conflict,
-                Title = "Conflito",
+                Title = Messages.Conflict,
                 Detail = ex.Message
             };
             return Conflict(problemDetails);
@@ -212,8 +213,8 @@ public class AccessoryController : ControllerBase
             var problemDetails = new ProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,
-                Title = "Erro interno do servidor",
-                Detail = "Ocorreu um erro inesperado ao processar sua solicitação."
+                Title = Messages.ServerInternalError,
+                Detail = Messages.UnexpectedServerErrorDetail
             };
             return StatusCode(StatusCodes.Status500InternalServerError, problemDetails);
         }
@@ -230,14 +231,14 @@ public class AccessoryController : ControllerBase
             _logger.LogInformation("RemoveAccessoryFromRental succeeded for RentalId={rentalId} AccessoryId={accessoryId}", rentalId, accessoryId);
 
             // Retorna mensagem JSON em vez de 204 para facilitar tratamento no frontend
-            return Ok(new { Message = "Acessório desvinculado com sucesso da locação." });
+            return Ok(new { Message = Messages.AccessoryUnlinkedSuccess });
         }
         catch (KeyNotFoundException ex)
         {
             var problemDetails = new ProblemDetails
             {
                 Status = StatusCodes.Status404NotFound,
-                Title = "Não encontrado",
+                Title = Messages.NotFound,
                 Detail = ex.Message
             };
             return NotFound(problemDetails);
@@ -247,7 +248,7 @@ public class AccessoryController : ControllerBase
             var problemDetails = new ProblemDetails
             {
                 Status = StatusCodes.Status409Conflict,
-                Title = "Conflito",
+                Title = Messages.Conflict,
                 Detail = ex.Message
             };
             return Conflict(problemDetails);
@@ -257,8 +258,8 @@ public class AccessoryController : ControllerBase
             var problemDetails = new ProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,
-                Title = "Erro interno do servidor",
-                Detail = "Ocorreu um erro inesperado ao processar sua solicitação."
+                Title = Messages.ServerInternalError,
+                Detail = Messages.UnexpectedServerErrorDetail
             };
             return StatusCode(StatusCodes.Status500InternalServerError, problemDetails);
         }

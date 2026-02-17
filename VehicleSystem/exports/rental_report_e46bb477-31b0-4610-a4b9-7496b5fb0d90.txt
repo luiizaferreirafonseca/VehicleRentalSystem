@@ -1,0 +1,33 @@
+﻿Relatório de Locação - RPT-20260217-E46BB4   -   Data: 02/17/2026 16:09:44
+
+Dados do Contrato ---------------------
+
+Cliente:  Tamiris Novaes
+
+Início: 12-02-2026
+Término: 15-02-2026
+Total dias: 3
+Status: active
+
+Dados da Locação ---------------------
+
+Veículo:
+  Chevrolet Onix - ABC1D23
+
+Acessórios:
+  GPS x1 - 45.00 (15.00/dia)
+
+-----------------------------------------
+
+(+)  Total Veículo: R$ 360.00
+(+)  Total Acessórios: R$ 45.00
+(+)  Multa: R$ 0
+(-)  Total Geral: R$ 405.00
+(-)  Total Pago: R$ 405.00
+
+(=)  Saldo Devedor: R$ 0.00
+
+-----------------------------------------
+
+Detalhamento de Pagamentos:
+  12-02-2026 - Cartão - 405.00

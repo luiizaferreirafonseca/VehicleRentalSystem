@@ -1,0 +1,17 @@
+﻿Relatório de Locação;RPT-20260217-E46BB4;Data;17/02/2026 16:09:51
+
+Dados do Contrato
+Cliente;;Início;Término;Status
+Tamiris Novaes;;12/02/2026;15/02/2026;active
+
+Dados da Locação
+Veículo;Total veículo;acessórios;Total acessórios;multas
+Chevrolet - Onix;360.00;-;¤45.00;-
+
+;;;Total geral;360.00
+;;;total pago;405.00
+;;;saldo devedor;0.00
+
+Dados dos Pagamentos
+Data;Método;Valor
+12/02/2026;credit_card;405.00
