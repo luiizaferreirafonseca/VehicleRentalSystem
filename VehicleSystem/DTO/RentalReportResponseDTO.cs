@@ -21,6 +21,7 @@ namespace VehicleRentalSystem.DTO
         public decimal AmountPaid => Payments.Sum(p => p.Amount);
         public decimal AccessoriesTotal => Accessories.Sum(a => a.TotalPrice);
         public decimal BalanceDue => (TotalAmount + PenaltyFee + AccessoriesTotal) - AmountPaid;
+        public string ReportNumber => $"RPT-{DateTime.Today:yyyyMMdd}-{RentalId.ToString()[..6].ToUpper()}";
     }
 
     public class AccessoryReportDto
