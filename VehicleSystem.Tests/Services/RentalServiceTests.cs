@@ -207,15 +207,12 @@ namespace VehicleSystem.Tests
             Assert.IsNull(result);
         }
 
-        // ---LISTAGEM POR STATUS ---
-
         [Test]
         [TestCase("active")]
         [TestCase("completed")]
         [TestCase("canceled")]
         public async Task SearchRentalsByUserAsync_ShouldReturnList_ForEveryStatus(string status)
         {
-            // Arrange
             var userId = Guid.NewGuid();
             var rentalsFromDb = new List<TbRental>
             {
@@ -232,10 +229,8 @@ namespace VehicleSystem.Tests
             _repositoryMock.Setup(r => r.SearchRentalsByUserAsync(userId, status, 1))
                            .ReturnsAsync(rentalsFromDb);
 
-            // Act
             var result = await _service.SearchRentalsByUserAsync(userId, status, 1);
 
-            // Assert
             Assert.IsNotNull(result);
             Assert.That(result.Count, Is.EqualTo(1));
             Assert.That(result[0].Status, Is.EqualTo(status));
@@ -246,14 +241,67 @@ namespace VehicleSystem.Tests
         [Test]
         public void SearchRentalsByUserAsync_ShouldThrow_WhenPageIsLessThanOne()
         {
-            // Arrange
             var userId = Guid.NewGuid();
 
-            // Act & Assert
             var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
                 await _service.SearchRentalsByUserAsync(userId, "active", 0));
 
             Assert.That(ex.Message, Is.EqualTo(Messages.PageInvalid));
+        }
+
+        // --- TESTES DE ATUALIZAÇÃO DE LOCAÇÃO ---
+
+        [Test]
+        public async Task UpdateRentalDatesAsync_ShouldRecalculateTotalAmount_WhenDatesAreUpdated()
+        {
+            var rentalId = Guid.NewGuid();
+            var startDate = DateTime.UtcNow.AddDays(-5);
+            var oldExpectedDate = DateTime.UtcNow.AddDays(2); 
+            var newExpectedDate = DateTime.UtcNow.AddDays(5); 
+            var dailyRate = 100m;
+
+            var existingRental = new TbRental
+            {
+                Id = rentalId,
+                StartDate = startDate,
+                ExpectedEndDate = oldExpectedDate,
+                DailyRate = dailyRate,
+                Status = RentalStatus.active.ToString(), 
+                TotalAmount = 700m
+            };
+
+            _repositoryMock.Setup(r => r.GetRentalByIdAsync(rentalId))
+                           .ReturnsAsync(existingRental);
+
+            var updateDto = new UpdateRentalDTO { NewExpectedEndDate = newExpectedDate };
+
+            var result = await _service.UpdateRentalDatesAsync(rentalId, updateDto);
+
+            Assert.IsNotNull(result);
+            Assert.That(result.ExpectedEndDate, Is.EqualTo(newExpectedDate));
+            Assert.That(result.TotalAmount, Is.EqualTo(1000m)); 
+            _repositoryMock.Verify(r => r.UpdateAsync(It.IsAny<TbRental>()), Times.Once);
+        }
+
+        [Test]
+        public void UpdateRentalDatesAsync_ShouldThrow_WhenRentalIsNotActive()
+        {
+            var rentalId = Guid.NewGuid();
+            var existingRental = new TbRental
+            {
+                Id = rentalId,
+                Status = RentalStatus.completed.ToString()
+            };
+
+            _repositoryMock.Setup(r => r.GetRentalByIdAsync(rentalId))
+                           .ReturnsAsync(existingRental);
+
+            var updateDto = new UpdateRentalDTO { NewExpectedEndDate = DateTime.UtcNow.AddDays(1) };
+
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _service.UpdateRentalDatesAsync(rentalId, updateDto)); 
+            
+            Assert.That(ex.Message, Does.StartWith("Só é permitido atualizar locações que estejam 'active'"));
         }
     }
 }
