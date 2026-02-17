@@ -171,11 +171,9 @@ namespace VehicleSystem.Tests
             Assert.That(rental.Vehicle.Status, Is.EqualTo(VehicleStatus.available.ToString()));
         }
 
-
         [Test]
         public void GetRentalById_ShouldReturnRentalDTO_WhenIdExists()
         {
-            // Arrange
             var rentalId = Guid.NewGuid();
             var rentalFromDb = new TbRental
             {
@@ -189,10 +187,8 @@ namespace VehicleSystem.Tests
             _repositoryMock.Setup(r => r.SelectRentalById(rentalId))
                            .Returns(rentalFromDb);
 
-            // Act
             var result = _service.GetRentalById(rentalId);
 
-            // Assert
             Assert.IsNotNull(result);
             Assert.That(result.Id, Is.EqualTo(rentalId));
             Assert.That(result.UserName, Is.EqualTo("Ale Teste"));
@@ -202,16 +198,62 @@ namespace VehicleSystem.Tests
         [Test]
         public void GetRentalById_ShouldReturnNull_WhenIdDoesNotExist()
         {
-            // Arrange
             var rentalId = Guid.NewGuid();
             _repositoryMock.Setup(r => r.SelectRentalById(rentalId))
                            .Returns((TbRental?)null);
 
-            // Act
             var result = _service.GetRentalById(rentalId);
 
-            // Assert
             Assert.IsNull(result);
+        }
+
+        // ---LISTAGEM POR STATUS ---
+
+        [Test]
+        [TestCase("active")]
+        [TestCase("completed")]
+        [TestCase("canceled")]
+        public async Task SearchRentalsByUserAsync_ShouldReturnList_ForEveryStatus(string status)
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var rentalsFromDb = new List<TbRental>
+            {
+                new TbRental 
+                { 
+                    Id = Guid.NewGuid(), 
+                    UserId = userId, 
+                    Status = status,
+                    User = new TbUser { Name = "Ale Cliente" },
+                    Vehicle = new TbVehicle { Model = "Civic" }
+                }
+            };
+
+            _repositoryMock.Setup(r => r.SearchRentalsByUserAsync(userId, status, 1))
+                           .ReturnsAsync(rentalsFromDb);
+
+            // Act
+            var result = await _service.SearchRentalsByUserAsync(userId, status, 1);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.That(result.Count, Is.EqualTo(1));
+            Assert.That(result[0].Status, Is.EqualTo(status));
+            Assert.That(result[0].UserName, Is.EqualTo("Ale Cliente"));
+            Assert.That(result[0].VehicleModel, Is.EqualTo("Civic"));
+        }
+
+        [Test]
+        public void SearchRentalsByUserAsync_ShouldThrow_WhenPageIsLessThanOne()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+
+            // Act & Assert
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _service.SearchRentalsByUserAsync(userId, "active", 0));
+
+            Assert.That(ex.Message, Is.EqualTo(Messages.PageInvalid));
         }
     }
 }
