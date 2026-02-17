@@ -303,5 +303,56 @@ namespace VehicleSystem.Tests
             
             Assert.That(ex.Message, Does.StartWith("Só é permitido atualizar locações que estejam 'active'"));
         }
+
+        [Test]
+        public async Task CancelRentalAsync_ShouldCancelAndReleaseVehicle_WhenRentalIsActive()
+        {
+            // Arrange
+            var rentalId = Guid.NewGuid();
+            var vehicleId = Guid.NewGuid();
+            var vehicle = new TbVehicle { Id = vehicleId, Status = VehicleStatus.rented.ToString() };
+            var rental = new TbRental
+            {
+                Id = rentalId,
+                Status = RentalStatus.active.ToString(),
+                VehicleId = vehicleId,
+                Vehicle = vehicle
+            };
+
+            _repositoryMock.Setup(r => r.GetRentalByIdAsync(rentalId))
+                           .ReturnsAsync(rental);
+            
+            _repositoryMock.Setup(r => r.SaveChangesAsync())
+                           .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await _service.CancelRentalAsync(rentalId);
+
+            // Assert
+            Assert.That(result.Status, Is.EqualTo(RentalStatus.canceled.ToString()));
+            Assert.That(vehicle.Status, Is.EqualTo(VehicleStatus.available.ToString())); 
+            _repositoryMock.Verify(r => r.SaveChangesAsync(), Times.Once);
+        }
+
+        [Test]
+        public void CancelRentalAsync_ShouldThrow_WhenRentalIsNotActive()
+        {
+            // Arrange
+            var rentalId = Guid.NewGuid();
+            var rental = new TbRental
+            {
+                Id = rentalId,
+                Status = RentalStatus.completed.ToString() 
+            };
+
+            _repositoryMock.Setup(r => r.GetRentalByIdAsync(rentalId))
+                           .ReturnsAsync(rental);
+
+            // Act & Assert
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _service.CancelRentalAsync(rentalId));
+
+            Assert.That(ex.Message, Does.Contain("Não é possível cancelar uma locação com status 'completed'"));
+        }
     }
 }
