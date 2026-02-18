@@ -93,15 +93,15 @@ namespace VehicleSystem.Tests.Controllers
         [Test]
         public async Task GetById_ShouldReturn_404NotFound_WhenIdDoesNotExist()
         {
-            // Arrange → preparar cenário: Configura o mock para lançar KeyNotFoundException
+            // Arrange : Configura o mock para lançar KeyNotFoundException
             var idInexistente = Guid.NewGuid();
             _serviceMock.Setup(s => s.GetAccessoryByIdAsync(idInexistente))
                         .ThrowsAsync(new KeyNotFoundException("Acessório não encontrado"));
 
-            // Act → executar ação: Chama o método GetById do controller
+            // Act : Chama o método GetById do controller
             var actionResult = await _controller.GetById(idInexistente);
 
-            // Assert → validar resultado: Verifica se retornou 404 e os detalhes do problema
+            // Assert : Verifica se retornou 404 e os detalhes do problema
             Assert.Multiple(() =>
             {
                 Assert.That(actionResult.Result, Is.TypeOf<NotFoundObjectResult>());
@@ -118,15 +118,15 @@ namespace VehicleSystem.Tests.Controllers
         [Test]
         public async Task Create_ShouldReturn_409Conflict_WhenNameIsDuplicate()
         {
-            // Arrange → preparar cenário: Configura o serviço para lançar InvalidOperationException
+            // Arrange : Configura o serviço para lançar InvalidOperationException
             var dto = new AccessoryCreateDto { Name = "GPS", DailyRate = 10m };
             _serviceMock.Setup(s => s.CreateAccessoryAsync(dto))
                         .ThrowsAsync(new InvalidOperationException("Acessório já cadastrado"));
 
-            // Act → executar ação: Tenta criar um acessório com nome já existente
+            // Act : Tenta criar um acessório com nome já existente
             var actionResult = await _controller.Create(dto);
 
-            // Assert → validar resultado: Verifica se retornou 409 Conflict
+            // Assert : Verifica se retornou 409 Conflict
             Assert.Multiple(() =>
             {
                 Assert.That(actionResult.Result, Is.TypeOf<ConflictObjectResult>());
@@ -143,15 +143,39 @@ namespace VehicleSystem.Tests.Controllers
         [Test]
         public async Task Create_ShouldReturn_400BadRequest_WhenModelStateIsInvalid()
         {
-            // Arrange → preparar cenário: Adiciona erro manual ao ModelState para simular falha de validação
+            // Arrange : Adiciona erro manual ao ModelState para simular falha de validação
             var dtoIncompleto = new AccessoryCreateDto { Name = "" }; // Nome vazio
             _controller.ModelState.AddModelError("Name", "O nome é obrigatório");
 
-            // Act → executar ação: Chama o método Create
+            // Act : Chama o método Create
             var actionResult = await _controller.Create(dtoIncompleto);
 
-            // Assert → validar resultado: Verifica se retornou 400 BadRequest
+            // Assert : Verifica se retornou 400 BadRequest
             Assert.That(actionResult.Result, Is.TypeOf<BadRequestObjectResult>());
+        }
+
+        //  --- CENÁRIO: VALIDAÇÃO DE RETORNO PARA BODY VAZIO
+        [Test]
+        public async Task AddAccessoryToRental_ShouldReturn_400BadRequest_WhenRequestIsNull()
+        {
+            // Arrange : Define o objeto de requisição como nulo
+            RentalAccessoryRequestDto? request = null;
+
+            // Act : Chama o método passando o valor nulo
+            // Usamos o operador ! para suprimir o aviso de nulo, pois queremos testar justamente esse comportamento
+            var result = await _controller.AddAccessoryToRental(request!);
+
+            // Assert : Verifica se o retorno é um BadRequest com ProblemDetails
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
+
+                var response = result as BadRequestObjectResult;
+                var problem = response?.Value as ProblemDetails;
+
+                Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status400BadRequest));
+                Assert.That(problem?.Title, Is.EqualTo(Messages.RequestInvalid));
+            });
         }
     }
 }
