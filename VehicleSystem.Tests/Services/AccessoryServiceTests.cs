@@ -42,7 +42,6 @@ namespace VehicleSystem.Tests.Services
             Assert.That(result, Is.Empty);
         }
 
-        // Tests for GetAccessoryByIdAsync (moved to follow service order)
         /// <summary>
         /// Falha: GetAccessoryByIdAsync deve lançar KeyNotFoundException se o ID não existir.
         /// </summary>
@@ -54,103 +53,6 @@ namespace VehicleSystem.Tests.Services
             Assert.ThrowsAsync<KeyNotFoundException>(() => _service.GetAccessoryByIdAsync(Guid.NewGuid()));
         }
 
-        /// <summary>
-        /// Sucesso: Garante que GetAccessoryByIdAsync mapeie as propriedades para o DTO e retorne corretamente.
-        /// </summary>
-        [Test]
-        [Category("Unit")]
-        public async Task GetAccessoryByIdAsync_ValidId_ReturnsMappedDto()
-        {
-            // Arrange
-            var id = Guid.NewGuid();
-            var accessory = new TbAccessory { Id = id, Name = "GPS", DailyRate = 10.0m };
-            _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync(accessory);
-
-            // Act
-            var result = await _service.GetAccessoryByIdAsync(id);
-
-            // Assert - Valida cada campo para cobrir as linhas vermelhas de projeção
-            Assert.Multiple(() =>
-            {
-                Assert.That(result.Id, Is.EqualTo(id));
-                Assert.That(result.Name, Is.EqualTo("GPS"));
-                Assert.That(result.DailyRate, Is.EqualTo(10.0m));
-            });
-        }
-
-        /// <summary>
-        /// Sucesso: Verifica se GetAccessoryByIdAsync projeta corretamente os dados da entidade para o DTO de resposta.
-        /// </summary>
-        [Test]
-        [Category("Unit")]
-        public async Task GetAccessoryByIdAsync_ExistingId_ReturnsCorrectMapping()
-        {
-            // Arrange
-            var accessoryId = Guid.NewGuid();
-            var accessory = new TbAccessory { Id = accessoryId, Name = "GPS Plus", DailyRate = 12.0m };
-            _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(accessoryId)).ReturnsAsync(accessory);
-
-            // Act
-            var result = await _service.GetAccessoryByIdAsync(accessoryId);
-
-            // Assert - Valida cada campo para cobrir as linhas de projeção (new AccessoryResponseDto)
-            Assert.Multiple(() =>
-            {
-                Assert.That(result.Id, Is.EqualTo(accessory.Id));
-                Assert.That(result.Name, Is.EqualTo(accessory.Name));
-                Assert.That(result.DailyRate, Is.EqualTo(accessory.DailyRate));
-            });
-        }
-
-        /// <summary>
-        /// Sucesso: Garante que GetAccessoryByIdAsync executa o mapeamento das propriedades para o DTO.
-        /// </summary>
-        [Test]
-        [Category("Unit")]
-        public async Task GetAccessoryByIdAsync_ExistingId_ExecutesMapping()
-        {
-            // Arrange
-            var id = Guid.NewGuid();
-            var accessory = new TbAccessory { Id = id, Name = "GPS", DailyRate = 10m };
-            _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync(accessory);
-
-            // Act
-            var result = await _service.GetAccessoryByIdAsync(id);
-
-            // Assert - Validação direta para cobrir as linhas de projeção
-            Assert.Multiple(() =>
-            {
-                Assert.That(result.Id, Is.EqualTo(id));
-                Assert.That(result.Name, Is.EqualTo("GPS"));
-                Assert.That(result.DailyRate, Is.EqualTo(10m));
-            });
-        }
-
-        /// <summary>
-        /// Sucesso: Garante que GetAccessoryByIdAsync execute o mapeamento completo para o DTO de resposta.
-        /// </summary>
-        [Test]
-        [Category("Unit")]
-        public async Task GetAccessoryByIdAsync_ExistingAccessory_ReturnsMappedDto()
-        {
-            // Arrange
-            var id = Guid.NewGuid();
-            var accessory = new TbAccessory { Id = id, Name = "GPS", DailyRate = 15.0m };
-            _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync(accessory);
-
-            // Act
-            var result = await _service.GetAccessoryByIdAsync(id);
-
-            // Assert - Validação campo a campo para cobrir as linhas vermelhas
-            Assert.Multiple(() =>
-            {
-                Assert.That(result.Id, Is.EqualTo(id));
-                Assert.That(result.Name, Is.EqualTo("GPS"));
-                Assert.That(result.DailyRate, Is.EqualTo(15.0m));
-            });
-        }
-
-        // Tests for GetAccessoriesByRentalIdAsync (moved after GetAccessoryByIdAsync)
         /// <summary>
         /// Sucesso: Verifica se GetAccessoriesByRentalIdAsync projeta corretamente a lista de entidades para DTOs quando existem dados.
         /// </summary>
@@ -267,6 +169,101 @@ namespace VehicleSystem.Tests.Services
                 Assert.That(result, Is.Not.Null);
                 Assert.That(result.First().Name, Is.EqualTo("GPS"));
                 Assert.That(result.First().DailyRate, Is.EqualTo(15.0m));
+            });
+        }
+
+        /// <summary>
+        /// Sucesso: Garante que GetAccessoryByIdAsync mapeie as propriedades para o DTO e retorne corretamente.
+        /// </summary>
+        [Test]
+        [Category("Unit")]
+        public async Task GetAccessoryByIdAsync_ValidId_ReturnsMappedDto()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            var accessory = new TbAccessory { Id = id, Name = "GPS", DailyRate = 10.0m };
+            _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync(accessory);
+
+            // Act
+            var result = await _service.GetAccessoryByIdAsync(id);
+
+            // Assert - Valida cada campo para cobrir as linhas vermelhas de projeção
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.Id, Is.EqualTo(id));
+                Assert.That(result.Name, Is.EqualTo("GPS"));
+                Assert.That(result.DailyRate, Is.EqualTo(10.0m));
+            });
+        }
+
+        /// <summary>
+        /// Sucesso: Verifica se GetAccessoryByIdAsync projeta corretamente os dados da entidade para o DTO de resposta.
+        /// </summary>
+        [Test]
+        [Category("Unit")]
+        public async Task GetAccessoryByIdAsync_ExistingId_ReturnsCorrectMapping()
+        {
+            // Arrange
+            var accessoryId = Guid.NewGuid();
+            var accessory = new TbAccessory { Id = accessoryId, Name = "GPS Plus", DailyRate = 12.0m };
+            _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(accessoryId)).ReturnsAsync(accessory);
+
+            // Act
+            var result = await _service.GetAccessoryByIdAsync(accessoryId);
+
+            // Assert - Valida cada campo para cobrir as linhas de projeção (new AccessoryResponseDto)
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.Id, Is.EqualTo(accessory.Id));
+                Assert.That(result.Name, Is.EqualTo(accessory.Name));
+                Assert.That(result.DailyRate, Is.EqualTo(accessory.DailyRate));
+            });
+        }
+
+        /// <summary>
+        /// Sucesso: Garante que GetAccessoryByIdAsync executa o mapeamento das propriedades para o DTO.
+        /// </summary>
+        [Test]
+        [Category("Unit")]
+        public async Task GetAccessoryByIdAsync_ExistingId_ExecutesMapping()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            var accessory = new TbAccessory { Id = id, Name = "GPS", DailyRate = 10m };
+            _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync(accessory);
+
+            // Act
+            var result = await _service.GetAccessoryByIdAsync(id);
+
+            // Assert - Validação direta para cobrir as linhas de projeção
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.Id, Is.EqualTo(id));
+                Assert.That(result.Name, Is.EqualTo("GPS"));
+                Assert.That(result.DailyRate, Is.EqualTo(10m));
+            });
+        }
+        /// <summary>
+        /// Sucesso: Garante que GetAccessoryByIdAsync execute o mapeamento completo para o DTO de resposta.
+        /// </summary>
+        [Test]
+        [Category("Unit")]
+        public async Task GetAccessoryByIdAsync_ExistingAccessory_ReturnsMappedDto()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            var accessory = new TbAccessory { Id = id, Name = "GPS", DailyRate = 15.0m };
+            _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync(accessory);
+
+            // Act
+            var result = await _service.GetAccessoryByIdAsync(id);
+
+            // Assert - Validação campo a campo para cobrir as linhas vermelhas
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.Id, Is.EqualTo(id));
+                Assert.That(result.Name, Is.EqualTo("GPS"));
+                Assert.That(result.DailyRate, Is.EqualTo(15.0m));
             });
         }
 
@@ -831,6 +828,8 @@ namespace VehicleSystem.Tests.Services
         /// Falha: RemoveAccessory deve lançar erro se o acessório não estiver vinculado.
         /// </summary>
         [Test]
+        [Category("Remoção")]
+        [Property("Priority", "Low")]
         [Category("BusinessRule")]
         public void RemoveAccessoryFromRentalAsync_NotLinked_ThrowsKeyNotFoundException()
         {
