@@ -73,8 +73,6 @@ dotnet run --project VehicleSystem
 
 
 
-## Autoras
-
 ## 👩‍💻 Autoras
 
 <p>Criado com empenho pelo nosso time 💙</p>
