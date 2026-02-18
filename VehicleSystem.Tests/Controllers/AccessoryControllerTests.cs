@@ -79,6 +79,18 @@ namespace VehicleSystem.Tests.Controllers
             Assert.That(result.Result, Is.TypeOf<OkObjectResult>());
         }
 
+        // --- CENÁRIO: GET /accessories/{id} - ModelState inválido ---
+        [Test]
+        public async Task GetById_ShouldReturn_400_WhenModelStateIsInvalid()
+        {
+            // Adiciona erro manualmente para entrar no if
+            _controller.ModelState.AddModelError("id", "Invalid Guid format");
+
+            var result = await _controller.GetById(Guid.NewGuid());
+
+            Assert.That(result.Result, Is.TypeOf<BadRequestObjectResult>());
+        }
+
         // --- CENÁRIO: GET /accessories/{id} - não encontrado ---
         [Test]
         public async Task GetById_ShouldReturn_404NotFound_WhenIdDoesNotExist()
@@ -95,6 +107,45 @@ namespace VehicleSystem.Tests.Controllers
                 var problem = response?.Value as ProblemDetails;
                 Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status404NotFound));
                 Assert.That(problem?.Title, Is.EqualTo(Messages.NotFound));
+            });
+        }
+
+        [Test]
+        public async Task GetById_ShouldReturn_409_WhenInvalidOperationExceptionOccurs()
+        {
+            var id = Guid.NewGuid();
+            _serviceMock.Setup(s => s.GetAccessoryByIdAsync(id))
+                        .ThrowsAsync(new InvalidOperationException("Operação inválida para este estado"));
+
+            var result = await _controller.GetById(id);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.Result, Is.TypeOf<ConflictObjectResult>());
+                var conflict = result.Result as ConflictObjectResult;
+                Assert.That(conflict, Is.Not.Null);
+                var problem = conflict!.Value as ProblemDetails;
+                Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status409Conflict));
+            });
+        }
+
+        [Test]
+        public async Task GetById_ShouldReturn_500_WhenUnexpectedExceptionOccurs()
+        {
+            var id = Guid.NewGuid();
+            _serviceMock.Setup(s => s.GetAccessoryByIdAsync(id))
+                        .ThrowsAsync(new Exception("Erro de banco de dados ou timeout"));
+
+            var result = await _controller.GetById(id);
+
+            Assert.Multiple(() =>
+            {
+                var statusCodeResult = result.Result as ObjectResult;
+                Assert.That(statusCodeResult, Is.Not.Null);
+                Assert.That(statusCodeResult!.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
+
+                var problem = statusCodeResult.Value as ProblemDetails;
+                Assert.That(problem?.Title, Is.EqualTo(Messages.ServerInternalError));
             });
         }
 
@@ -147,6 +198,20 @@ namespace VehicleSystem.Tests.Controllers
             var actionResult = await _controller.Create(dto);
 
             Assert.That(actionResult.Result, Is.TypeOf<BadRequestObjectResult>());
+        }
+
+        // --- CENÁRIO: POST /accessories/add - erro interno (500) ---
+        [Test]
+        public async Task Create_ShouldReturn_500_WhenUnexpectedException()
+        {
+            var dto = new AccessoryCreateDto { Name = "GPS", DailyRate = 10m };
+            _serviceMock.Setup(s => s.CreateAccessoryAsync(dto))
+                        .ThrowsAsync(new Exception("Fatal error"));
+
+            var actionResult = await _controller.Create(dto);
+
+            var statusCodeResult = actionResult.Result as ObjectResult;
+            Assert.That(statusCodeResult?.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
         }
 
         // --- CENÁRIO: POST /accessories - request nulo ---
@@ -216,7 +281,7 @@ namespace VehicleSystem.Tests.Controllers
                 Assert.That(result, Is.TypeOf<OkObjectResult>());
                 var ok = result as OkObjectResult;
                 Assert.That(ok!.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
-                Assert.That(ok.Value.ToString(), Does.Contain(Messages.AccessoryLinkedSuccess));
+                Assert.That(ok.Value!.ToString(), Does.Contain(Messages.AccessoryLinkedSuccess));
                 _serviceMock.Verify(s => s.AddAccessoryToRentalAsync(rentalId, accessoryId), Times.Once);
             });
         }
@@ -236,7 +301,7 @@ namespace VehicleSystem.Tests.Controllers
                 _loggerMock.Verify(l => l.Log(
                     LogLevel.Warning,
                     It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v != null && v.ToString().Contains("NotFound")),
+                    It.Is<It.IsAnyType>((v, t) => v != null && v.ToString()!.Contains("NotFound")),
                     It.IsAny<Exception?>(),
                     It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)), Times.Once);
             });
@@ -253,6 +318,19 @@ namespace VehicleSystem.Tests.Controllers
 
             var obj = result as ObjectResult;
             Assert.That(obj?.StatusCode, Is.EqualTo(500));
+        }
+
+        // --- CENÁRIO: POST /accessories - exceção inesperada -> 409 ---
+        [Test]
+        public async Task AddAccessoryToRental_ShouldReturn_409_WhenInvalidOperation()
+        {
+            var req = new RentalAccessoryRequestDto { RentalId = Guid.NewGuid(), AccessoryId = Guid.NewGuid() };
+            _serviceMock.Setup(s => s.AddAccessoryToRentalAsync(req.RentalId, req.AccessoryId))
+                        .ThrowsAsync(new InvalidOperationException("Conflict message"));
+
+            var result = await _controller.AddAccessoryToRental(req);
+
+            Assert.That(result, Is.TypeOf<ConflictObjectResult>());
         }
 
         // --- CENÁRIO: GET /rental/{id}/accessories - sucesso ---
@@ -279,7 +357,32 @@ namespace VehicleSystem.Tests.Controllers
 
             Assert.That(actionResult.Result, Is.TypeOf<NotFoundObjectResult>());
         }
+        // --- CENÁRIO: GET /rental/{id}/accessories - conflito (409) ---
+        [Test]
+        public async Task GetAccessoriesByRental_ShouldReturn_409_WhenInvalidOperation()
+        {
+            var rentalId = Guid.NewGuid();
+            _serviceMock.Setup(s => s.GetAccessoriesByRentalIdAsync(rentalId))
+                        .ThrowsAsync(new InvalidOperationException("Conflict"));
 
+            var actionResult = await _controller.GetAccessoriesByRental(rentalId);
+
+            Assert.That(actionResult.Result, Is.TypeOf<ConflictObjectResult>());
+        }
+
+        // --- CENÁRIO: GET /rental/{id}/accessories - erro interno (500) ---
+        [Test]
+        public async Task GetAccessoriesByRental_ShouldReturn_500_WhenUnexpectedException()
+        {
+            var rentalId = Guid.NewGuid();
+            _serviceMock.Setup(s => s.GetAccessoriesByRentalIdAsync(rentalId))
+                        .ThrowsAsync(new Exception("Internal Error"));
+
+            var actionResult = await _controller.GetAccessoriesByRental(rentalId);
+
+            var statusCodeResult = actionResult.Result as ObjectResult;
+            Assert.That(statusCodeResult?.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
+        }
         // --- CENÁRIO: DELETE /rental/{rentalId}/accessories/{accessoryId} - sucesso ---
         [Test]
         public async Task RemoveAccessoryFromRental_ShouldReturn_200Ok()
@@ -298,5 +401,49 @@ namespace VehicleSystem.Tests.Controllers
                 _serviceMock.Verify(s => s.RemoveAccessoryFromRentalAsync(rentalId, accessoryId), Times.Once);
             });
         }
+
+        // --- CENÁRIO: DELETE /rental/... - não encontrado (404) ---
+        [Test]
+        public async Task RemoveAccessoryFromRental_ShouldReturn_404_WhenKeyNotFound()
+        {
+            var rentalId = Guid.NewGuid();
+            var accessoryId = Guid.NewGuid();
+            _serviceMock.Setup(s => s.RemoveAccessoryFromRentalAsync(rentalId, accessoryId))
+                        .ThrowsAsync(new KeyNotFoundException());
+
+            var result = await _controller.RemoveAccessoryFromRental(rentalId, accessoryId);
+
+            Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
+        }
+
+        // --- CENÁRIO: DELETE /rental/... - conflito (409) ---
+        [Test]
+        public async Task RemoveAccessoryFromRental_ShouldReturn_409_WhenInvalidOperation()
+        {
+            var rentalId = Guid.NewGuid();
+            var accessoryId = Guid.NewGuid();
+            _serviceMock.Setup(s => s.RemoveAccessoryFromRentalAsync(rentalId, accessoryId))
+                        .ThrowsAsync(new InvalidOperationException());
+
+            var result = await _controller.RemoveAccessoryFromRental(rentalId, accessoryId);
+
+            Assert.That(result, Is.TypeOf<ConflictObjectResult>());
+        }
+
+        // --- CENÁRIO: DELETE /rental/... - erro interno (500) ---
+        [Test]
+        public async Task RemoveAccessoryFromRental_ShouldReturn_500_WhenUnexpectedException()
+        {
+            var rentalId = Guid.NewGuid();
+            var accessoryId = Guid.NewGuid();
+            _serviceMock.Setup(s => s.RemoveAccessoryFromRentalAsync(rentalId, accessoryId))
+                        .ThrowsAsync(new Exception());
+
+            var result = await _controller.RemoveAccessoryFromRental(rentalId, accessoryId);
+
+            var obj = result as ObjectResult;
+            Assert.That(obj?.StatusCode, Is.EqualTo(500));
+        }
     }
 }
+

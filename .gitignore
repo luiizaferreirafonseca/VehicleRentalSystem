@@ -9,4 +9,8 @@ appsettings.Development.json
 /VehicleSystem.Tests/coveragereport
 /VehicleSystem.Tests/TestResults/7ac2584f-c7e7-451d-b052-d6e5d8a2012b
 coveragereport
+# Resultados de Testes e Cobertura
 TestResults
+[Tt]est[Rr]esults/
+[Cc]overagereport/
+*.cobertura.xml
