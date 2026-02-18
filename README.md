@@ -5,6 +5,11 @@
   <img src="https://img.shields.io/badge/feito%20por-Rentix%20Team-purple" />
 </p>
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/luiizaferreirafonseca/VehicleRentalSystem/master/assets/rental.png" width="100%" height="390px">
+</p>
+
+---
 
 
 # 🚗 Vehicle Rental System API
