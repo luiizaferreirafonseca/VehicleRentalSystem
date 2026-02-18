@@ -8,7 +8,7 @@ using VehicleRentalSystem.Services.interfaces;
 using VehicleRentalSystem.Resources;
 using Microsoft.AspNetCore.Http;
 
-namespace API_SistemaLocacao.Controllers;
+namespace VehicleRentalSystem.Controllers;
 
 [ApiController]
 [Route("report")]

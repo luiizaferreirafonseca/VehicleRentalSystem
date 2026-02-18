@@ -4,7 +4,7 @@ using VehicleRentalSystem.DTO;
 using VehicleRentalSystem.Services.interfaces;
 using VehicleRentalSystem.Resources;
 
-namespace API_SistemaLocacao.Controllers;
+namespace VehicleRentalSystem.Controllers;
 
 [ApiController]
 [Route("accessories")]
