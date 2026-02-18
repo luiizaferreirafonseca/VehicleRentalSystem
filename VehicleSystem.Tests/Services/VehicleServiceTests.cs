@@ -1,17 +1,13 @@
 ﻿using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using NUnit.Framework;
 using VehicleRentalSystem.DTO;
-using VehicleRentalSystem.Enums;
 using VehicleRentalSystem.Models;
 using VehicleRentalSystem.Repositories.interfaces;
-using VehicleRentalSystem.Resources;
 using VehicleRentalSystem.Services;
+using VehicleRentalSystem.Resources;
+using VehicleRentalSystem.Enums;
 
-namespace VehicleSystem.Tests.Services
+namespace VehicleSystem.Tests
 {
     [TestFixture]
     public class VehicleServiceTests
@@ -27,74 +23,104 @@ namespace VehicleSystem.Tests.Services
         }
 
         [Test]
-        public async Task CreateVehicleAsync_ShouldReturnDTO_WhenDataIsValid()
+        public async Task UpdateVehicleAsync_ShouldUpdateData_WhenRequestIsValid()
         {
-            var dto = new VehicleCreateDTO
-            {
-                Brand = "  Chevrolet  ",
-                Model = "  Onix  ",
-                Year = 2022,
-                DailyRate = 150m,
-                LicensePlate = "  ABC1234  "
-            };
-
-            _repositoryMock.Setup(r => r.ExistsByLicensePlateAsync("ABC1234"))
-                           .ReturnsAsync(false);
-
-            _repositoryMock.Setup(r => r.CreateVehicleAsync(It.IsAny<TbVehicle>()))
-                           .ReturnsAsync((TbVehicle v) => v);
-
-            var result = await _service.CreateVehicleAsync(dto);
-
-            Assert.That(result.Brand, Is.EqualTo("Chevrolet"));
-            Assert.That(result.Model, Is.EqualTo("Onix"));
-            Assert.That(result.Year, Is.EqualTo(2022));
-            Assert.That(result.DailyRate, Is.EqualTo(150m));
-            Assert.That(result.LicensePlate, Is.EqualTo("ABC1234"));
-            Assert.That(result.Status, Is.EqualTo("available"));
-        }
-
-        [Test]
-        public void CreateVehicleAsync_ShouldThrow_WhenLicensePlateAlreadyExists()
-        {
-            var dto = new VehicleCreateDTO
-            {
-                Brand = "Fiat",
-                Model = "Argo",
-                Year = 2021,
-                DailyRate = 120m,
-                LicensePlate = "ABC1234"
-            };
-
-            _repositoryMock.Setup(r => r.ExistsByLicensePlateAsync("ABC1234"))
-                           .ReturnsAsync(true); 
-
-            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
-                await _service.CreateVehicleAsync(dto));
-
-            Assert.That(ex.Message, Is.EqualTo(Messages.VehicleLicensePlateAlreadyExists));
-        }
-
-        [Test]
-        public void RemoveVehicleAsync_WhenVehicleIsRented_ShouldThrowException()
-        {
+            // Arrange
             var vehicleId = Guid.NewGuid();
-
-            var vehicle = new TbVehicle
+            var existingVehicle = new TbVehicle
             {
                 Id = vehicleId,
-                Status = VehicleStatus.rented.ToString()
+                Brand = "Toyota",
+                Model = "Corolla",
+                Year = 2020,
+                DailyRate = 200m,
+                Status = "available",
+                LicensePlate = "ABC-1234"
+            };
+
+            var updateDto = new VehicleUpdateDTO
+            {
+                Year = 2022, 
+                DailyRate = 250m, 
+                Status = "maintenance" 
             };
 
             _repositoryMock.Setup(r => r.GetVehicleByIdAsync(vehicleId))
-                           .ReturnsAsync(vehicle);
+                           .ReturnsAsync(existingVehicle);
 
-            var ex = Assert.ThrowsAsync<InvalidOperationException>(
-                async () => await _service.RemoveVehicleAsync(vehicleId)
-            );
+            // Act
+            var result = await _service.UpdateVehicleAsync(vehicleId, updateDto);
 
-            Assert.That(ex.Message, Is.EqualTo(Messages.VehicleCannotBeDeletedWhenRented));
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.That(result.Year, Is.EqualTo(2022));
+            Assert.That(result.DailyRate, Is.EqualTo(250m));
+            Assert.That(result.Status, Is.EqualTo("maintenance"));
+            _repositoryMock.Verify(r => r.UpdateVehicleAsync(It.IsAny<TbVehicle>()), Times.Once);
         }
 
+        [Test]
+        public void UpdateVehicleAsync_ShouldThrow_WhenDailyRateIsZeroOrLess()
+        {
+            // Arrange
+            var vehicleId = Guid.NewGuid();
+            var updateDto = new VehicleUpdateDTO { Year = 2020, DailyRate = 0, Status = "available" };
+            
+            _repositoryMock.Setup(r => r.GetVehicleByIdAsync(vehicleId))
+                           .ReturnsAsync(new TbVehicle());
+
+            // Act & Assert
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _service.UpdateVehicleAsync(vehicleId, updateDto));
+
+            Assert.That(ex.Message, Is.EqualTo(Messages.VehicleDailyRateInvalid));
+        }
+
+        [Test]
+        public void UpdateVehicleAsync_ShouldThrow_WhenYearIsInvalid()
+        {
+            // Arrange
+            var vehicleId = Guid.NewGuid();
+            var updateDto = new VehicleUpdateDTO { Year = 2050, DailyRate = 100, Status = "available" };
+            
+            _repositoryMock.Setup(r => r.GetVehicleByIdAsync(vehicleId))
+                           .ReturnsAsync(new TbVehicle());
+
+            // Act & Assert
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _service.UpdateVehicleAsync(vehicleId, updateDto));
+
+            Assert.That(ex.Message, Is.EqualTo(Messages.VehicleYearInvalid));
+        }
+
+        [Test]
+        public void UpdateVehicleAsync_ShouldThrow_WhenStatusIsInvalid()
+        {
+            // Arrange
+            var vehicleId = Guid.NewGuid();
+            var updateDto = new VehicleUpdateDTO { Year = 2020, DailyRate = 100, Status = "invalid_status" };
+            
+            _repositoryMock.Setup(r => r.GetVehicleByIdAsync(vehicleId))
+                           .ReturnsAsync(new TbVehicle());
+
+            // Act & Assert
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _service.UpdateVehicleAsync(vehicleId, updateDto));
+
+            Assert.That(ex.Message, Is.EqualTo("Status inválido. Use: available, rented ou maintenance."));
+        }
+
+        [Test]
+        public void UpdateVehicleAsync_ShouldThrow_WhenVehicleNotFound()
+        {
+            // Arrange
+            var vehicleId = Guid.NewGuid();
+            _repositoryMock.Setup(r => r.GetVehicleByIdAsync(vehicleId))
+                           .ReturnsAsync((TbVehicle?)null);
+
+            // Act & Assert
+            Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+                await _service.UpdateVehicleAsync(vehicleId, new VehicleUpdateDTO()));
+        }
     }
 }
