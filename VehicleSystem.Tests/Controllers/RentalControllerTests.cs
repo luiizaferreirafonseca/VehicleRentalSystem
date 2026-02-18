@@ -236,5 +236,34 @@ namespace VehicleSystem.Tests.Controllers
 
             _service.Verify(s => s.SearchRentalsByUserAsync(userId, status, page), Times.Once);
         }
+
+        [Test]
+        public async Task Search_ShouldReturn_400BadRequest_WhenInvalidOperationOccurs()
+        {
+            var userId = Guid.NewGuid();
+            var status = "invalid-status";
+            var page = 1;
+
+            _service.Setup(s => s.SearchRentalsByUserAsync(userId, status, page))
+                        .ThrowsAsync(new InvalidOperationException("Status inválido"));
+
+            var result = await _controller.Search(userId, status, page);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
+
+                var badRequest = result as BadRequestObjectResult;
+                Assert.That(badRequest, Is.Not.Null);
+
+                var problem = badRequest!.Value as ProblemDetails;
+                Assert.That(problem, Is.Not.Null);
+                Assert.That(problem!.Status, Is.EqualTo(StatusCodes.Status400BadRequest));
+                Assert.That(problem.Title, Is.EqualTo("Operação inválida"));
+                Assert.That(problem.Detail, Is.EqualTo("Status inválido"));
+            });
+
+            _service.Verify(s => s.SearchRentalsByUserAsync(userId, status, page), Times.Once);
+        }
     }
 }
