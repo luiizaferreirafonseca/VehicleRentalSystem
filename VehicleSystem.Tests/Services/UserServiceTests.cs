@@ -3,6 +3,7 @@ using NUnit.Framework;
 using VehicleRentalSystem.DTO;
 using VehicleRentalSystem.Models;
 using VehicleRentalSystem.Repositories.interfaces;
+using VehicleRentalSystem.Resources;
 using VehicleRentalSystem.Services;
 
 namespace VehicleSystem.Tests.Services
@@ -57,6 +58,76 @@ namespace VehicleSystem.Tests.Services
 
             Assert.That(ex.Message, Is.EqualTo("Este e-mail já está cadastrado no sistema."));
             _repositoryMock.Verify(x => x.CreateUserAsync(It.IsAny<TbUser>()), Times.Never);
+        }
+
+        [Test]
+        public void GetAllUsersAsync_ShouldThrow_WhenUserNameIsMissing()
+        {
+            var usersFromDb = new List<TbUser>
+            {
+                new TbUser
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "", 
+                    Email = "teste@email.com",
+                    Active = true,
+                    TbRentals = new List<TbRental>()
+                }
+            };
+
+            _repositoryMock.Setup(r => r.GetAllUsersAsync())
+                           .ReturnsAsync(usersFromDb);
+
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _service.GetAllUsersAsync());
+
+            Assert.That(ex!.Message, Is.EqualTo(Messages.UserNameMissing));
+        }
+
+        [Test]
+        public async Task GetAllUsersAsync_ShouldReturnMappedUsers_WithRentals()
+        {
+            var userId = Guid.NewGuid();
+            var rentalId = Guid.NewGuid();
+            var vehicleId = Guid.NewGuid();
+
+            var usersFromDb = new List<TbUser>
+            {
+                new TbUser
+                {
+                    Id = userId,
+                    Name = "Luiza",
+                    Email = "luiza@email.com",
+                    Active = true,
+                    TbRentals = new List<TbRental>
+                    {
+                        new TbRental
+                        {
+                            Id = rentalId,
+                            VehicleId = vehicleId
+                        }
+                    }
+                }
+            };
+
+            _repositoryMock.Setup(r => r.GetAllUsersAsync())
+                           .ReturnsAsync(usersFromDb);
+
+            var result = await _service.GetAllUsersAsync();
+
+            Assert.IsNotNull(result);
+            Assert.That(result.Count, Is.EqualTo(1));
+
+            var dto = result[0];
+            Assert.That(dto.Id, Is.EqualTo(userId));
+            Assert.That(dto.Name, Is.EqualTo("Luiza"));
+            Assert.That(dto.Email, Is.EqualTo("luiza@email.com"));
+            Assert.That(dto.Active, Is.True);
+
+            Assert.That(dto.Rentals, Is.Not.Null);
+            Assert.That(dto.Rentals.Count, Is.EqualTo(1));
+            Assert.That(dto.Rentals[0].RentalId, Is.EqualTo(rentalId));
+            Assert.That(dto.Rentals[0].VehicleId, Is.EqualTo(vehicleId));
         }
     }
 }
