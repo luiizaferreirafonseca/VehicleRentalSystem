@@ -197,5 +197,44 @@ namespace VehicleSystem.Tests.Controllers
 
             _service.Verify(s => s.ReturnRentalAsync(rentalId), Times.Once);
         }
+
+        [Test]
+        public async Task Search_ShouldReturn_200Ok_WhenSearchIsSuccessful()
+        {
+            var userId = Guid.NewGuid();
+            var status = "active";
+            var page = 1;
+
+            var fakeList = new List<RentalResponseDTO>
+            {
+                new RentalResponseDTO
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = userId,
+                    Status = status
+                }
+            };
+
+            _service.Setup(s => s.SearchRentalsByUserAsync(userId, status, page))
+                        .ReturnsAsync(fakeList);
+
+            var result = await _controller.Search(userId, status, page);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.TypeOf<OkObjectResult>());
+
+                var ok = result as OkObjectResult;
+                Assert.That(ok, Is.Not.Null);
+                Assert.That(ok!.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+
+                var body = ok.Value as IEnumerable<RentalResponseDTO>;
+                Assert.That(body, Is.Not.Null);
+                Assert.That(body!.Count(), Is.EqualTo(1));
+                Assert.That(body.First().UserId, Is.EqualTo(userId));
+            });
+
+            _service.Verify(s => s.SearchRentalsByUserAsync(userId, status, page), Times.Once);
+        }
     }
 }
