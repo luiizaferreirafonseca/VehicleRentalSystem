@@ -210,6 +210,43 @@ namespace VehicleSystem.Tests.Controllers
                 Assert.That(resultData!.Id, Is.EqualTo(createdResponse.Id));
                 Assert.That(resultData.Name, Is.EqualTo("GPS"));
             });
-        }        
+        }
+        // --- CENÁRIO: ADICIONA ACESSÓRIO AO RENTAL COM SUCESSO
+        [Test]
+        public async Task AddAccessoryToRental_ShouldReturn_200Ok_WhenRequestIsValid()
+        {
+            // Arrange → preparar cenário: Criamos um request válido com IDs fictícios
+            var rentalId = Guid.NewGuid();
+            var accessoryId = Guid.NewGuid();
+            var request = new RentalAccessoryRequestDto
+            {
+                RentalId = rentalId,
+                AccessoryId = accessoryId
+            };
+
+            _serviceMock.Setup(s => s.AddAccessoryToRentalAsync(rentalId, accessoryId))
+                        .Returns(Task.CompletedTask);
+
+            // Act : Chama o método de vínculo no Controller
+            var result = await _controller.AddAccessoryToRental(request);
+
+            // Assert : Verifica o status 200 e se o serviço foi chamado
+            Assert.Multiple(() =>
+            {
+                // Verifica se o retorno é OkObjectResult (Status 200)
+                Assert.That(result, Is.TypeOf<OkObjectResult>());
+
+                var okResult = result as OkObjectResult;
+                Assert.That(okResult!.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+
+                // Verifica se a mensagem de sucesso no corpo do JSON está correta
+                // O controller retorna: new { Message = Messages.AccessoryLinkedSuccess }
+                var responseData = okResult.Value;
+                Assert.That(responseData.ToString(), Does.Contain(Messages.AccessoryLinkedSuccess));
+
+                // VERIFICAÇÃO CRUCIAL: Garante que o Controller repassou os IDs corretos para o Service
+                _serviceMock.Verify(s => s.AddAccessoryToRentalAsync(rentalId, accessoryId), Times.Once);
+            });
+        }
     }
 }
