@@ -145,7 +145,7 @@ public class AccessoryController : ControllerBase
         }
         catch (KeyNotFoundException ex)
         {
-            _logger.LogWarning(ex, "AddAccessoryToRental - NotFound for RentalId={rentalId} AccessoryId={accessoryId}", request?.RentalId, request?.AccessoryId);
+            _logger.LogWarning(ex, "AddAccessoryToRental - NotFound for RentalId={rentalId} AccessoryId={accessoryId}", request.RentalId, request.AccessoryId);
             var problemDetails = new ProblemDetails
             {
                 Status = StatusCodes.Status404NotFound,
@@ -156,7 +156,7 @@ public class AccessoryController : ControllerBase
         }
         catch (InvalidOperationException ex)
         {
-            _logger.LogWarning(ex, "AddAccessoryToRental - Conflict for RentalId={rentalId} AccessoryId={accessoryId}", request?.RentalId, request?.AccessoryId);
+            _logger.LogWarning(ex, "AddAccessoryToRental - Conflict for RentalId={rentalId} AccessoryId={accessoryId}", request.RentalId, request.AccessoryId);
             var problemDetails = new ProblemDetails
             {
                 Status = StatusCodes.Status409Conflict,
@@ -167,7 +167,7 @@ public class AccessoryController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "AddAccessoryToRental - Unexpected error for RentalId={rentalId} AccessoryId={accessoryId}", request?.RentalId, request?.AccessoryId);
+            _logger.LogError(ex, "AddAccessoryToRental - Unexpected error for RentalId={rentalId} AccessoryId={accessoryId}", request.RentalId, request.AccessoryId);
             var problemDetails = new ProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,
