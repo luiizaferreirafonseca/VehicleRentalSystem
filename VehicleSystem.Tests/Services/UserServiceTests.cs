@@ -129,5 +129,36 @@ namespace VehicleSystem.Tests.Services
             Assert.That(dto.Rentals[0].RentalId, Is.EqualTo(rentalId));
             Assert.That(dto.Rentals[0].VehicleId, Is.EqualTo(vehicleId));
         }
+
+        [Test]
+        public void CreateUserAsync_ShouldThrow_WhenEmailIsMissing()
+        {
+            // Arrange
+            var dto = new UserCreateDTO { Name = "Ale", Email = "" }; 
+
+            // Act & Assert
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _service.CreateUserAsync(dto));
+
+            Assert.That(ex.Message, Is.EqualTo(Messages.UserEmailMissing));
+        }
+
+        [Test]
+        public void GetAllUsersAsync_ShouldThrow_WhenUserEmailIsMissing()
+        {
+            // Arrange
+            var usersFromDb = new List<TbUser>
+            {
+                new TbUser { Id = Guid.NewGuid(), Name = "Luiza", Email = null } 
+            };
+
+            _repositoryMock.Setup(r => r.GetAllUsersAsync()).ReturnsAsync(usersFromDb);
+
+            // Act & Assert
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _service.GetAllUsersAsync());
+
+            Assert.That(ex.Message, Is.EqualTo(Messages.UserEmailMissing));
+        }
     }
 }
