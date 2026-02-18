@@ -95,5 +95,8 @@
         public const string RequestInvalid = "Requisição inválida";
         public const string RequestBodyEmptyDetail = "O corpo da requisição está vazio ou inválido.";
         public const string IdsInvalid = "Identificador inválido";
+
+        public const string InvalidStatus = "Status inválido.";
+
     }
 }

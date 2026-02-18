@@ -10,7 +10,6 @@ namespace VehicleRentalSystem.Services
     public class VehicleService : IVehicleService
     {
         private readonly IVehicleRepository _repository;
-
         public VehicleService(IVehicleRepository repository)
         {
             _repository = repository;
@@ -63,7 +62,6 @@ namespace VehicleRentalSystem.Services
                 LicensePlate = created.LicensePlate
             };
         }
-
         public async Task RemoveVehicleAsync(Guid vehicleId)
         {
             if (vehicleId == Guid.Empty)
@@ -78,7 +76,6 @@ namespace VehicleRentalSystem.Services
 
             await _repository.DeleteVehicleAsync(vehicle);
         }
-
         public async Task<List<VehicleResponseDTO>> SearchVehiclesAsync(string? status, int page)
         {
             var vehicles = await _repository.SearchVehiclesAsync(status, page);
@@ -107,7 +104,6 @@ namespace VehicleRentalSystem.Services
 
             return response;
         }
-
         public async Task<VehicleResponseDTO?> UpdateVehicleAsync(Guid vehicleId, VehicleUpdateDTO dto)
         {
             if (vehicleId == Guid.Empty)

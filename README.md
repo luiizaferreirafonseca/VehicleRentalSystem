@@ -1,49 +1,71 @@
-# 🚗 Vehicle Rental System API
+<p align="center">
+  <img src="https://img.shields.io/github/languages/count/luiizaferreirafonseca/VehicleRentalSystem" />
+  <img src="https://img.shields.io/github/repo-size/luiizaferreirafonseca/VehicleRentalSystem" />
+  <img src="https://img.shields.io/github/last-commit/luiizaferreirafonseca/VehicleRentalSystem" />
+  <img src="https://img.shields.io/badge/feito%20por-Rentix%20Team-purple" />
+</p>
 
-API REST para um sistema de locação de veículos.  
-Projeto **backend-only**, desenvolvido com ASP.NET Core, contendo regras de negócio, testes unitários e suporte a paginação e filtros.
+<p align="center">
+  <img src="https://raw.githubusercontent.com/luiizaferreirafonseca/VehicleRentalSystem/master/assets/rentgo.png" width="100%" height="390px">
+</p>
 
 ---
-## ⚙️ Funcionalidades
+
+<div align="center">
+
+🚗 **RentGo** 🚗
+
+[About](#about-rentgo) • 
+[Features](#features) • 
+[API](#api) • 
+[How to Run](#how-to-run-the-rentgo-project) • 
+[Technologies](#technologies) • 
+[Contributors](#contributors)
+
+</div>
+
 ---
-## 🛠️ Tecnologias Utilizadas
+
+## 📌 About RentGo
+
+**RentGo** is a vehicle rental system designed to provide a simple, fast, and secure car rental experience.
+
+The platform allows users to browse available vehicles, create accounts, and manage rentals efficiently.
+
+This system was created as part of the **CodeRDI Diversity Program**.
+
+---
+
+## ⚙️ Features
+---
+
+## 🛠️ Technologies 
 
 - .NET 8
 - ASP.NET Core Web API
 - Entity Framework Core
-- NUnit (Testes automatizados)
-- Coverlet (Cobertura de testes)
-- Banco de Dados Relacional (PostgreSQL)
+- NUnit (Automated Tests)
+- Coverlet (Test Coverage)
+- Relational Database (e.g., PostgreSQL)
+---
+
+## 📘 Documentation
+For a detailed technical overview of **RentGo**, including system architecture, API endpoints, database structure, business rules, and testing strategy, please access the full documentation below:
+
+👉 [Access Full Documentation](./docs/documentation.md)
 
 ---
 
-## 📌 Visão Geral
+## ⚙️ How to Run the RentGo Project 
 
-
-
----
-
-## 🛠️ Tecnologias Utilizadas
-
-- .NET 8
-- ASP.NET Core Web API
-- Entity Framework Core
-- NUnit (Testes automatizados)
-- Coverlet (Cobertura de testes)
-- Banco de Dados Relacional (ex: PostgreSQL)
-
----
-
-## ⚙️ Como Executar o Projeto
-
-### 1️⃣ Clonar o repositório
+### 1️⃣ Clone the repository
 
 ```bash
 git clone https://github.com/luiizaferreirafonseca/VehicleRentalSystem.git
 cd VehicleRentalSystem
 ``````
 
-## Configurar a Connection String
+### 2️⃣ Configure the Connection String
 ```bash
 {
   "ConnectionStrings": {
@@ -52,32 +74,15 @@ cd VehicleRentalSystem
 }
 ``````
 
-## Executar a API
+### 3️⃣ Run the API
 ```bash
 dotnet run --project VehicleSystem
 ``````
 
 
----
-## API
+## 👩‍💻 Contributors 
 
-
-
-
-
-
-
-
-
-
-
-
-
-## Autoras
-
-## 👩‍💻 Autoras
-
-<p>Criado com empenho pelo nosso time 💙</p>
+<p>Developed with dedication by our team 💙</p>
 
 <div style="display: flex; gap: 40px; align-items: center;">
 

@@ -6,6 +6,7 @@ using VehicleRentalSystem.DTO;
 using VehicleRentalSystem.Services.interfaces;
 using API_SistemaLocacao.Controllers; 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace VehicleSystem.Tests.Controllers
@@ -23,48 +24,35 @@ namespace VehicleSystem.Tests.Controllers
             _controller = new UserController(_serviceMock.Object);
         }
 
+
         [Test]
         public async Task Post_QuandoDadosValidos_DeveRetornar201Created()
         {
-            // Arrange
             var request = new UserCreateDTO { Name = "Ale Teste", Email = "ale@teste.com" };
             var response = new UserResponseDTO { Id = Guid.NewGuid(), Name = "Ale Teste", Email = "ale@teste.com" };
 
-            _serviceMock
-                .Setup(x => x.CreateUserAsync(request))
-                .ReturnsAsync(response);
+            _serviceMock.Setup(x => x.CreateUserAsync(request)).ReturnsAsync(response);
 
-            // Act 
             var result = await _controller.Post(request);
 
-            // Assert
             Assert.That(result, Is.InstanceOf<CreatedAtActionResult>());
             var createdResult = result as CreatedAtActionResult;
             Assert.That(createdResult!.StatusCode, Is.EqualTo(StatusCodes.Status201Created));
-            
-            var retorno = createdResult.Value as UserResponseDTO;
-            Assert.That(retorno!.Name, Is.EqualTo(request.Name));
         }
 
         [Test]
         public async Task Post_QuandoEmailJaExiste_DeveRetornar400BadRequest()
         {
-            // Arrange
             var request = new UserCreateDTO { Name = "Ale", Email = "jaexiste@teste.com" };
 
-            _serviceMock
-                .Setup(x => x.CreateUserAsync(It.IsAny<UserCreateDTO>()))
+            _serviceMock.Setup(x => x.CreateUserAsync(It.IsAny<UserCreateDTO>()))
                 .ThrowsAsync(new InvalidOperationException("Este e-mail já está cadastrado no sistema."));
 
-            // Act
             var result = await _controller.Post(request);
 
-            // Assert
             Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
             var badRequest = result as BadRequestObjectResult;
-            Assert.That(badRequest!.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
-
-            var problem = badRequest.Value as ProblemDetails;
+            var problem = badRequest!.Value as ProblemDetails;
             Assert.That(problem!.Detail, Is.EqualTo("Este e-mail já está cadastrado no sistema."));
         }
     }

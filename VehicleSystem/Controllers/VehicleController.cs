@@ -121,6 +121,9 @@ namespace API_SistemaLocacao.Controllers
             }
         }
 
+        /// <summary>
+        /// Returns the list of vehicles available for rental.
+        /// </summary>
         [HttpGet("available")]
         public async Task<IActionResult> GetAvailable([FromQuery] int page = 1)
         {
