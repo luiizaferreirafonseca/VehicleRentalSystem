@@ -199,6 +199,61 @@ namespace VehicleSystem.Tests.Controllers
         }
 
         [Test]
+        public async Task Return_ShouldReturn_400BadRequest_WhenInvalidOperationExceptionOccurs()
+        {
+            var rentalId = Guid.NewGuid();
+
+            _service.Setup(s => s.ReturnRentalAsync(rentalId))
+                    .ThrowsAsync(new InvalidOperationException("Operação inválida na devolução"));
+
+            var result = await _controller.Return(rentalId);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
+
+                var badRequest = result as BadRequestObjectResult;
+                Assert.That(badRequest, Is.Not.Null);
+
+                var problem = badRequest!.Value as ProblemDetails;
+                Assert.That(problem, Is.Not.Null);
+                Assert.That(problem!.Status, Is.EqualTo(StatusCodes.Status400BadRequest));
+                Assert.That(problem.Title, Is.EqualTo("Erro! Operação Inválida"));
+                Assert.That(problem.Detail, Is.EqualTo("Operação inválida na devolução"));
+            });
+
+            _service.Verify(s => s.ReturnRentalAsync(rentalId), Times.Once);
+        }
+
+        [Test]
+        public async Task Return_ShouldReturn_500_WhenUnexpectedExceptionOccurs()
+        {
+            var rentalId = Guid.NewGuid();
+
+            _service.Setup(s => s.ReturnRentalAsync(rentalId))
+                    .ThrowsAsync(new Exception("Falha na devolução"));
+
+            var result = await _controller.Return(rentalId);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.TypeOf<ObjectResult>());
+
+                var obj = result as ObjectResult;
+                Assert.That(obj, Is.Not.Null);
+                Assert.That(obj!.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
+
+                var problem = obj.Value as ProblemDetails;
+                Assert.That(problem, Is.Not.Null);
+                Assert.That(problem!.Status, Is.EqualTo(StatusCodes.Status500InternalServerError));
+                Assert.That(problem.Title, Is.EqualTo("Erro de servidor"));
+                Assert.That(problem.Detail, Is.EqualTo("Falha na devolução"));
+            });
+
+            _service.Verify(s => s.ReturnRentalAsync(rentalId), Times.Once);
+        }
+
+        [Test]
         public async Task Search_ShouldReturn_200Ok_WhenSearchIsSuccessful()
         {
             var userId = Guid.NewGuid();
