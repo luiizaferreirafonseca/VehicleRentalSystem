@@ -8,6 +8,7 @@ using VehicleRentalSystem.Enums;
 using VehicleRentalSystem.Resources;
 using VehicleRentalSystem.Enums.VehicleRentalSystem.Enums;
 
+
 namespace VehicleSystem.Tests
 {
     [TestFixture]
@@ -353,6 +354,23 @@ namespace VehicleSystem.Tests
                 await _service.CancelRentalAsync(rentalId));
 
             Assert.That(ex.Message, Does.Contain("Não é possível cancelar uma locação com status 'completed'"));
+        }
+
+        [Test]
+        public void SearchRentalsByUserAsync_UserIdEmpty_ThrowsException()
+        {
+            var userId = Guid.Empty;
+            string? status = RentalStatus.active.ToString();
+            var page = 1;
+
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _service.SearchRentalsByUserAsync(userId, status, page));
+
+            Assert.That(ex!.Message, Is.EqualTo(Messages.UserIdRequired));
+
+            _repositoryMock.Verify(r =>
+                r.SearchRentalsByUserAsync(It.IsAny<Guid>(), It.IsAny<string?>(), It.IsAny<int>()),
+                Times.Never);
         }
     }
 }
