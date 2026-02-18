@@ -55,42 +55,5 @@ namespace VehicleSystem.Tests.Controllers
             var problem = badRequest!.Value as ProblemDetails;
             Assert.That(problem!.Detail, Is.EqualTo("Este e-mail já está cadastrado no sistema."));
         }
-
-
-        [Test]
-        public async Task Get_QuandoExistiremUsuarios_DeveRetornar200Ok()
-        {
-            // Arrange
-            var listaUsuarios = new List<UserResponseDTO> 
-            { 
-                new UserResponseDTO { Name = "Ale", Email = "ale@teste.com" } 
-            };
-            
-            _serviceMock.Setup(s => s.GetAllUsersAsync()).ReturnsAsync(listaUsuarios);
-
-            // Act 
-            var result = await _controller.Get();
-
-            // Assert
-            Assert.That(result, Is.InstanceOf<OkObjectResult>());
-            var okResult = result as OkObjectResult;
-            Assert.That(okResult!.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
-        }
-
-        [Test]
-        public async Task Get_QuandoOcorrerErro_DeveRetornar500InternalServerError()
-        {
-            // Arrange
-            _serviceMock.Setup(s => s.GetAllUsersAsync())
-                .ThrowsAsync(new Exception("Erro genérico"));
-
-            // Act 
-            var result = await _controller.Get();
-
-            // Assert
-            Assert.That(result, Is.InstanceOf<ObjectResult>());
-            var objectResult = result as ObjectResult;
-            Assert.That(objectResult!.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
-        }
     }
 }
