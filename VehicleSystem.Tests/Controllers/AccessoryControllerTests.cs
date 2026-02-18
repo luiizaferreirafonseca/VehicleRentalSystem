@@ -236,7 +236,6 @@ namespace VehicleSystem.Tests.Controllers
         /// <summary>
         /// Valida se o ModelState impede a criação de acessório quando há erros de validação.
         /// </summary>
-        [Test]
         [Category("Unit")]
         [Property("Priority", "Medium")]
         public async Task Create_ShouldReturn_400BadRequest_WhenModelStateIsInvalid()
@@ -253,7 +252,6 @@ namespace VehicleSystem.Tests.Controllers
         /// <summary>
         /// Garante que falhas inesperadas no serviço de criação retornem erro 500.
         /// </summary>
-        [Test]
         [Category("Unit")]
         [Property("Priority", "Low")]
         public async Task Create_ShouldReturn_500_WhenUnexpectedException()
@@ -290,9 +288,7 @@ namespace VehicleSystem.Tests.Controllers
                 Assert.That(problem?.Title, Is.EqualTo(Messages.RequestInvalid));
             });
         }
-        }
 
-        [Test]
         /// <summary>
         /// Verifica se o ModelState inválido impede o vínculo de acessório ao aluguel.
         /// </summary>
@@ -308,7 +304,6 @@ namespace VehicleSystem.Tests.Controllers
             Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
         }
 
-        [Test]
         /// <summary>
         /// Garante que o RentalId vazio retorna erro 400 ao tentar vincular acessório.
         /// </summary>
@@ -324,7 +319,6 @@ namespace VehicleSystem.Tests.Controllers
             Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
         }
 
-        [Test]
         /// <summary>
         /// Garante que o AccessoryId vazio retorna erro 400 ao tentar vincular acessório.
         /// </summary>
@@ -391,7 +385,6 @@ namespace VehicleSystem.Tests.Controllers
             });
         }
 
-        [Test]
         /// <summary>
         /// Garante que falhas inesperadas no vínculo retornam erro 500 e log de erro.
         /// </summary>
@@ -409,7 +402,6 @@ namespace VehicleSystem.Tests.Controllers
             Assert.That(obj?.StatusCode, Is.EqualTo(500));
         }
 
-        [Test]
         /// <summary>
         /// Valida se conflitos de negócio no vínculo retornam erro 409.
         /// </summary>
@@ -445,7 +437,6 @@ namespace VehicleSystem.Tests.Controllers
             Assert.That(actionResult.Result, Is.TypeOf<OkObjectResult>());
         }
 
-        [Test]
         /// <summary>
         /// Garante que a busca de acessórios por aluguel retorna 404 quando não encontrados.
         /// </summary>
@@ -462,7 +453,6 @@ namespace VehicleSystem.Tests.Controllers
             Assert.That(actionResult.Result, Is.TypeOf<NotFoundObjectResult>());
         }
 
-        [Test]
         /// <summary>
         /// Valida se conflitos de negócio na consulta retornam erro 409.
         /// </summary>
@@ -480,7 +470,6 @@ namespace VehicleSystem.Tests.Controllers
             Assert.That(actionResult.Result, Is.TypeOf<ConflictObjectResult>());
         }
 
-        [Test]
         /// <summary>
         /// Garante que falhas inesperadas na consulta retornam erro 500.
         /// </summary>
@@ -524,7 +513,6 @@ namespace VehicleSystem.Tests.Controllers
             });
         }
 
-        [Test]
         /// <summary>
         /// Garante que a remoção de vínculo retorna 404 quando a chave não existe.
         /// </summary>
@@ -543,7 +531,6 @@ namespace VehicleSystem.Tests.Controllers
             Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
         }
 
-        [Test]
         /// <summary>
         /// Valida se conflitos de negócio na remoção retornam erro 409.
         /// </summary>
@@ -562,7 +549,6 @@ namespace VehicleSystem.Tests.Controllers
             Assert.That(result, Is.TypeOf<ConflictObjectResult>());
         }
 
-        [Test]
         /// <summary>
         /// Garante que falhas inesperadas na remoção retornam erro 500.
         /// </summary>

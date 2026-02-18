@@ -109,12 +109,10 @@ namespace VehicleRentalSystem.Services
 
                  await _accessoryRepository.LinkToRentalAsync(rentalId, accessoryId);
 
-            var days = (rental.ExpectedEndDate.Date - rental.StartDate.Date).Days;
-            if (days <= 0) days = 1;
+            var days = GetEffectiveDays(rental);
+            var accessoryTotalValue = CalculateAccessoryTotal(accessory.DailyRate, days);
 
-              decimal accessoryTotalValue = accessory.DailyRate * days;
-
-               rental.TotalAmount += accessoryTotalValue;
+            rental.TotalAmount = AddAmountToTotal(rental.TotalAmount, accessoryTotalValue);
 
             await _rentalRepository.UpdateAsync(rental);
 
@@ -135,12 +133,38 @@ namespace VehicleRentalSystem.Services
 
             await _accessoryRepository.RemoveLinkAsync(rentalId, accessoryId);
 
-            var days = (rental.ExpectedEndDate.Date - rental.StartDate.Date).Days;
-            if (days <= 0) days = 1;
+            var days = GetEffectiveDays(rental);
+            var deduction = CalculateAccessoryTotal(accessory.DailyRate, days);
 
-            rental.TotalAmount -= (accessory.DailyRate * days);
+            rental.TotalAmount = SubtractAmountFromTotal(rental.TotalAmount, deduction);
+
 
             await _rentalRepository.UpdateAsync(rental);
+        }
+
+        // Helpers extracted to make arithmetic and date logic explicit and test-friendly
+        // Marked internal for unit testing via InternalsVisibleTo
+        internal static int GetEffectiveDays(TbRental rental)
+        {
+            var days = (rental.ExpectedEndDate.Date - rental.StartDate.Date).Days;
+            return days <= 0 ? 1 : days;
+        }
+
+        internal static decimal CalculateAccessoryTotal(decimal dailyRate, int days)
+        {
+            return decimal.Multiply(dailyRate, days);
+        }
+
+        internal static decimal AddAmountToTotal(decimal? currentTotal, decimal addition)
+        {
+            var current = currentTotal ?? 0m;
+            return decimal.Add(current, addition);
+        }
+
+        internal static decimal SubtractAmountFromTotal(decimal? currentTotal, decimal deduction)
+        {
+            var current = currentTotal ?? 0m;
+            return decimal.Subtract(current, deduction);
         }
     }
 }
