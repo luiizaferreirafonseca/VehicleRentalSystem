@@ -9,6 +9,8 @@ using API_SistemaLocacao.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using VehicleRentalSystem.DTO;
 using VehicleRentalSystem.Services.interfaces;
+using Microsoft.AspNetCore.Http; 
+using VehicleRentalSystem.Resources; 
 
 namespace VehicleSystem.Tests.Controllers
 {
@@ -85,6 +87,71 @@ namespace VehicleSystem.Tests.Controllers
                 Assert.That(result[0].Name, Is.EqualTo("GPS"));
                 Assert.That(result[0].DailyRate, Is.EqualTo(15.0m));
             });
+        }
+
+        // --- CENÁRIO: BUSCA POR ID INEXISTENTE ---
+        [Test]
+        public async Task GetById_ShouldReturn_404NotFound_WhenIdDoesNotExist()
+        {
+            // Arrange → preparar cenário: Configura o mock para lançar KeyNotFoundException
+            var idInexistente = Guid.NewGuid();
+            _serviceMock.Setup(s => s.GetAccessoryByIdAsync(idInexistente))
+                        .ThrowsAsync(new KeyNotFoundException("Acessório não encontrado"));
+
+            // Act → executar ação: Chama o método GetById do controller
+            var actionResult = await _controller.GetById(idInexistente);
+
+            // Assert → validar resultado: Verifica se retornou 404 e os detalhes do problema
+            Assert.Multiple(() =>
+            {
+                Assert.That(actionResult.Result, Is.TypeOf<NotFoundObjectResult>());
+
+                var response = actionResult.Result as NotFoundObjectResult;
+                var problem = response?.Value as ProblemDetails;
+
+                Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status404NotFound));
+                Assert.That(problem?.Title, Is.EqualTo(Messages.NotFound));
+            });
+        }
+
+        // --- CENÁRIO: CONFLITO DE NOME DUPLICADO NO CADASTRO ---
+        [Test]
+        public async Task Create_ShouldReturn_409Conflict_WhenNameIsDuplicate()
+        {
+            // Arrange → preparar cenário: Configura o serviço para lançar InvalidOperationException
+            var dto = new AccessoryCreateDto { Name = "GPS", DailyRate = 10m };
+            _serviceMock.Setup(s => s.CreateAccessoryAsync(dto))
+                        .ThrowsAsync(new InvalidOperationException("Acessório já cadastrado"));
+
+            // Act → executar ação: Tenta criar um acessório com nome já existente
+            var actionResult = await _controller.Create(dto);
+
+            // Assert → validar resultado: Verifica se retornou 409 Conflict
+            Assert.Multiple(() =>
+            {
+                Assert.That(actionResult.Result, Is.TypeOf<ConflictObjectResult>());
+
+                var response = actionResult.Result as ConflictObjectResult;
+                var problem = response?.Value as ProblemDetails;
+
+                Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status409Conflict));
+                Assert.That(problem?.Title, Is.EqualTo(Messages.Conflict));
+            });
+        }
+
+        // --- CENÁRIO: VALIDAÇÃO DE MODELO INVÁLIDA ---
+        [Test]
+        public async Task Create_ShouldReturn_400BadRequest_WhenModelStateIsInvalid()
+        {
+            // Arrange → preparar cenário: Adiciona erro manual ao ModelState para simular falha de validação
+            var dtoIncompleto = new AccessoryCreateDto { Name = "" }; // Nome vazio
+            _controller.ModelState.AddModelError("Name", "O nome é obrigatório");
+
+            // Act → executar ação: Chama o método Create
+            var actionResult = await _controller.Create(dtoIncompleto);
+
+            // Assert → validar resultado: Verifica se retornou 400 BadRequest
+            Assert.That(actionResult.Result, Is.TypeOf<BadRequestObjectResult>());
         }
     }
 }
