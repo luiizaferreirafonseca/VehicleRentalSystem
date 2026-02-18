@@ -142,5 +142,32 @@ namespace VehicleSystem.Tests.Controllers
                 Assert.That(problem.Detail, Is.EqualTo("Falha inesperada"));
             });
         }
+
+        [Test]
+        public async Task Return_ShouldReturn_404NotFound_WhenRentalDoesNotExist()
+        {
+            var rentalId = Guid.NewGuid();
+
+            _service.Setup(s => s.ReturnRentalAsync(rentalId))
+                        .ThrowsAsync(new KeyNotFoundException("Locação não encontrada"));
+
+            var result = await _controller.Return(rentalId);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
+
+                var notFound = result as NotFoundObjectResult;
+                Assert.That(notFound, Is.Not.Null);
+
+                var problem = notFound!.Value as ProblemDetails;
+                Assert.That(problem, Is.Not.Null);
+                Assert.That(problem!.Status, Is.EqualTo(StatusCodes.Status404NotFound));
+                Assert.That(problem.Title, Is.EqualTo("Erro! Locação não encontrada"));
+                Assert.That(problem.Detail, Is.EqualTo("Locação não encontrada"));
+            });
+
+            _service.Verify(s => s.ReturnRentalAsync(rentalId), Times.Once);
+        }
     }
 }
