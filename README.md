@@ -1,3 +1,12 @@
+<p align="center">
+  <img src="https://img.shields.io/github/languages/count/luiizaferreirafonseca/VehicleRentalSystem" />
+  <img src="https://img.shields.io/github/repo-size/luiizaferreirafonseca/VehicleRentalSystem" />
+  <img src="https://img.shields.io/github/last-commit/luiizaferreirafonseca/VehicleRentalSystem" />
+  <img src="https://img.shields.io/badge/feito%20por-Rentix%20Team-purple" />
+</p>
+
+
+
 # 🚗 Vehicle Rental System API
 
 API REST para um sistema de locação de veículos.  
