@@ -177,5 +177,39 @@ namespace VehicleSystem.Tests.Controllers
                 Assert.That(problem?.Title, Is.EqualTo(Messages.RequestInvalid));
             });
         }
+
+        // --- CENÁRIO: CADASTRO DE ACESSÓRIO COM SUCESSO
+        [Test]
+        public async Task Create_ShouldReturn_201Created_WhenAccessoryCreatedSuccessfully()
+        {
+            // Arrange : Configura o DTO de entrada e o retorno esperado com ID
+            var request = new AccessoryCreateDto { Name = "GPS", DailyRate = 15.0m };
+            var createdResponse = new AccessoryResponseDto
+            {
+                Id = Guid.NewGuid(),
+                Name = "GPS",
+                DailyRate = 15.0m
+            };
+
+            _serviceMock.Setup(s => s.CreateAccessoryAsync(request))
+                        .ReturnsAsync(createdResponse);
+
+            // Act : Chama o método Create do controller
+            var actionResult = await _controller.Create(request);
+
+            // Assert : Verifica status 201 e se aponta para a rota de busca por ID
+            Assert.Multiple(() =>
+            {
+                Assert.That(actionResult.Result, Is.TypeOf<CreatedAtActionResult>());
+
+                var createdResult = actionResult.Result as CreatedAtActionResult;
+                Assert.That(createdResult!.StatusCode, Is.EqualTo(StatusCodes.Status201Created));
+
+                // Verifica se o objeto retornado no corpo é o que o serviço criou
+                var resultData = createdResult.Value as AccessoryResponseDto;
+                Assert.That(resultData!.Id, Is.EqualTo(createdResponse.Id));
+                Assert.That(resultData.Name, Is.EqualTo("GPS"));
+            });
+        }        
     }
 }
