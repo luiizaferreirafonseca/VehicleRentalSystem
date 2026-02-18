@@ -15,13 +15,12 @@
 
 🚗 **Rentix** 🚗
 
-[About](#-about-rentix) • 
-[Features](#-features) • 
-[Layout](#-layout) • 
-[API](#-api) • 
-[How to Run](#-how-to-run) • 
-[Technologies](#-technologies-used) • 
-[Contributors](#-team)
+[About](#about-rentix) • 
+[Features](#features) • 
+[API](#api) • 
+[How to Run](#how-to-run-the-rentix-project) • 
+[Technologies](#technologies) • 
+[Contributors](#contributors)
 
 </div>
 
@@ -94,7 +93,7 @@ dotnet run --project VehicleSystem
 
 
 
-## 👩‍💻 Authors 
+## 👩‍💻 Contributors 
 
 <p>Developed with dedication by our team 💙</p>
 
