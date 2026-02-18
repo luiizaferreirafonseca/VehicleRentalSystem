@@ -169,5 +169,33 @@ namespace VehicleSystem.Tests.Controllers
 
             _service.Verify(s => s.ReturnRentalAsync(rentalId), Times.Once);
         }
+
+        [Test]
+        public async Task Return_ShouldReturn_200Ok_WhenReturnIsSuccessful()
+        {
+            var rentalId = Guid.NewGuid();
+            var dto = new RentalResponseDTO { Id = rentalId, Status = "completed" };
+
+            _service.Setup(s => s.ReturnRentalAsync(rentalId))
+                        .ReturnsAsync(dto);
+
+            var actionResult = await _controller.Return(rentalId);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(actionResult, Is.TypeOf<OkObjectResult>());
+
+                var ok = actionResult as OkObjectResult;
+                Assert.That(ok, Is.Not.Null);
+                Assert.That(ok!.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+
+                var body = ok.Value as RentalResponseDTO;
+                Assert.That(body, Is.Not.Null);
+                Assert.That(body!.Id, Is.EqualTo(rentalId));
+                Assert.That(body.Status, Is.EqualTo("completed"));
+            });
+
+            _service.Verify(s => s.ReturnRentalAsync(rentalId), Times.Once);
+        }
     }
 }
