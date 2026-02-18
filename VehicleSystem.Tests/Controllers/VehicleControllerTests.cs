@@ -86,5 +86,44 @@ namespace VehicleSystem.Tests.Controllers
             Assert.That(problem.Title, Is.EqualTo("Conflito"));
             Assert.That(problem.Detail, Is.EqualTo("conflito"));
         }
+
+        [Test]
+        public async Task Delete_ShouldReturn_204NoContent_WhenRemovedSuccessfully()
+        {
+            var id = Guid.NewGuid();
+            _service.Setup(s => s.RemoveVehicleAsync(id)).Returns(Task.CompletedTask);
+
+            var result = await _controller.Delete(id);
+
+            Assert.That(result, Is.TypeOf<NoContentResult>());
+            _service.Verify(s => s.RemoveVehicleAsync(id), Times.Once);
+        }
+
+        [Test]
+        public async Task Delete_ShouldReturn_404NotFound_WhenKeyNotFoundExceptionOccurs()
+        {
+            var id = Guid.NewGuid();
+            _service.Setup(s => s.RemoveVehicleAsync(id))
+                        .ThrowsAsync(new KeyNotFoundException("Veículo não encontrado"));
+
+            var result = await _controller.Delete(id);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
+
+                var notFound = result as NotFoundObjectResult;
+                Assert.That(notFound, Is.Not.Null);
+
+                var problem = notFound!.Value as ProblemDetails;
+                Assert.That(problem, Is.Not.Null);
+                Assert.That(problem!.Status, Is.EqualTo(StatusCodes.Status404NotFound));
+                Assert.That(problem.Title, Is.EqualTo("Não encontrado"));
+                Assert.That(problem.Detail, Is.EqualTo("Veículo não encontrado"));
+            });
+
+            _service.Verify(s => s.RemoveVehicleAsync(id), Times.Once);
+        }
     }
 }
+
