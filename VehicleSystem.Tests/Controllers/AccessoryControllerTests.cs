@@ -248,5 +248,32 @@ namespace VehicleSystem.Tests.Controllers
                 _serviceMock.Verify(s => s.AddAccessoryToRentalAsync(rentalId, accessoryId), Times.Once);
             });
         }
+
+        // --- CENÁRIO: DELETE ACESSÓRIO AO RENTAL COM SUCESSO
+        [Test]
+        public async Task RemoveAccessoryFromRental_ShouldReturn_200Ok_WhenAccessoryIsUnlinked()
+        {
+            // Arrange : Define IDs fictícios e configura a Task como completada
+            var rentalId = Guid.NewGuid();
+            var accessoryId = Guid.NewGuid();
+
+            _serviceMock.Setup(s => s.RemoveAccessoryFromRentalAsync(rentalId, accessoryId))
+                        .Returns(Task.CompletedTask);
+
+            // Act : Chama o método de remoção
+            var result = await _controller.RemoveAccessoryFromRental(rentalId, accessoryId);
+
+            // Assert : Verifica status 200 e confirma a chamada do serviço
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.TypeOf<OkObjectResult>());
+
+                var okResult = result as OkObjectResult;
+                Assert.That(okResult!.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+
+                // Importante: Verifica se o serviço foi realmente chamado uma vez
+                _serviceMock.Verify(s => s.RemoveAccessoryFromRentalAsync(rentalId, accessoryId), Times.Once);
+            });
+        }
     }
 }
