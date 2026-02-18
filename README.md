@@ -45,16 +45,17 @@ This system was created as part of the **CodeRDI Diversity Program**.
 - .NET 8
 - ASP.NET Core Web API
 - Entity Framework Core
-- NUnit (Testes automatizados)
-- Coverlet (Cobertura de testes)
-- Banco de Dados Relacional (ex: PostgreSQL)
+- NUnit (Automated Tests)
+- Coverlet (Test Coverage)
+- Relational Database (e.g., PostgreSQL)
+
 
 ---
 
-## Documentation
+## 📘 Documentation
 ---
 
-## ⚙️ ## ⚙️ How to Run the Rentix Project 
+## ⚙️ How to Run the Rentix Project 
 
 ### 1️⃣ Clone the repository
 
@@ -63,7 +64,7 @@ git clone https://github.com/luiizaferreirafonseca/VehicleRentalSystem.git
 cd VehicleRentalSystem
 ``````
 
-## Configurar a Connection String
+### 2️⃣ Configure the Connection String
 ```bash
 {
   "ConnectionStrings": {
@@ -72,7 +73,7 @@ cd VehicleRentalSystem
 }
 ``````
 
-## Executar a API
+### 3️⃣ Run the API
 ```bash
 dotnet run --project VehicleSystem
 ``````
@@ -93,9 +94,9 @@ dotnet run --project VehicleSystem
 
 
 
-## 👩‍💻 Autoras
+## 👩‍💻 Authors 
 
-<p>Criado com empenho pelo nosso time 💙</p>
+<p>Developed with dedication by our team 💙</p>
 
 <div style="display: flex; gap: 40px; align-items: center;">
 
