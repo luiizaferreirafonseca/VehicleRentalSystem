@@ -11,33 +11,36 @@
 
 ---
 
+<div align="center">
 
-# 🚗 Vehicle Rental System API
+🚗 **Rentix** 🚗
 
-API REST para um sistema de locação de veículos.  
-Projeto **backend-only**, desenvolvido com ASP.NET Core, contendo regras de negócio, testes unitários e suporte a paginação e filtros.
+[About](#-about-rentix) • 
+[Features](#-features) • 
+[Layout](#-layout) • 
+[API](#-api) • 
+[How to Run](#-how-to-run) • 
+[Technologies](#-technologies-used) • 
+[Contributors](#-team)
 
----
-## ⚙️ Funcionalidades
----
-## 🛠️ Tecnologias Utilizadas
-
-- .NET 8
-- ASP.NET Core Web API
-- Entity Framework Core
-- NUnit (Testes automatizados)
-- Coverlet (Cobertura de testes)
-- Banco de Dados Relacional (PostgreSQL)
+</div>
 
 ---
 
-## 📌 Visão Geral
+## 📌 About Rentix
 
+**Rentix** is a vehicle rental system designed to provide a simple, fast, and secure car rental experience.
 
+The platform allows users to browse available vehicles, create accounts, and manage rentals efficiently.
+
+This system was created as part of the **CodeRDI Diversity Program**.
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## ⚙️ Features
+---
+
+## 🛠️ Technologies 
 
 - .NET 8
 - ASP.NET Core Web API
@@ -48,9 +51,12 @@ Projeto **backend-only**, desenvolvido com ASP.NET Core, contendo regras de neg�
 
 ---
 
-## ⚙️ Como Executar o Projeto
+## Documentation
+---
 
-### 1️⃣ Clonar o repositório
+## ⚙️ ## ⚙️ How to Run the Rentix Project 
+
+### 1️⃣ Clone the repository
 
 ```bash
 git clone https://github.com/luiizaferreirafonseca/VehicleRentalSystem.git
