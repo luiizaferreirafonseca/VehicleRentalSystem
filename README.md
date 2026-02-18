@@ -50,6 +50,10 @@ This system was created as part of the **CodeRDI Diversity Program**.
 ---
 
 ## 📘 Documentation
+For a detailed technical overview of **RentGo**, including system architecture, API endpoints, database structure, business rules, and testing strategy, please access the full documentation below:
+
+👉 [Access Full Documentation](./docs/documentation.md)
+
 ---
 
 ## ⚙️ How to Run the RentGo Project 
