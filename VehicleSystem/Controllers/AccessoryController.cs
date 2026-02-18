@@ -19,14 +19,19 @@ public class AccessoryController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// Recupera a lista de todos os acessórios disponíveis no sistema.
+    /// </summary>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<AccessoryResponseDto>>> Get()
     {
         var accessories = await _accessoryService.GetAccessoriesAsync();
-
         return Ok(accessories);
     }
 
+    /// <summary>
+    /// Busca um acessório específico através de seu identificador único (GUID).
+    /// </summary>
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<AccessoryResponseDto>> GetById(Guid id)
     {
@@ -36,7 +41,6 @@ public class AccessoryController : ControllerBase
                 return BadRequest(ModelState);
 
             var accessory = await _accessoryService.GetAccessoryByIdAsync(id);
-
             return Ok(accessory);
         }
         catch (KeyNotFoundException ex)
@@ -71,6 +75,9 @@ public class AccessoryController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Cria um novo registro de acessório. Valida se o nome já existe (Conflito).
+    /// </summary>
     [HttpPost("add")]
     public async Task<ActionResult<AccessoryResponseDto>> Create([FromBody] AccessoryCreateDto request)
     {
@@ -80,7 +87,6 @@ public class AccessoryController : ControllerBase
         try
         {
             var newAccessory = await _accessoryService.CreateAccessoryAsync(request);
-
             return CreatedAtAction(nameof(GetById), new { id = newAccessory.Id }, newAccessory);
         }
         catch (InvalidOperationException ex)
@@ -104,12 +110,14 @@ public class AccessoryController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Vincula um acessório a um contrato de aluguel existente.
+    /// </summary>
     [HttpPost]
     public async Task<ActionResult> AddAccessoryToRental([FromBody] RentalAccessoryRequestDto request)
     {
         try
         {
-
             _logger.LogInformation("AddAccessoryToRental called with RentalId={rentalId} AccessoryId={accessoryid}", request?.RentalId, request?.AccessoryId);
 
             if (request == null)
@@ -138,7 +146,6 @@ public class AccessoryController : ControllerBase
             }
 
             await _accessoryService.AddAccessoryToRentalAsync(request.RentalId, request.AccessoryId);
-
             _logger.LogInformation("AddAccessoryToRental succeeded for RentalId={rentalId} AccessoryId={accessoryId}", request.RentalId, request.AccessoryId);
 
             return Ok(new { Message = Messages.AccessoryLinkedSuccess });
@@ -178,14 +185,15 @@ public class AccessoryController : ControllerBase
         }
     }
 
-
+    /// <summary>
+    /// Lista todos os acessórios vinculados a um aluguel específico.
+    /// </summary>
     [HttpGet("~/rental/{id:guid}/accessories")]
     public async Task<ActionResult<IEnumerable<AccessoryResponseDto>>> GetAccessoriesByRental(Guid id)
     {
         try
         {
             var accessories = await _accessoryService.GetAccessoriesByRentalIdAsync(id);
-
             return Ok(accessories);
         }
         catch (KeyNotFoundException ex)
@@ -220,17 +228,16 @@ public class AccessoryController : ControllerBase
         }
     }
 
-
+    /// <summary>
+    /// Remove o vínculo entre um acessório e um aluguel.
+    /// </summary>
     [HttpDelete("~/rental/{rentalId:guid}/accessories/{accessoryId:guid}")]
     public async Task<ActionResult> RemoveAccessoryFromRental(Guid rentalId, Guid accessoryId)
     {
         try
         {
             await _accessoryService.RemoveAccessoryFromRentalAsync(rentalId, accessoryId);
-
             _logger.LogInformation("RemoveAccessoryFromRental succeeded for RentalId={rentalId} AccessoryId={accessoryId}", rentalId, accessoryId);
-
-            // Retorna mensagem JSON em vez de 204 para facilitar tratamento no frontend
             return Ok(new { Message = Messages.AccessoryUnlinkedSuccess });
         }
         catch (KeyNotFoundException ex)
@@ -264,5 +271,4 @@ public class AccessoryController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, problemDetails);
         }
     }
-
 }

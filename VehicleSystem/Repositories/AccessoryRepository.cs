@@ -23,12 +23,12 @@ public class AccessoryRepository : IAccessoryRepository
         return await _context.TbAccessories.FirstOrDefaultAsync(a => a.Name == name);
     }
 
-    public async Task<IEnumerable<TbAccessory>> GetAllAsync()
+    public async Task<IEnumerable<TbAccessory>?> GetAllAsync()
     {
         return await _context.TbAccessories.ToListAsync();
     }
 
-    public async Task<IEnumerable<TbAccessory>> GetByRentalIdAsync(Guid rentalId)
+    public async Task<IEnumerable<TbAccessory>?> GetByRentalIdAsync(Guid rentalId)
     {
         // join tb_rental_accessory
         return await _context.TbRentalAccessories
