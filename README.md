@@ -6,19 +6,19 @@
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/luiizaferreirafonseca/VehicleRentalSystem/master/assets/rental.png" width="100%" height="390px">
+  <img src="https://raw.githubusercontent.com/luiizaferreirafonseca/VehicleRentalSystem/master/assets/rentgo.png" width="100%" height="390px">
 </p>
 
 ---
 
 <div align="center">
 
-🚗 **Rentix** 🚗
+🚗 **RentGo** 🚗
 
-[About](#about-rentix) • 
+[About](#about-rentgo) • 
 [Features](#features) • 
 [API](#api) • 
-[How to Run](#how-to-run-the-rentix-project) • 
+[How to Run](#how-to-run-the-rentgo-project) • 
 [Technologies](#technologies) • 
 [Contributors](#contributors)
 
@@ -26,9 +26,9 @@
 
 ---
 
-## 📌 About Rentix
+## 📌 About RentGo
 
-**Rentix** is a vehicle rental system designed to provide a simple, fast, and secure car rental experience.
+**RentGo** is a vehicle rental system designed to provide a simple, fast, and secure car rental experience.
 
 The platform allows users to browse available vehicles, create accounts, and manage rentals efficiently.
 
@@ -47,14 +47,12 @@ This system was created as part of the **CodeRDI Diversity Program**.
 - NUnit (Automated Tests)
 - Coverlet (Test Coverage)
 - Relational Database (e.g., PostgreSQL)
-
-
 ---
 
 ## 📘 Documentation
 ---
 
-## ⚙️ How to Run the Rentix Project 
+## ⚙️ How to Run the RentGo Project 
 
 ### 1️⃣ Clone the repository
 
@@ -76,21 +74,6 @@ cd VehicleRentalSystem
 ```bash
 dotnet run --project VehicleSystem
 ``````
-
-
----
-## API
-
-
-
-
-
-
-
-
-
-
-
 
 
 ## 👩‍💻 Contributors 
