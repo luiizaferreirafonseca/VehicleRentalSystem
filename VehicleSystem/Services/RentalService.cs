@@ -16,7 +16,6 @@ namespace VehicleRentalSystem.Services
         {
             _repository = repository;
         }
-
         public List<RentalResponseDTO> GetRentals()
         {
             var rentalsFromDb = _repository.SelectRentals();

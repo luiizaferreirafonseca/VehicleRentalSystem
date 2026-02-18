@@ -18,7 +18,6 @@ namespace VehicleRentalSystem.Repositories
             return await _postgresContext.TbVehicles
                 .AnyAsync(v => v.LicensePlate == licensePlate);
         }
-
         public async Task<TbVehicle> CreateVehicleAsync(TbVehicle vehicle)
         {
             await _postgresContext.TbVehicles.AddAsync(vehicle);
@@ -36,8 +35,6 @@ namespace VehicleRentalSystem.Repositories
             _postgresContext.TbVehicles.Remove(vehicle);
             await _postgresContext.SaveChangesAsync();
         }
-
-
         public async Task<List<TbVehicle>> SearchVehiclesAsync(string? status, int page)
         {
             const int pageSize = 5;
@@ -59,8 +56,6 @@ namespace VehicleRentalSystem.Repositories
                 .Take(pageSize)
                 .ToListAsync();
         }
-
-        // ADICIONADO: Método necessário para salvar as atualizações
         public async Task UpdateVehicleAsync(TbVehicle vehicle)
         {
             _postgresContext.TbVehicles.Update(vehicle);

@@ -38,7 +38,6 @@ namespace VehicleRentalSystem.Services
                 }).ToList()
             }).ToList();
         }
-
         public async Task<UserResponseDTO> CreateUserAsync(UserCreateDTO dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Name))
