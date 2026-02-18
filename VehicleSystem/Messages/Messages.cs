@@ -97,6 +97,9 @@
         public const string IdsInvalid = "Identificador inválido";
 
         public const string InvalidStatus = "Status inválido.";
+        public const string RentalNotFoundWithError = "Erro! Locação não encontrada.";
+        public const string UnexpectedFailure = "Falha inesperada.";
+
 
     }
 }
