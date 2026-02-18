@@ -262,7 +262,6 @@ namespace VehicleRentalSystem.Services
                 VehicleModel = rental.Vehicle?.Model ?? ""
             };
         }
-
         public async Task<List<RentalResponseDTO>> SearchRentalsByUserAsync(Guid userId, string? status, int page)
         {
             if (userId == Guid.Empty)
@@ -270,6 +269,14 @@ namespace VehicleRentalSystem.Services
 
             if (page < 1)
                 throw new InvalidOperationException(Messages.PageInvalid);
+
+            if (!string.IsNullOrEmpty(status) &&
+            status != RentalStatus.active.ToString() &&
+            status != RentalStatus.completed.ToString() &&
+            status != RentalStatus.canceled.ToString())
+            {
+                throw new InvalidOperationException(Messages.InvalidStatus);
+            }
 
             var rentals = await _repository.SearchRentalsByUserAsync(userId, status, page);
 
@@ -289,8 +296,6 @@ namespace VehicleRentalSystem.Services
                 VehicleModel = r.Vehicle?.Model ?? ""
             }).ToList();
         }
-
     }
-
 }
 
