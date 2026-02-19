@@ -150,6 +150,44 @@ namespace VehicleSystem.Tests
             _repositoryMock.Verify(r => r.DeleteVehicleAsync(vehicle), Times.Once);
         }
 
+        [Test]
+        public void RemoveVehicleAsync_ShouldThrow_WhenVehicleNotFound()
+        {
+            var vehicleId = Guid.NewGuid();
+
+            _repositoryMock.Setup(r => r.GetVehicleByIdAsync(vehicleId))
+                           .ReturnsAsync((TbVehicle?)null);
+
+            var ex = Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+                await _service.RemoveVehicleAsync(vehicleId));
+
+            Assert.That(ex!.Message, Is.EqualTo(Messages.VehicleNotFound));
+
+            _repositoryMock.Verify(r => r.DeleteVehicleAsync(It.IsAny<TbVehicle>()), Times.Never);
+        }
+
+        [Test]
+        public void RemoveVehicleAsync_ShouldThrow_WhenVehicleIsRented()
+        {
+            var vehicleId = Guid.NewGuid();
+
+            var vehicle = new TbVehicle
+            {
+                Id = vehicleId,
+                Status = VehicleStatus.rented.ToString()
+            };
+
+            _repositoryMock.Setup(r => r.GetVehicleByIdAsync(vehicleId))
+                           .ReturnsAsync(vehicle);
+
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _service.RemoveVehicleAsync(vehicleId));
+
+            Assert.That(ex!.Message, Is.EqualTo(Messages.VehicleCannotBeDeletedWhenRented));
+
+            _repositoryMock.Verify(r => r.DeleteVehicleAsync(It.IsAny<TbVehicle>()), Times.Never);
+        }
+
         #region GetAvailableVehiclesAsync
 
         [Test]
