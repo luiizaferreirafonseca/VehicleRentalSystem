@@ -137,7 +137,7 @@ namespace VehicleRentalSystem.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
                 {
                     Status = StatusCodes.Status500InternalServerError,
-                    TTitle = "Internal server error",
+                    Title = "Internal server error",
                     Detail = ex.Message
                 });
             }
