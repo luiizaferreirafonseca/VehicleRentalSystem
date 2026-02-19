@@ -55,5 +55,69 @@ namespace VehicleSystem.Tests.Controllers
             var problem = badRequest!.Value as ProblemDetails;
             Assert.That(problem!.Detail, Is.EqualTo("Este e-mail já está cadastrado no sistema."));
         }
+
+        [Test]
+        public async Task Get_ShouldReturn200Ok_WithBody_WhenServiceReturnsUsers()
+        {
+            var response = new List<UserResponseDTO>
+            {
+                new() { Id = Guid.NewGuid(), Name = "User 1" },
+                new() { Id = Guid.NewGuid(), Name = "User 2" }
+            };
+
+            _serviceMock.Setup(s => s.GetAllUsersAsync())
+                        .ReturnsAsync(response);
+
+            var result = await _controller.Get();
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+            var ok = result as OkObjectResult;
+
+            Assert.That(ok?.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+            Assert.That(ok?.Value, Is.TypeOf<List<UserResponseDTO>>());
+
+            var body = ok?.Value as List<UserResponseDTO>;
+            Assert.That(body, Has.Count.EqualTo(2));
+        }
+
+        [Test]
+        public async Task Get_ShouldReturn200Ok_WithEmptyList_WhenServiceReturnsEmptyList()
+        {
+            var response = new List<UserResponseDTO>();
+
+            _serviceMock.Setup(s => s.GetAllUsersAsync())
+                        .ReturnsAsync(response);
+
+            var result = await _controller.Get();
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+            var ok = result as OkObjectResult;
+
+            Assert.That(ok?.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+            Assert.That(ok?.Value, Is.TypeOf<List<UserResponseDTO>>());
+
+            var body = ok?.Value as List<UserResponseDTO>;
+            Assert.That(body, Is.Empty);
+        }
+
+        [Test]
+        public async Task Get_ShouldReturn500WithProblemDetails_WhenExceptionIsThrown()
+        {
+            _serviceMock.Setup(s => s.GetAllUsersAsync())
+                        .ThrowsAsync(new Exception("Unexpected error"));
+
+            var result = await _controller.Get();
+
+            Assert.That(result, Is.TypeOf<ObjectResult>());
+            var obj = result as ObjectResult;
+
+            Assert.That(obj?.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
+            Assert.That(obj?.Value, Is.TypeOf<ProblemDetails>());
+
+            var problem = obj?.Value as ProblemDetails;
+            Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status500InternalServerError));
+            Assert.That(problem?.Title, Is.EqualTo("Erro interno do servidor"));
+            Assert.That(problem?.Detail, Is.EqualTo("Unexpected error"));
+        }
     }
 }
