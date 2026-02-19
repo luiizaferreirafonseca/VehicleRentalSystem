@@ -160,5 +160,87 @@ namespace VehicleSystem.Tests
             _repositoryMock.Verify(r => r.GetVehicleByIdAsync(vehicleId), Times.Once);
             _repositoryMock.Verify(r => r.DeleteVehicleAsync(vehicle), Times.Once);
         }
+
+        // ─── GetAvailableVehiclesAsync ────────────────────────────────────────────
+
+        #region GetAvailableVehiclesAsync
+
+        [Test]
+        public async Task GetAvailableVehiclesAsync_ComVeiculosDisponiveis_RetornaListaEMensagemNula()
+        {
+            var vehicles = new List<TbVehicle>
+            {
+                new() { Id = Guid.NewGuid(), Brand = "Honda",  Model = "Civic",   Year = 2022, DailyRate = 150m, Status = "available", LicensePlate = "AAA-1111" },
+                new() { Id = Guid.NewGuid(), Brand = "Toyota", Model = "Corolla", Year = 2021, DailyRate = 200m, Status = "available", LicensePlate = "BBB-2222" }
+            };
+            _repositoryMock.Setup(r => r.SearchVehiclesAsync("available", 1)).ReturnsAsync(vehicles);
+
+            var result = await _service.GetAvailableVehiclesAsync(1);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.Vehicles, Has.Count.EqualTo(2));
+                Assert.That(result.Message, Is.Null);
+            });
+        }
+
+        [Test]
+        public async Task GetAvailableVehiclesAsync_SemVeiculosDisponiveis_RetornaListaVaziaEMensagem()
+        {
+            _repositoryMock.Setup(r => r.SearchVehiclesAsync("available", 1)).ReturnsAsync(new List<TbVehicle>());
+
+            var result = await _service.GetAvailableVehiclesAsync(1);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.Vehicles, Is.Empty);
+                Assert.That(result.Message, Is.EqualTo("Não há veículos disponíveis para locação."));
+            });
+        }
+
+        [Test]
+        public async Task GetAvailableVehiclesAsync_ChamaRepositorioComStatusAvailable()
+        {
+            _repositoryMock.Setup(r => r.SearchVehiclesAsync("available", 1)).ReturnsAsync(new List<TbVehicle>());
+
+            await _service.GetAvailableVehiclesAsync(1);
+
+            _repositoryMock.Verify(r => r.SearchVehiclesAsync("available", 1), Times.Once);
+        }
+
+        [Test]
+        public async Task GetAvailableVehiclesAsync_PaginaCustomizada_PassaPaginaCorretaAoRepositorio()
+        {
+            _repositoryMock.Setup(r => r.SearchVehiclesAsync("available", 3)).ReturnsAsync(new List<TbVehicle>());
+
+            await _service.GetAvailableVehiclesAsync(3);
+
+            _repositoryMock.Verify(r => r.SearchVehiclesAsync("available", 3), Times.Once);
+        }
+
+        [Test]
+        public async Task GetAvailableVehiclesAsync_MapeiaPropriedadesDosVeiculosCorretamente()
+        {
+            var vehicle = new TbVehicle
+            {
+                Id = Guid.NewGuid(), Brand = "Ford", Model = "Ka",
+                Year = 2020, DailyRate = 100m, Status = "available", LicensePlate = "XYZ-9999"
+            };
+            _repositoryMock.Setup(r => r.SearchVehiclesAsync("available", 1)).ReturnsAsync(new List<TbVehicle> { vehicle });
+
+            var result = await _service.GetAvailableVehiclesAsync(1);
+            var dto = result.Vehicles[0];
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(dto.Id, Is.EqualTo(vehicle.Id));
+                Assert.That(dto.Brand, Is.EqualTo("Ford"));
+                Assert.That(dto.Model, Is.EqualTo("Ka"));
+                Assert.That(dto.Status, Is.EqualTo("available"));
+                Assert.That(dto.LicensePlate, Is.EqualTo("XYZ-9999"));
+            });
+        }
+
+        #endregion
     }
 }
