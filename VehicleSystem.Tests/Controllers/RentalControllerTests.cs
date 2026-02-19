@@ -249,8 +249,6 @@ namespace VehicleSystem.Tests.Controllers
             Assert.That(problem?.Detail, Is.EqualTo("Unexpected error"));
         }
 
-        // --- SEUS TESTES AJUSTADOS PARA PASSAR COM O CÓDIGO DELAS ---
-
         [Test]
         public async Task Get_ShouldReturn_200Ok_WhenRentalsAreFound()
         {
