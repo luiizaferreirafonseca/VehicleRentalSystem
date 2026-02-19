@@ -2,10 +2,10 @@ namespace VehicleRentalSystem.Enums
 {
     public enum EnumPaymentMethod
     {
-        credit_card,
-        debit_card,
-        cash,
-        pix,
-        boleto
+        CREDIT_CARD,
+        DEBIT_CARD,
+        CASH,
+        PIX,
+        BOLETO
     }
 }

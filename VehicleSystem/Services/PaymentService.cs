@@ -1,6 +1,5 @@
 ﻿using VehicleRentalSystem.DTO;
 using VehicleRentalSystem.Enums;
-using VehicleRentalSystem.Enums.VehicleRentalSystem.Enums;
 using VehicleRentalSystem.Models;
 using VehicleRentalSystem.Repositories;
 using VehicleRentalSystem.Repositories.interfaces;
@@ -20,7 +19,7 @@ namespace VehicleRentalSystem.Services
             _paymentRepository = paymentRepository;
         }
 
-        public async Task<RentalResponseDTO> RegisterPaymentAsync(Guid rentalId, PaymentCreateDTO dto)
+        public async Task<PaymentResponseDto> RegisterPaymentAsync(Guid rentalId, PaymentCreateDTO dto)
         {
             if (rentalId == Guid.Empty)
                 throw new ArgumentException("O identificador da locação é obrigatório.");
@@ -42,7 +41,7 @@ namespace VehicleRentalSystem.Services
             if (dto.Amount > remaining)
                 throw new InvalidOperationException("A soma dos pagamentos não pode exceder o valor total da locação.");
 
-            var paymentMethodString = dto.PaymentMethod.HasValue ? dto.PaymentMethod.Value.ToString() : string.Empty;
+            var paymentMethodString = dto.PaymentMethod?.ToString().ToLower() ?? string.Empty;
 
             var payment = new TbPayment
             {
@@ -56,25 +55,13 @@ namespace VehicleRentalSystem.Services
             await _paymentRepository.AddPaymentAsync(payment);
             await _paymentRepository.SaveChangesAsync();
 
-            rental = await _rentalRepository.GetRentalByIdAsync(rentalId);
-
-            if (rental == null)
-                throw new KeyNotFoundException(Messages.RentalNotFound);
-
-            return new RentalResponseDTO
+            return new PaymentResponseDto
             {
-                Id = rental.Id,
-                StartDate = rental.StartDate,
-                ExpectedEndDate = rental.ExpectedEndDate,
-                ActualEndDate = rental.ActualEndDate,
-                TotalAmount = rental.TotalAmount,
-                PenaltyFee = rental.PenaltyFee,
-                Status = rental.Status,
-                VehicleId = rental.VehicleId,
-                UserId = rental.UserId,
-                DailyRate = rental.DailyRate,
-                UserName = rental.User?.Name ?? "",
-                VehicleModel = rental.Vehicle?.Model ?? ""
+                Id = payment.Id,
+                RentalId = payment.RentalId,
+                Amount = payment.Amount,
+                PaymentMethod = payment.PaymentMethod,
+                PaymentDate = payment.PaymentDate
             };
         }
 
