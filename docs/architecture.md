@@ -47,8 +47,14 @@ O **Vehicle Rental System** é uma API REST desenvolvida em **ASP.NET Core (.NET
 vehicles/
 ├── docs/                          # Documentação do projeto
 │   ├── endpoints.md
+│   ├── endpoints.en.md
 │   ├── architecture.md
-│   └── tests.md
+│   ├── architecture.en.md
+│   ├── tests.md
+│   ├── tests.en.md
+│   ├── scriptSQLcreate.sql
+│   ├── scriptTestData.sql
+│   └── Insomnia.yaml
 ├── VehicleSystem/                 # Projeto principal
 │   ├── Controllers/               # Camada de apresentação (HTTP)
 │   ├── Services/                  # Camada de negócio
@@ -67,7 +73,8 @@ vehicles/
     ├── Services/                  # Testes de service
     ├── Repositories/              # Testes de repositório
     ├── DTOs/                      # Testes de DTO
-    └── Application/Validators/    # Testes de validação
+    ├── Application/Validators/    # Testes de validação
+    └── coverage.ps1               # Script de relatório de cobertura
 ```
 
 ---
@@ -338,6 +345,25 @@ dotnet test VehicleSystem.Tests/VehicleSystem.Tests.csproj
 # Executar com cobertura
 dotnet test --collect:"XPlat Code Coverage"
 ```
+
+#### 📊 Relatório de cobertura — script automatizado
+
+O script [`VehicleSystem.Tests/coverage.ps1`](../VehicleSystem.Tests/coverage.ps1) automatiza todo o fluxo:
+
+1. Executa os testes com `--collect:"XPlat Code Coverage"`
+2. Localiza o diretório de resultado mais recente em `TestResults/`
+3. Gera um relatório HTML completo via `reportgenerator`
+4. Abre o relatório automaticamente no navegador
+
+```powershell
+# Na raiz do projeto
+.\VehicleSystem.Tests\coverage.ps1
+```
+
+> ⚠️ Requer o [ReportGenerator](https://github.com/danielpalme/ReportGenerator) instalado como ferramenta global:
+> ```bash
+> dotnet tool install -g dotnet-reportgenerator-globaltool
+> ```
 
 ### Swagger UI
 

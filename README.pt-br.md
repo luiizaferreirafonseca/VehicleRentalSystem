@@ -99,7 +99,7 @@ Toda a documentação técnica do projeto está disponível em português e ingl
 | 🧪 **Testes** | Relatório completo de 135 testes por camada e módulo | [tests.md](./docs/tests.md) | [tests.en.md](./docs/tests.en.md) |
 | 🔬 **Testes de API** | Coleção Insomnia com todos os endpoints pré-configurados por módulo | [Insomnia.yaml](./docs/Insomnia.yaml) | — |
 | 🗄 **Banco de Dados** | Script DDL para criação do schema `sistema_locacao` e das 7 tabelas | [scriptSQLcreate.sql](./docs/scriptSQLcreate.sql) | — |
-| 🌱 **Dados de Teste** | Script de seed com 3 veículos, 3 usuários, 3 acessórios e 1 locação completa | [scriptMassaTeste.sql](./docs/scriptMassaTeste.sql) | — |
+| 🌱 **Dados de Teste** | Script de seed com 3 veículos, 3 usuários, 3 acessórios e 1 locação completa | [scriptTestData.sql](./docs/scriptTestData.sql) | — |
 
 ---
 
@@ -149,7 +149,7 @@ CREATE TABLE sistema_locacao.tb_rating            ( ... );  -- Avaliações
 
 #### 🌱 Popular o banco com dados iniciais
 
-Após a criação das tabelas, execute o script [`docs/scriptMassaTeste.sql`](./docs/scriptMassaTeste.sql) para validar a criação do schema e inserir os primeiros registros de teste:
+Após a criação das tabelas, execute o script [`docs/scriptTestData.sql`](./docs/scriptTestData.sql) para validar a criação do schema e inserir os primeiros registros de teste:
 
 - 3 veículos (2 `available`, 1 `maintenance`)
 - 3 usuários
