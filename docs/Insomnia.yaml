@@ -1,0 +1,815 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: VehicleRentalSystem
+meta:
+  id: wrk_15bc9aa6ebb445da89db93170087bb94
+  created: 1770837975805
+  modified: 1771424485471
+  description: ""
+collection:
+  - name: Rentals
+    meta:
+      id: fld_047bbbc03ae940d383c98bbcac549b94
+      created: 1771018001126
+      modified: 1771355148543
+      sortKey: -1771018020452
+      description: ""
+    children:
+      - url: "{{ _.localhost }}/Rental"
+        name: GetAllRentals
+        meta:
+          id: req_f9e728592c094611b2bd0bc446c34fd4
+          created: 1770837975823
+          modified: 1771026176906
+          isPrivate: false
+          description: |-
+            ### GET  /Rental
+
+            Retorna a lista completa de locações.
+
+            Body: Nenhum.
+          sortKey: -1771018010803
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+          - name: Content-Type
+            value: bearer
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.localhost }}/rental/e46bb477-31b0-4610-a4b9-7496b5fb0d90"
+        name: GetRentalById
+        meta:
+          id: req_8391cd2413c3479f8b32c24fd42b4973
+          created: 1770840153408
+          modified: 1771018014298
+          isPrivate: false
+          description: |-
+            ### /Rental/{id}  (id = GUID)
+
+            Retorna locação por id. 
+            Não tem body, o id deve ser inserido na url.
+          sortKey: -1771018010703
+        method: GET
+        parameters:
+          - name: GetAllRentals
+            value: ""
+            description: ""
+            disabled: false
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.localhost }}/Rental"
+        name: CreateRental
+        meta:
+          id: req_e643a6ce04a940ac98468ab733134301
+          created: 1770842921417
+          modified: 1771018020468
+          isPrivate: false
+          description: >-
+            ### POST/Rental
+
+
+            Cria uma nova locação. Body JSON obrigatório conforme
+            RentalCreateDTO.
+          sortKey: -1771018010903
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "userId": "107c1438-36a4-414d-88e6-73d12ecc0bbb",
+              "vehicleId": "b671cd3c-93a8-4835-afce-201d4a250406",
+              "startDate": "2026-05-01T09:00:00Z",
+              "expectedEndDate": "2026-08-05T09:00:00Z"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.localhost }}/Rental/547fca71-1fe6-4f43-8d65-f653daf406e2/cancel"
+        name: CancelRental
+        meta:
+          id: req_7ac375899e5e4aa28472765a70361696
+          created: 1770846008390
+          modified: 1771018023185
+          isPrivate: false
+          description: |-
+            ###  /Rental/{id}/cancel
+
+            Cancela a locação. Não tem body.
+          sortKey: -1771018010603
+        method: PATCH
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.localhost
+          }}/Rental/a87d36af-bd73-4fbf-abc3-42f588ac976d/update-dates"
+        name: UpdateDateRental
+        meta:
+          id: req_ba5b601f11cd4858b01e09c98ee276f5
+          created: 1770846128901
+          modified: 1771190983212
+          isPrivate: false
+          description: |-
+            ### PATCH /Rental/{id}/update-dates
+
+            Atualiza a data esperada (UpdateRentalDTO).
+          sortKey: -1771018010628
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"newExpectedEndDate": "2026-08-07T09:00:00Z"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.localhost
+          }}/Rental/search?userId=107c1438-36a4-414d-88e6-73d12ecc0bbb&status=a\
+          ctive&page=1"
+        name: GetRentalForUser
+        meta:
+          id: req_2ef0977aca374f17bc3cbd45a5762139
+          created: 1771191017139
+          modified: 1771463819826
+          isPrivate: false
+          description: >-
+            ### GET /Rental/search?userId={userId}&status={status}&page={page}
+
+
+            Busca locações por usuário (e opcionalmente por status) com
+            paginação.
+          sortKey: -1771018010665.5
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Payments
+    meta:
+      id: fld_42eaf1dc54234e049bbe3fe306098489
+      created: 1771018052662
+      modified: 1771463729522
+      sortKey: -1771018052662
+      description: ""
+    children:
+      - url: "{{ _.localhost }}/payments/7c31760d-3371-4c73-aff6-22aeff8e8285"
+        name: PaymentRegister
+        meta:
+          id: req_d708353276204850aeeeebc9b1d1fe64
+          created: 1770856145750
+          modified: 1771464301600
+          isPrivate: false
+          description: ""
+          sortKey: -1771191416054
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: '{ "amount": 20.00, "paymentMethod": "pix" }'
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.localhost }}/payments?rentalId=7c31760d-3371-4c73-aff6-22aeff8e8285"
+        name: GetPayments
+        meta:
+          id: req_5461f37a08a5493cb4c4da61bd68e45d
+          created: 1771195474427
+          modified: 1771332072482
+          isPrivate: false
+          description: |-
+            ### GET /payments
+
+            Retorna a lista dos pagamentos e seus respectivos detalhes.
+            Possibilita a busca com e sem filtro
+
+            •	/payments — sem filtro
+
+            •	/payments?startDate=2026-02-01&endDate=2026-02-10
+
+            •	/payments?rentalId=<GUID>
+            	
+            •	/payments?paymentMethod=credit_card     (ou cah, pix, boleto)
+          sortKey: -1771195474427
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Accessories
+    meta:
+      id: fld_0e95dda65e3f491fa939cc8d80335e25
+      created: 1771018075703
+      modified: 1771203902892
+      sortKey: -1771018075703
+      description: ""
+    children:
+      - url: "{{ _.localhost }}/accessories"
+        name: GetAllAccessories
+        meta:
+          id: req_bd6fbbe466c644c0baa53164508cb763
+          created: 1771019768366
+          modified: 1771025774724
+          isPrivate: false
+          description: |-
+            ### GET/Accessories
+
+            Lista todos os acessórios do catálogo.
+
+            Body: nenhum
+          sortKey: -1771022923285.5
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.localhost }}/accessories/202d0664-acc6-49fc-a372-2796f38a8658"
+        name: GetAcessoryById
+        meta:
+          id: req_c72d2261f8244912907ef49b64b72706
+          created: 1771019894785
+          modified: 1771204070084
+          isPrivate: false
+          description: |-
+            ### GET/Acessories/{acessoryId)
+
+            Lista um acessório do catálogo por Id.
+
+            Body: nenhum
+          sortKey: -1771022411381.25
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.localhost }}/accessories"
+        name: CreateAccessory
+        meta:
+          id: req_075d30ef43264407b4756fd2b2d0429c
+          created: 1771023947094
+          modified: 1771353013687
+          isPrivate: false
+          description: |
+            ### POST/accessories/CreateAccessory
+
+            Cria um novo acessório.
+
+            Body.Json:
+
+             { "name": "Name", "dailyRate": 0.00 }
+          sortKey: -1771023947094
+        method: POST
+        body:
+          mimeType: application/json
+          text: '{ "name": "Assento de Elevação", "dailyRate": 8.00  }'
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.localhost }}/accessories/add"
+        name: AddAccessoryToRental
+        meta:
+          id: req_66fe13d55a2749c19dcbf843f4f08b05
+          created: 1771024302472
+          modified: 1771355888010
+          isPrivate: false
+          description: |-
+            ### POST /accessories/AddToRental
+
+            Vincula um acessório à uma locação.
+
+            Body.JSON: 
+            { "rentalId": "", "accessoryId": "" }
+          sortKey: -1771020875618.5
+        method: POST
+        body:
+          mimeType: application/json
+          text: ' { "rentalId": "e46bb477-31b0-4610-a4b9-7496b5fb0d90", "accessoryId":
+            "c086aab5-9a67-4663-af4e-3da885c50fd8" }'
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.localhost }}/rental/e46bb477-31b0-4610-a4b9-7496b5fb0d90/accessories"
+        name: GetRentalAccessories
+        meta:
+          id: req_8bcc65d126a94ec7a95d7bb5afaee815
+          created: 1771025494850
+          modified: 1771028056355
+          isPrivate: false
+          description: |-
+            ### GET  /Rental
+
+            Retorna a lista de acessórios locados para aquela cotação.
+
+            Body: nenhum.
+          sortKey: -1771020875593.5
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.localhost
+          }}/rental/e46bb477-31b0-4610-a4b9-7496b5fb0d90/accessories/c086aab5-9\
+          a67-4663-af4e-3da885c50fd8"
+        name: RemoveRentalAccessories
+        meta:
+          id: req_d3de1bc5853946c0ba9044120ef97ed4
+          created: 1771026266864
+          modified: 1771028072853
+          isPrivate: false
+          description: >-
+            ### •	DELETE /rental/{rentalId}/accessories/{accessoryId}
+
+
+            Remove o vínculo do acessório à locação.
+
+
+            •	Verifica existência da locação e do acessório.
+
+            •	Verifica se o acessório está efetivamente vinculado à locação.
+
+            •	Remove o vínculo (tabela intermediária) e subtrai do TotalAmount
+            da locação o valor proporcional (diária * dias).
+
+            •	Persiste a alteração da locação.
+          sortKey: -1771020875568.5
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Vehicles
+    meta:
+      id: fld_7ef01c6974024035b2029b8cc6ad4e83
+      created: 1771018090581
+      modified: 1771191447479
+      sortKey: -1771018018841.5
+      description: ""
+    children:
+      - url: "{{ _.localhost }}/Vehicle/available"
+        name: GetVehiclesAvailable
+        meta:
+          id: req_54ccfddbb7554d248953785418189f87
+          created: 1771187736417
+          modified: 1771187908836
+          isPrivate: false
+          description: ""
+          sortKey: -1771187736417
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.localhost }}/Vehicle"
+        name: CreateVehicle
+        meta:
+          id: req_b96bc06bfaed4aeabdfeff6cd4be9845
+          created: 1771190461015
+          modified: 1771190654399
+          isPrivate: false
+          description: >-
+            ### POST /Vehicle
+
+
+            Cria um veículo.
+
+
+            Body.JSON:{ "brand": "", "model": "", "year": 0000, "dailyRate":
+            0.00, "licensePlate": "ABC-1234" }
+          sortKey: -1771190461015
+        method: POST
+        body:
+          mimeType: application/json
+          text: '{ "brand": "Toyota", "model": "Corolla", "year": 2022, "dailyRate":
+            150.00, "licensePlate": "ABC-1234" }'
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.localhost }}/Vehicle/8b4f7136-9013-4b25-92fd-b45c08b9589a"
+        name: DeleteVehicle
+        meta:
+          id: req_e237f13a0edf48ba94c00f9a59bedd03
+          created: 1771190661464
+          modified: 1771190733984
+          isPrivate: false
+          description: |-
+            ### DELETE/Vehicle/{id}
+
+            Remove veículo por id (GUID).
+            Body: nenhum
+          sortKey: -1771187736317
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.localhost }}/Vehicle/available?page=5"
+        name: GetVehiclesforPage
+        meta:
+          id: req_da1a5109e79247188bdc55821da28df4
+          created: 1771190748120
+          modified: 1771190903906
+          isPrivate: false
+          description: >+
+            ### GET /Vehicle/available?page={page}
+
+
+            Retorna veículos disponíveis (reutiliza a busca). Resposta é um
+            wrapper com Vehicles e Message quando vazio.
+
+            Body: nenhum
+
+          sortKey: -1771187736367
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Ratings
+    meta:
+      id: fld_cb8766f0d4cc494baa89fdd355211b34
+      created: 1771191203500
+      modified: 1771191209543
+      sortKey: -1771018023673
+      description: ""
+    children:
+      - url: "{{ _.localhost }}/api/Ratings"
+        name: NewRating
+        meta:
+          id: req_fa6dda7e96d74c03a426c3e4eef05965
+          created: 1771191220936
+          modified: 1771191614290
+          isPrivate: false
+          description: >-
+            ### POST /api/Ratings
+
+
+            Envia avaliação de locação.
+
+            Body.JSON: { "rentalId": "GUID-DA-LOCAÇÃO", "rating": 5, "comment":
+            "Ótima experiência" }
+          sortKey: -1771191220937
+        method: POST
+        body:
+          mimeType: application/json
+          text: '{ "rentalId": "7c31760d-3371-4c73-aff6-22aeff8e8285", "rating": 5,
+            "comment": "Ótima experiência" }'
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Users
+    meta:
+      id: fld_0a13f92b2f9d425687fd580ed7c8e0b6
+      created: 1771191401643
+      modified: 1771191443005
+      sortKey: -1771018017231
+      description: ""
+    children:
+      - url: "{{ _.localhost }}/User"
+        name: GetAllUsers
+        meta:
+          id: req_026f12e3f32a46e98c8d3bd09813c92b
+          created: 1771191450720
+          modified: 1771191643061
+          isPrivate: false
+          description: |-
+            ### GET /User
+            Lista usuários (com locações agregadas: rentalId + vehicleId).
+
+            Body: nenhum
+          sortKey: -1771191450720
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Reports
+    meta:
+      id: fld_1a986152dfdf4f10a941418973bebc36
+      created: 1771202667805
+      modified: 1771355182325
+      sortKey: -1771018019646.75
+      description: ""
+    children:
+      - url: "{{ _.localhost }}/report/e46bb477-31b0-4610-a4b9-7496b5fb0d90"
+        name: RentalReport
+        meta:
+          id: req_d0d138816f0a48059479d239fe9484fd
+          created: 1771202671617
+          modified: 1771388477286
+          isPrivate: false
+          description: >
+            ## GET /RentalReport/{RentalId}
+
+
+            Retorna o relatório detalhado de uma locação (consultado pelo id da
+            locação) em JSON: 
+
+            inclui dados da locação (datas, status, valor do veículo), resumo do
+            veículo e do cliente, lista de pagamentos e acessórios, além de
+            campos calculados — AmountPaid, AccessoriesTotal, PenaltyFee e
+            BalanceDue (calculado como totalAmount + penaltyFee +
+            accessoriesTotal - amountPaid). Use este endpoint no Insomnia para
+            obter um resumo financeiro e operacional completo da locação.
+          sortKey: -1771202671617
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.localhost }}/report/e46bb477-31b0-4610-a4b9-7496b5fb0d90/export/csv"
+        name: RentalReportCSV
+        meta:
+          id: req_7113a50d92e648668d1d05023a2511db
+          created: 1771212479624
+          modified: 1771355390755
+          isPrivate: false
+          description: ""
+          sortKey: -1771202671517
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.localhost }}/report/e46bb477-31b0-4610-a4b9-7496b5fb0d90/export/txt"
+        name: RentalReportTXT
+        meta:
+          id: req_19454fa7e04541c99005a1aa9c9958ea
+          created: 1771350831515
+          modified: 1771355331520
+          isPrivate: false
+          description: ""
+          sortKey: -1771199072972
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.localhost }}/report/e46bb477-31b0-4610-a4b9-7496b5fb0d90/export"
+        name: RentalReportExportCSV/TXT
+        meta:
+          id: req_58e97dcdbe684b78b67ac5ca3a0002d7
+          created: 1771350858512
+          modified: 1771355383021
+          isPrivate: false
+          description: ""
+          sortKey: -1771202671567
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_71b725b75fe150617d7e7ea63fe143c142239588
+    created: 1770837975816
+    modified: 1770837975816
+environments:
+  name: Base Environment
+  meta:
+    id: env_71b725b75fe150617d7e7ea63fe143c142239588
+    created: 1770837975814
+    modified: 1770849768973
+    isPrivate: false
+  data:
+    localhost: http://localhost:5294

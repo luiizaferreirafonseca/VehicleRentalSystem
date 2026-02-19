@@ -50,9 +50,8 @@ vehicles/
 │   ├── endpoints.en.md
 │   ├── architecture.md
 │   ├── architecture.en.md
-│   └── test-reports/
-│       ├── tests.md
-│       └── tests.en.md
+│   ├── tests.md
+│   └── tests.en.md
 ├── VehicleSystem/                 # Main project
 │   ├── Controllers/               # Presentation layer (HTTP)
 │   ├── Services/                  # Business logic layer
