@@ -37,6 +37,9 @@ namespace VehicleRentalSystem.Controllers
             }
         }
 
+        /// <summary>
+        /// Creates a new user in the system.
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] UserCreateDTO dto)
         {
@@ -50,7 +53,7 @@ namespace VehicleRentalSystem.Controllers
                 return BadRequest(new ProblemDetails
                 {
                     Status = StatusCodes.Status400BadRequest,
-                    Title = "Erro de validação",
+                    Title = "Validation error",
                     Detail = ex.Message
                 });
             }
@@ -59,7 +62,7 @@ namespace VehicleRentalSystem.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
                 {
                     Status = StatusCodes.Status500InternalServerError,
-                    Title = "Erro interno do servidor",
+                    Title = "Internal server error",
                     Detail = ex.Message
                 });
             }

@@ -20,7 +20,7 @@ public class AccessoryController : ControllerBase
     }
 
     /// <summary>
-    /// Recupera a lista de todos os acessórios disponíveis no sistema.
+    /// Retrieves the list of all available accessories in the system.
     /// </summary>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<AccessoryResponseDto>>> Get()
@@ -30,7 +30,7 @@ public class AccessoryController : ControllerBase
     }
 
     /// <summary>
-    /// Busca um acessório específico através de seu identificador único (GUID).
+    /// Gets a specific accessory by its unique identifier (GUID).
     /// </summary>
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<AccessoryResponseDto>> GetById(Guid id)
@@ -76,7 +76,7 @@ public class AccessoryController : ControllerBase
     }
 
     /// <summary>
-    /// Cria um novo registro de acessório. Valida se o nome já existe (Conflito).
+    /// Creates a new accessory record. Validates whether the name already exists (Conflict).
     /// </summary>
     [HttpPost("add")]
     public async Task<ActionResult<AccessoryResponseDto>> Create([FromBody] AccessoryCreateDto request)
@@ -111,8 +111,8 @@ public class AccessoryController : ControllerBase
     }
 
     /// <summary>
-    /// Vincula um acessório a um contrato de aluguel existente.
-    /// </summary>
+    /// Links an accessory to an existing rental contract.
+    /// </summary
     [HttpPost]
     public async Task<ActionResult> AddAccessoryToRental([FromBody] RentalAccessoryRequestDto request)
     {
@@ -186,7 +186,7 @@ public class AccessoryController : ControllerBase
     }
 
     /// <summary>
-    /// Lista todos os acessórios vinculados a um aluguel específico.
+    /// Lists all accessories linked to a specific rental.
     /// </summary>
     [HttpGet("~/rental/{id:guid}/accessories")]
     public async Task<ActionResult<IEnumerable<AccessoryResponseDto>>> GetAccessoriesByRental(Guid id)
@@ -229,7 +229,7 @@ public class AccessoryController : ControllerBase
     }
 
     /// <summary>
-    /// Remove o vínculo entre um acessório e um aluguel.
+    /// Removes the link between an accessory and a rental.
     /// </summary>
     [HttpDelete("~/rental/{rentalId:guid}/accessories/{accessoryId:guid}")]
     public async Task<ActionResult> RemoveAccessoryFromRental(Guid rentalId, Guid accessoryId)

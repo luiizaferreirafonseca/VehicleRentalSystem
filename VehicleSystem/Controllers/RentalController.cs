@@ -268,7 +268,7 @@ public class RentalController : ControllerBase
             return BadRequest(new ProblemDetails
             {
                 Status = StatusCodes.Status400BadRequest,
-                Title = "Operação inválida",
+                Title = "Invalid operation",
                 Detail = ex.Message
             });
         }
@@ -277,7 +277,7 @@ public class RentalController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,
-                Title = "Erro interno do servidor",
+                Title = "Internal server error",
                 Detail = ex.Message
             });
         }

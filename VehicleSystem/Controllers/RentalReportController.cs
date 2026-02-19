@@ -25,6 +25,9 @@ public class RentalReportController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// Exports a rental report in the specified format (TXT or CSV) and downloads the generated file.
+    /// </summary>
     [HttpGet("{rentalId:guid}/export/{format?}")]
     public async Task<IActionResult> Export(Guid rentalId, string? format)
     {
@@ -93,6 +96,9 @@ public class RentalReportController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Retrieves the rental report data for the specified rental ID.
+    /// </summary>
     [HttpGet("{rentalId:guid}")]
     public async Task<ActionResult<RentalReportResponseDTO>> GetReport(Guid rentalId)
     {

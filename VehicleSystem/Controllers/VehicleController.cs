@@ -35,7 +35,7 @@ namespace VehicleRentalSystem.Controllers
                 return Conflict(new ProblemDetails
                 {
                     Status = StatusCodes.Status409Conflict,
-                    Title = "Conflito",
+                    Title = "Conflict",
                     Detail = ex.Message
                 });
             }
@@ -44,7 +44,7 @@ namespace VehicleRentalSystem.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
                 {
                     Status = StatusCodes.Status500InternalServerError,
-                    Title = "Erro interno do servidor",
+                    Title = "Internal server error",
                     Detail = ex.Message
                 });
             }
@@ -66,7 +66,7 @@ namespace VehicleRentalSystem.Controllers
                 return BadRequest(new ProblemDetails
                 {
                     Status = StatusCodes.Status400BadRequest,
-                    Title = "Operação inválida",
+                    Title = "Invalid operation",
                     Detail = ex.Message
                 });
             }
@@ -75,7 +75,7 @@ namespace VehicleRentalSystem.Controllers
                 return NotFound(new ProblemDetails
                 {
                     Status = StatusCodes.Status404NotFound,
-                    Title = "Não encontrado",
+                    Title = "Not found",
                     Detail = ex.Message
                 });
             }
@@ -84,7 +84,7 @@ namespace VehicleRentalSystem.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
                 {
                     Status = StatusCodes.Status500InternalServerError,
-                    Title = "Erro interno do servidor",
+                    Title = "Internal server error",
                     Detail = ex.Message
                 });
             }
@@ -106,7 +106,7 @@ namespace VehicleRentalSystem.Controllers
                 return BadRequest(new ProblemDetails
                 {
                     Status = StatusCodes.Status400BadRequest,
-                    Title = "Operação inválida",
+                    Title = "Invalid operation",
                     Detail = ex.Message
                 });
             }
@@ -115,7 +115,7 @@ namespace VehicleRentalSystem.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
                 {
                     Status = StatusCodes.Status500InternalServerError,
-                    Title = "Erro interno do servidor",
+                    Title = "Internal server error",
                     Detail = ex.Message
                 });
             }
@@ -137,7 +137,7 @@ namespace VehicleRentalSystem.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
                 {
                     Status = StatusCodes.Status500InternalServerError,
-                    Title = "Erro interno do servidor",
+                    TTitle = "Internal server error",
                     Detail = ex.Message
                 });
             }
@@ -162,7 +162,7 @@ namespace VehicleRentalSystem.Controllers
                 return NotFound(new ProblemDetails
                 {
                     Status = StatusCodes.Status404NotFound,
-                    Title = "Não encontrado",
+                    Title = "Not found",
                     Detail = ex.Message
                 });
             }
@@ -171,7 +171,7 @@ namespace VehicleRentalSystem.Controllers
                 return BadRequest(new ProblemDetails
                 {
                     Status = StatusCodes.Status400BadRequest,
-                    Title = "Operação inválida",
+                    Title = "Invalid operation",
                     Detail = ex.Message
                 });
             }
@@ -180,7 +180,7 @@ namespace VehicleRentalSystem.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
                 {
                     Status = StatusCodes.Status500InternalServerError,
-                    Title = "Erro interno do servidor",
+                    Title = "Internal server error",
                     Detail = ex.Message
                 });
             }

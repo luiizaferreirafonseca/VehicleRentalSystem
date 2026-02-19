@@ -15,13 +15,16 @@ namespace VehicleRentalSystem.Controllers
             _ratingService = ratingService;
         }
 
+        /// <summary>
+        /// Submits a rating for a rental and evaluates the provided feedback.
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> PostRating([FromBody] RatingCreateDTO dto)
         {
             try
             {
                 var success = await _ratingService.EvaluateRentalAsync(dto);
-                return Ok(new { message = "Avaliação enviada com sucesso! Obrigado por colaborar conosco." });
+                return Ok(new { message = "Review submitted successfully! Thank you for collaborating with us." });
             }
             catch (Exception ex)
             {
