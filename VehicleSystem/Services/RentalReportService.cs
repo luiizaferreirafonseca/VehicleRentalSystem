@@ -53,7 +53,7 @@ namespace VehicleRentalSystem.Services
             writer.WriteLine();
 
             writer.WriteLine("Acessórios:");
-            if (dto.Accessories != null && dto.Accessories.Any())
+            if (dto.Accessories.Any())
             {
                 foreach (var a in dto.Accessories)
                     writer.WriteLine($"  {a.Name} x{a.Quantity} - {a.TotalPrice} ({a.DailyRate}/dia)");
@@ -77,7 +77,7 @@ namespace VehicleRentalSystem.Services
             writer.WriteLine();
             writer.WriteLine("Detalhamento de Pagamentos:");
 
-            if (dto.Payments != null && dto.Payments.Any())
+            if (dto.Payments.Any())
             {
                 foreach (var pay in dto.Payments)
                 {
@@ -122,7 +122,7 @@ namespace VehicleRentalSystem.Services
 
             writer.WriteLine("Dados do Contrato");
             writer.WriteLine($"Cliente{sep}{sep}Início{sep}Término{sep}Status");
-            writer.WriteLine($"{dto.Customer.Name}{sep}{sep}{dto.StartDate:dd/MM/yyyy}{sep}{dto.EndDate:dd/MM/yyyy}{sep}{dto.Status}");
+            writer.WriteLine($"{EscapeCsv(dto.Customer.Name)}{sep}{sep}{dto.StartDate:dd/MM/yyyy}{sep}{dto.EndDate:dd/MM/yyyy}{sep}{EscapeCsv(dto.Status)}");
             writer.WriteLine();
 
             writer.WriteLine("Dados da Locação");
@@ -131,7 +131,7 @@ namespace VehicleRentalSystem.Services
             var accessoriesTotal = dto.AccessoriesTotal == 0 ? "-" : dto.AccessoriesTotal.ToString("C");
             var penalty = dto.PenaltyFee == 0 ? "-" : dto.PenaltyFee.ToString("C");
 
-            writer.WriteLine($"{dto.Vehicle.Brand} - {dto.Vehicle.Model}{sep}{dto.TotalAmount}{sep}-{sep}{accessoriesTotal}{sep}{penalty}");
+            writer.WriteLine($"{EscapeCsv(dto.Vehicle.Brand)} - {EscapeCsv(dto.Vehicle.Model)}{sep}{dto.TotalAmount}{sep}-{sep}{accessoriesTotal}{sep}{penalty}");
             writer.WriteLine();
 
             writer.WriteLine($"{sep}{sep}{sep}Total geral{sep}{dto.TotalAmount}");
@@ -142,10 +142,10 @@ namespace VehicleRentalSystem.Services
             writer.WriteLine("Dados dos Pagamentos");
             writer.WriteLine($"Data{sep}Método{sep}Valor");
 
-            if (dto.Payments != null && dto.Payments.Any())
+            if (dto.Payments.Any())
             {
                 foreach (var p in dto.Payments)
-                    writer.WriteLine($"{p.PaymentDate:dd/MM/yyyy}{sep}{p.PaymentMethod}{sep}{p.Amount}");
+                    writer.WriteLine($"{p.PaymentDate:dd/MM/yyyy}{sep}{EscapeCsv(p.PaymentMethod)}{sep}{p.Amount}");
             }
             else
             {
@@ -158,7 +158,7 @@ namespace VehicleRentalSystem.Services
         }
 
 
-        public async Task<string?> SaveRentalReportToRepositoryAsync(Guid id, string format = "txt")
+        public async Task<string?> SaveRentalReportToRepositoryAsync(Guid id, string? format = "txt")
         {
             var fmt = (format ?? "txt").ToLowerInvariant();
             var safeFormat = fmt == "csv" ? "csv" : "txt";
@@ -168,8 +168,8 @@ namespace VehicleRentalSystem.Services
                 return null;
 
             byte[] content = safeFormat == "csv"
-                ? await ExportRentalReportCsvAsync(id) ?? []
-                : await ExportRentalReportAsync(id) ?? [];
+                ? (await ExportRentalReportCsvAsync(id))!
+                : (await ExportRentalReportAsync(id))!;
 
             var reportNumber = $"RPT-{DateTime.Today:yyyyMMdd}-{id.ToString()[..6].ToUpper()}";
             var safeName = SanitizeFileName(dto.Customer.Name);

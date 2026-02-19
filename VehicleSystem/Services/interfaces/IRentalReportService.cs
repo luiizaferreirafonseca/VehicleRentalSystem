@@ -7,6 +7,6 @@ namespace VehicleRentalSystem.Services.interfaces
         Task<RentalReportResponseDTO?> GetRentalReportAsync(Guid id);
         Task<byte[]?> ExportRentalReportAsync(Guid id);
         Task<byte[]?> ExportRentalReportCsvAsync(Guid id);
-        Task<string?> SaveRentalReportToRepositoryAsync(Guid id, string format = "txt");
+        Task<string?> SaveRentalReportToRepositoryAsync(Guid id, string? format = "txt");
     }
 }
