@@ -248,5 +248,55 @@ namespace VehicleSystem.Tests.Controllers
             Assert.That(problem?.Title, Is.EqualTo("Erro interno do servidor"));
             Assert.That(problem?.Detail, Is.EqualTo("Unexpected error"));
         }
+
+        // --- SEUS TESTES AJUSTADOS PARA PASSAR COM O CÓDIGO DELAS ---
+
+        [Test]
+        public async Task Get_ShouldReturn_200Ok_WhenRentalsAreFound()
+        {
+            var rentals = new List<RentalResponseDTO> 
+            { 
+                new RentalResponseDTO { Id = Guid.NewGuid(), Status = "Active" }
+            };
+            _service.Setup(s => s.GetRentalsAsync()).ReturnsAsync(rentals);
+
+            var result = await _controller.Get();
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task GetById_ShouldReturn_200Ok_WhenRentalExists()
+        {
+            var rentalId = Guid.NewGuid();
+            var expected = new RentalResponseDTO 
+            { 
+                Id = rentalId, 
+                Status = "Active",
+                UserName = "Test User",    
+                VehicleModel = "Test Vehicle" 
+            };
+            _service.Setup(s => s.GetRentalByIdAsync(rentalId)).ReturnsAsync(expected);
+
+            var result = await _controller.GetById(rentalId);
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task GetById_ShouldReturn_404NotFound_WhenRentalDoesNotExist()
+        {
+            var rentalId = Guid.NewGuid();
+            _service.Setup(s => s.GetRentalByIdAsync(rentalId))
+                    .ThrowsAsync(new KeyNotFoundException("Rental not found"));
+
+            var result = await _controller.GetById(rentalId);
+
+            Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
+            var notFound = result as NotFoundObjectResult;
+            var problem = notFound?.Value as ProblemDetails;
+            
+            Assert.That(problem?.Title, Is.EqualTo("Locação não encontrada"));
+        }
     }
 }
