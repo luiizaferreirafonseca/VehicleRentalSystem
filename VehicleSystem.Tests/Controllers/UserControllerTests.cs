@@ -4,10 +4,10 @@ using Moq;
 using NUnit.Framework;
 using VehicleRentalSystem.DTO;
 using VehicleRentalSystem.Services.interfaces;
-using API_SistemaLocacao.Controllers; 
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using VehicleRentalSystem.Controllers;
 
 namespace VehicleSystem.Tests.Controllers
 {

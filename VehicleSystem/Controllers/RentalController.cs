@@ -6,7 +6,7 @@ using VehicleRentalSystem;
 using VehicleRentalSystem.DTO;
 using VehicleRentalSystem.Services.interfaces;
 
-namespace API_SistemaLocacao.Controllers;
+namespace VehicleRentalSystem.Controllers;
 
 [ApiController]
 [Route("[controller]")]
