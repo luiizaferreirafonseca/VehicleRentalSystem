@@ -33,8 +33,6 @@ namespace VehicleSystem.Tests.Services
                 Directory.Delete(reportsDir, recursive: true);
         }
 
-        // ─── Factory ────────────────────────────────────────────────────────────
-
         private static TbRental BuildRental(
             Guid? id = null,
             string customerName = "João Silva",
@@ -83,8 +81,6 @@ namespace VehicleSystem.Tests.Services
             return rental;
         }
 
-        // ─── GetRentalReportAsync ────────────────────────────────────────────────
-
         #region GetRentalReportAsync
 
         [Test]
@@ -126,8 +122,6 @@ namespace VehicleSystem.Tests.Services
         }
 
         #endregion
-
-        // ─── ExportRentalReportAsync (TXT) ──────────────────────────────────────
 
         #region ExportRentalReportAsync
 
@@ -257,8 +251,6 @@ namespace VehicleSystem.Tests.Services
         }
 
         #endregion
-
-        // ─── ExportRentalReportCsvAsync ──────────────────────────────────────────
 
         #region ExportRentalReportCsvAsync
 
@@ -473,8 +465,6 @@ namespace VehicleSystem.Tests.Services
         }
 
         #endregion
-
-        // ─── SaveRentalReportToRepositoryAsync ───────────────────────────────────
 
         #region SaveRentalReportToRepositoryAsync
 

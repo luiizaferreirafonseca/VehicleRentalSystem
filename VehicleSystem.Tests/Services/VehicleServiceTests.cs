@@ -25,7 +25,6 @@ namespace VehicleSystem.Tests
         [Test]
         public async Task UpdateVehicleAsync_ShouldUpdateData_WhenRequestIsValid()
         {
-            // Arrange
             var vehicleId = Guid.NewGuid();
             var existingVehicle = new TbVehicle
             {
@@ -48,10 +47,8 @@ namespace VehicleSystem.Tests
             _repositoryMock.Setup(r => r.GetVehicleByIdAsync(vehicleId))
                            .ReturnsAsync(existingVehicle);
 
-            // Act
             var result = await _service.UpdateVehicleAsync(vehicleId, updateDto);
 
-            // Assert
             Assert.IsNotNull(result);
             Assert.That(result.Year, Is.EqualTo(2022));
             Assert.That(result.DailyRate, Is.EqualTo(250m));
@@ -62,14 +59,12 @@ namespace VehicleSystem.Tests
         [Test]
         public void UpdateVehicleAsync_ShouldThrow_WhenDailyRateIsZeroOrLess()
         {
-            // Arrange
             var vehicleId = Guid.NewGuid();
             var updateDto = new VehicleUpdateDTO { Year = 2020, DailyRate = 0, Status = "available" };
             
             _repositoryMock.Setup(r => r.GetVehicleByIdAsync(vehicleId))
                            .ReturnsAsync(new TbVehicle());
 
-            // Act & Assert
             var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
                 await _service.UpdateVehicleAsync(vehicleId, updateDto));
 
@@ -79,14 +74,12 @@ namespace VehicleSystem.Tests
         [Test]
         public void UpdateVehicleAsync_ShouldThrow_WhenYearIsInvalid()
         {
-            // Arrange
             var vehicleId = Guid.NewGuid();
             var updateDto = new VehicleUpdateDTO { Year = 2050, DailyRate = 100, Status = "available" };
             
             _repositoryMock.Setup(r => r.GetVehicleByIdAsync(vehicleId))
                            .ReturnsAsync(new TbVehicle());
 
-            // Act & Assert
             var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
                 await _service.UpdateVehicleAsync(vehicleId, updateDto));
 
@@ -96,14 +89,12 @@ namespace VehicleSystem.Tests
         [Test]
         public void UpdateVehicleAsync_ShouldThrow_WhenStatusIsInvalid()
         {
-            // Arrange
             var vehicleId = Guid.NewGuid();
             var updateDto = new VehicleUpdateDTO { Year = 2020, DailyRate = 100, Status = "invalid_status" };
             
             _repositoryMock.Setup(r => r.GetVehicleByIdAsync(vehicleId))
                            .ReturnsAsync(new TbVehicle());
 
-            // Act & Assert
             var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
                 await _service.UpdateVehicleAsync(vehicleId, updateDto));
 
@@ -113,12 +104,10 @@ namespace VehicleSystem.Tests
         [Test]
         public void UpdateVehicleAsync_ShouldThrow_WhenVehicleNotFound()
         {
-            // Arrange
             var vehicleId = Guid.NewGuid();
             _repositoryMock.Setup(r => r.GetVehicleByIdAsync(vehicleId))
                            .ReturnsAsync((TbVehicle?)null);
 
-            // Act & Assert
             Assert.ThrowsAsync<KeyNotFoundException>(async () =>
                 await _service.UpdateVehicleAsync(vehicleId, new VehicleUpdateDTO()));
         }
@@ -160,8 +149,6 @@ namespace VehicleSystem.Tests
             _repositoryMock.Verify(r => r.GetVehicleByIdAsync(vehicleId), Times.Once);
             _repositoryMock.Verify(r => r.DeleteVehicleAsync(vehicle), Times.Once);
         }
-
-        // ─── GetAvailableVehiclesAsync ────────────────────────────────────────────
 
         #region GetAvailableVehiclesAsync
 

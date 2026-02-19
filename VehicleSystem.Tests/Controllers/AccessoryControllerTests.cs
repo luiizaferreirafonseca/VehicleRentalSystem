@@ -30,8 +30,6 @@ namespace VehicleSystem.Tests.Controllers
             _controller = new AccessoryController(_serviceMock.Object, _loggerMock.Object);
         }
 
-        // --- GET /accessories ---
-
         /// <summary>
         /// Garante que o endpoint retorne status 200 e uma lista vazia quando 
         /// não houver acessórios cadastrados, evitando erros no processamento do front-end.
@@ -79,7 +77,6 @@ namespace VehicleSystem.Tests.Controllers
             Assert.That(result[0].Name, Is.EqualTo("GPS"));
         }
 
-        // --- GET /accessories/{id} ---
 
         /// <summary>
         /// Testa a recuperação bem-sucedida de um acessório por ID.
@@ -182,9 +179,6 @@ namespace VehicleSystem.Tests.Controllers
                 Assert.That(problem?.Title, Is.EqualTo(Messages.ServerInternalError));
             });
         }
- 
-
-        // --- POST /accessories/add ---
 
         /// <summary>
         /// Fluxo principal de criação: Verifica se retorna 201 Created e o local do recurso.
@@ -266,7 +260,6 @@ namespace VehicleSystem.Tests.Controllers
             Assert.That(statusCodeResult?.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
         }
 
-        // --- POST /accessories (Vínculo) ---
 
         /// <summary>
         /// Garante que o sistema valide se o corpo da requisição está vazio antes de processar.
@@ -488,7 +481,6 @@ namespace VehicleSystem.Tests.Controllers
             Assert.That(statusCodeResult?.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
         }
 
-        // --- DELETE /rental/... ---
 
         /// <summary>
         /// Valida a remoção do vínculo entre acessório e aluguel.

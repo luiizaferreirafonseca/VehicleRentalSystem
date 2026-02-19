@@ -26,15 +26,11 @@ namespace VehicleSystem.Tests.Controllers
             _controller = new PaymentController(_paymentServiceMock.Object);
         }
 
-        // --- GET /payments ---
-
-        // Teste (NUnit)
         [Test]
         [Category("Unit")]
         [Property("Priority", "Medium")]
         public async Task Get_SemFiltros_DeveRetornarOkComListaDePagamentos()
         {
-            // Arrange
             var payments = new List<PaymentResponseDto>
             {
                 new PaymentResponseDto { Id = Guid.NewGuid(), Amount = 100m },
@@ -45,10 +41,8 @@ namespace VehicleSystem.Tests.Controllers
                 .Setup(s => s.GetAllPaymentsAsync(null, null, null, null))
                 .ReturnsAsync(payments);
 
-            // Act
             var result = await _controller.Get(null, null, null, null);
 
-            // Assert
             Assert.Multiple(() =>
             {
                 Assert.That(result.Result, Is.TypeOf<OkObjectResult>());
@@ -62,13 +56,11 @@ namespace VehicleSystem.Tests.Controllers
                 Times.Once);
         }
 
-        // Teste (NUnit)
         [Test]
         [Category("Unit")]
         [Property("Priority", "Medium")]
         public async Task Get_ComFiltros_DevePassarParametrosCorretamenteParaServico()
         {
-            // Arrange
             var rentalId = Guid.NewGuid();
             const string method = "PIX";
             var startDate = new DateTime(2024, 1, 1);
@@ -80,25 +72,19 @@ namespace VehicleSystem.Tests.Controllers
                 .Setup(s => s.GetAllPaymentsAsync(rentalId, method, startDate, endDate))
                 .ReturnsAsync(payments);
 
-            // Act
             var result = await _controller.Get(rentalId, method, startDate, endDate);
 
-            // Assert
             Assert.That(result.Result, Is.TypeOf<OkObjectResult>());
             _paymentServiceMock.Verify(
                 s => s.GetAllPaymentsAsync(rentalId, method, startDate, endDate),
                 Times.Once);
         }
 
-        // --- PATCH /payments/{rentalId} ---
-
-        // Teste (NUnit)
         [Test]
         [Category("Unit")]
         [Property("Priority", "High")]
         public async Task RegisterPayment_DadosValidos_DeveRetornarOkComResultado()
         {
-            // Arrange
             var rentalId = Guid.NewGuid();
             var expectedDate = new DateTime(2024, 1, 1, 12, 0, 0, DateTimeKind.Utc);
             var dto = new PaymentCreateDTO
@@ -120,10 +106,8 @@ namespace VehicleSystem.Tests.Controllers
                 .Setup(s => s.RegisterPaymentAsync(rentalId, dto))
                 .ReturnsAsync(response);
 
-            // Act
             var result = await _controller.RegisterPayment(rentalId, dto);
 
-            // Assert
             Assert.Multiple(() =>
             {
                 Assert.That(result, Is.TypeOf<OkObjectResult>());
@@ -143,34 +127,28 @@ namespace VehicleSystem.Tests.Controllers
                 Times.Once);
         }
 
-        // Teste (NUnit)
         [Test]
         [Category("Unit")]
         [Property("Priority", "Medium")]
         public async Task RegisterPayment_ModelStateInvalido_DeveRetornarBadRequest()
         {
-            // Arrange
             var rentalId = Guid.NewGuid();
             var dto = new PaymentCreateDTO();
             _controller.ModelState.AddModelError("Amount", "Required");
 
-            // Act
             var result = await _controller.RegisterPayment(rentalId, dto);
 
-            // Assert
             Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
             _paymentServiceMock.Verify(
                 s => s.RegisterPaymentAsync(It.IsAny<Guid>(), It.IsAny<PaymentCreateDTO>()),
                 Times.Never);
         }
 
-        // Teste (NUnit)
         [Test]
         [Category("Unit")]
         [Property("Priority", "High")]
         public async Task RegisterPayment_AluguelNaoEncontrado_DeveRetornarNotFound()
         {
-            // Arrange
             var rentalId = Guid.NewGuid();
             var dto = new PaymentCreateDTO { Amount = 100m, PaymentMethod = VehicleRentalSystem.Enums.EnumPaymentMethod.PIX };
 
@@ -178,10 +156,8 @@ namespace VehicleSystem.Tests.Controllers
                 .Setup(s => s.RegisterPaymentAsync(rentalId, dto))
                 .ThrowsAsync(new KeyNotFoundException("Rental not found"));
 
-            // Act
             var result = await _controller.RegisterPayment(rentalId, dto);
 
-            // Assert
             Assert.Multiple(() =>
             {
                 Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
@@ -197,13 +173,11 @@ namespace VehicleSystem.Tests.Controllers
                 Times.Once);
         }
 
-        // Teste (NUnit)
         [Test]
         [Category("Unit")]
         [Property("Priority", "High")]
         public async Task RegisterPayment_OperacaoInvalida_DeveRetornarBadRequest()
         {
-            // Arrange
             var rentalId = Guid.NewGuid();
             var dto = new PaymentCreateDTO { Amount = 100m, PaymentMethod = VehicleRentalSystem.Enums.EnumPaymentMethod.PIX };
 
@@ -211,10 +185,8 @@ namespace VehicleSystem.Tests.Controllers
                 .Setup(s => s.RegisterPaymentAsync(rentalId, dto))
                 .ThrowsAsync(new InvalidOperationException("Invalid operation"));
 
-            // Act
             var result = await _controller.RegisterPayment(rentalId, dto);
 
-            // Assert
             Assert.Multiple(() =>
             {
                 Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
@@ -230,13 +202,11 @@ namespace VehicleSystem.Tests.Controllers
                 Times.Once);
         }
 
-        // Teste (NUnit)
         [Test]
         [Category("Unit")]
         [Property("Priority", "Low")]
         public async Task RegisterPayment_ExcecaoNaoTratada_DeveRetornarErro500()
         {
-            // Arrange
             var rentalId = Guid.NewGuid();
             var dto = new PaymentCreateDTO { Amount = 100m, PaymentMethod = VehicleRentalSystem.Enums.EnumPaymentMethod.PIX };
 
@@ -244,10 +214,8 @@ namespace VehicleSystem.Tests.Controllers
                 .Setup(s => s.RegisterPaymentAsync(rentalId, dto))
                 .ThrowsAsync(new Exception("Unexpected"));
 
-            // Act
             var result = await _controller.RegisterPayment(rentalId, dto);
 
-            // Assert
             var objectResult = result as ObjectResult;
             Assert.That(objectResult, Is.Not.Null);
             Assert.That(objectResult!.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));

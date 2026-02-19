@@ -60,7 +60,6 @@ namespace VehicleSystem.Tests.Services
         [Category("Unit")]
         public async Task GetAccessoriesByRentalIdAsync_ExistingAccessories_ReturnsMappedList()
         {
-            // Arrange
             var rentalId = Guid.NewGuid();
             var accessories = new List<TbAccessory>
     {
@@ -70,10 +69,8 @@ namespace VehicleSystem.Tests.Services
             _rentalRepositoryMock.Setup(r => r.GetRentalByIdAsync(rentalId)).ReturnsAsync(new TbRental());
             _accessoryRepositoryMock.Setup(r => r.GetByRentalIdAsync(rentalId)).ReturnsAsync(accessories);
 
-            // Act
             var result = await _service.GetAccessoriesByRentalIdAsync(rentalId);
 
-            // Assert
             Assert.Multiple(() =>
             {
                 Assert.That(result.Count(), Is.EqualTo(1));
@@ -88,7 +85,6 @@ namespace VehicleSystem.Tests.Services
         [Category("Unit")]
         public async Task GetAccessoriesByRentalIdAsync_WithAccessories_ReturnsMappedList()
         {
-            // Arrange
             var rentalId = Guid.NewGuid();
             var accessories = new List<TbAccessory>
     {
@@ -99,10 +95,8 @@ namespace VehicleSystem.Tests.Services
             _rentalRepositoryMock.Setup(r => r.GetRentalByIdAsync(rentalId)).ReturnsAsync(new TbRental());
             _accessoryRepositoryMock.Setup(r => r.GetByRentalIdAsync(rentalId)).ReturnsAsync(accessories);
 
-            // Act
             var result = await _service.GetAccessoriesByRentalIdAsync(rentalId);
 
-            // Assert
             Assert.Multiple(() =>
             {
                 Assert.That(result.Count(), Is.EqualTo(2));
@@ -129,17 +123,14 @@ namespace VehicleSystem.Tests.Services
         [Category("Unit")]
         public async Task GetAccessoriesByRentalIdAsync_RepositoryReturnsNull_CoversNullBranch()
         {
-            // Arrange
             var rentalId = Guid.NewGuid();
             _rentalRepositoryMock.Setup(r => r.GetRentalByIdAsync(rentalId)).ReturnsAsync(new TbRental());
             _accessoryRepositoryMock
                 .Setup(r => r.GetByRentalIdAsync(rentalId))
                 .ReturnsAsync((IEnumerable<TbAccessory>)null!);
 
-            // Act
             var result = await _service.GetAccessoriesByRentalIdAsync(rentalId);
 
-            // Assert
             Assert.That(result, Is.Empty);
         }
 
@@ -150,7 +141,6 @@ namespace VehicleSystem.Tests.Services
         [Category("Unit")]
         public async Task GetAccessoriesByRentalIdAsync_ValidRental_ReturnsMappedDtoList()
         {
-            // Arrange
             var rentalId = Guid.NewGuid();
             var accessories = new List<TbAccessory>
     {
@@ -160,10 +150,8 @@ namespace VehicleSystem.Tests.Services
             _rentalRepositoryMock.Setup(r => r.GetRentalByIdAsync(rentalId)).ReturnsAsync(new TbRental());
             _accessoryRepositoryMock.Setup(r => r.GetByRentalIdAsync(rentalId)).ReturnsAsync(accessories);
 
-            // Act
             var result = await _service.GetAccessoriesByRentalIdAsync(rentalId);
 
-            // Assert
             Assert.Multiple(() =>
             {
                 Assert.That(result, Is.Not.Null);
@@ -179,15 +167,12 @@ namespace VehicleSystem.Tests.Services
         [Category("Unit")]
         public async Task GetAccessoryByIdAsync_ValidId_ReturnsMappedDto()
         {
-            // Arrange
             var id = Guid.NewGuid();
             var accessory = new TbAccessory { Id = id, Name = "GPS", DailyRate = 10.0m };
             _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync(accessory);
 
-            // Act
             var result = await _service.GetAccessoryByIdAsync(id);
 
-            // Assert - Valida cada campo para cobrir as linhas vermelhas de projeção
             Assert.Multiple(() =>
             {
                 Assert.That(result.Id, Is.EqualTo(id));
@@ -203,15 +188,12 @@ namespace VehicleSystem.Tests.Services
         [Category("Unit")]
         public async Task GetAccessoryByIdAsync_ExistingId_ReturnsCorrectMapping()
         {
-            // Arrange
             var accessoryId = Guid.NewGuid();
             var accessory = new TbAccessory { Id = accessoryId, Name = "GPS Plus", DailyRate = 12.0m };
             _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(accessoryId)).ReturnsAsync(accessory);
 
-            // Act
             var result = await _service.GetAccessoryByIdAsync(accessoryId);
 
-            // Assert - Valida cada campo para cobrir as linhas de projeção (new AccessoryResponseDto)
             Assert.Multiple(() =>
             {
                 Assert.That(result.Id, Is.EqualTo(accessory.Id));
@@ -227,15 +209,12 @@ namespace VehicleSystem.Tests.Services
         [Category("Unit")]
         public async Task GetAccessoryByIdAsync_ExistingId_ExecutesMapping()
         {
-            // Arrange
             var id = Guid.NewGuid();
             var accessory = new TbAccessory { Id = id, Name = "GPS", DailyRate = 10m };
             _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync(accessory);
 
-            // Act
             var result = await _service.GetAccessoryByIdAsync(id);
 
-            // Assert - Validação direta para cobrir as linhas de projeção
             Assert.Multiple(() =>
             {
                 Assert.That(result.Id, Is.EqualTo(id));
@@ -250,15 +229,12 @@ namespace VehicleSystem.Tests.Services
         [Category("Unit")]
         public async Task GetAccessoryByIdAsync_ExistingAccessory_ReturnsMappedDto()
         {
-            // Arrange
             var id = Guid.NewGuid();
             var accessory = new TbAccessory { Id = id, Name = "GPS", DailyRate = 15.0m };
             _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync(accessory);
 
-            // Act
             var result = await _service.GetAccessoryByIdAsync(id);
 
-            // Assert - Validação campo a campo para cobrir as linhas vermelhas
             Assert.Multiple(() =>
             {
                 Assert.That(result.Id, Is.EqualTo(id));
@@ -278,14 +254,11 @@ namespace VehicleSystem.Tests.Services
         [Category("Unit")]
         public async Task CreateAccessoryAsync_ValidDto_ExecutesInternalInstantiation()
         {
-            // Arrange
             var dto = new AccessoryCreateDto { Name = "Assento Elevação", DailyRate = 15.5m };
             _accessoryRepositoryMock.Setup(r => r.GetByNameAsync(dto.Name)).ReturnsAsync((TbAccessory)null!);
 
-            // Act
             var result = await _service.CreateAccessoryAsync(dto);
 
-            // Assert - Valida se o repositório recebeu o objeto com os dados do DTO e o Guid gerado
             _accessoryRepositoryMock.Verify(r => r.AddAsync(It.Is<TbAccessory>(a =>
                 a.Name == dto.Name &&
                 a.DailyRate == dto.DailyRate &&
@@ -299,14 +272,11 @@ namespace VehicleSystem.Tests.Services
         [Category("Unit")]
         public async Task CreateAccessoryAsync_ValidData_PersistsAndReturnsDto()
         {
-            // Arrange
             var dto = new AccessoryCreateDto { Name = "Cadeira Infantil", DailyRate = 20.0m };
             _accessoryRepositoryMock.Setup(r => r.GetByNameAsync(dto.Name)).ReturnsAsync((TbAccessory)null!);
 
-            // Act
             var result = await _service.CreateAccessoryAsync(dto);
 
-            // Assert
             _accessoryRepositoryMock.Verify(r => r.AddAsync(It.Is<TbAccessory>(a => a.Name == dto.Name)), Times.Once);
             Assert.That(result.Id, Is.Not.EqualTo(Guid.Empty));
         }
@@ -318,14 +288,11 @@ namespace VehicleSystem.Tests.Services
         [Category("Unit")]
         public async Task CreateAccessoryAsync_ValidData_CoversEntityInstantiation()
         {
-            // Arrange
             var dto = new AccessoryCreateDto { Name = "Cadeira Bebê", DailyRate = 20m };
             _accessoryRepositoryMock.Setup(r => r.GetByNameAsync(dto.Name)).ReturnsAsync((TbAccessory)null!);
 
-            // Act
             var result = await _service.CreateAccessoryAsync(dto);
 
-            // Assert - Verifica se AddAsync foi chamado com um objeto contendo os dados do DTO
             _accessoryRepositoryMock.Verify(r => r.AddAsync(It.Is<TbAccessory>(a =>
                 a.Name == dto.Name &&
                 a.DailyRate == dto.DailyRate &&
@@ -338,14 +305,11 @@ namespace VehicleSystem.Tests.Services
         [Category("Unit")]
         public async Task CreateAccessoryAsync_ValidData_ReturnsAccessoryResponseDto()
         {
-            // Arrange
             var dto = new AccessoryCreateDto { Name = "Cadeira de Bebê", DailyRate = 25.50m };
             _accessoryRepositoryMock.Setup(r => r.GetByNameAsync(dto.Name)).ReturnsAsync((TbAccessory)null!);
 
-            // Act
             var result = await _service.CreateAccessoryAsync(dto);
 
-            // Assert
             Assert.Multiple(() =>
             {
                 Assert.That(result.Name, Is.EqualTo(dto.Name));
@@ -376,14 +340,11 @@ namespace VehicleSystem.Tests.Services
         [Category("Unit")]
         public async Task CreateAccessoryAsync_NewAccessory_CallsRepositoryWithCorrectData()
         {
-            // Arrange
             var dto = new AccessoryCreateDto { Name = "WiFi Hotspot", DailyRate = 5.0m };
             _accessoryRepositoryMock.Setup(r => r.GetByNameAsync(dto.Name)).ReturnsAsync((TbAccessory)null!);
 
-            // Act
             var result = await _service.CreateAccessoryAsync(dto);
 
-            // Assert
             _accessoryRepositoryMock.Verify(r => r.AddAsync(It.Is<TbAccessory>(a =>
                 a.Name == dto.Name &&
                 a.DailyRate == dto.DailyRate)), Times.Once);
@@ -413,7 +374,6 @@ namespace VehicleSystem.Tests.Services
         [Category("BusinessRule")]
         public async Task AddAccessoryToRentalAsync_MultipleDays_CalculatesTotalCorrectly()
         {
-            // Arrange
             var start = DateTime.Now.Date;
             var end = start.AddDays(3);
             var rental = new TbRental { StartDate = start, ExpectedEndDate = end, TotalAmount = 100m };
@@ -422,10 +382,8 @@ namespace VehicleSystem.Tests.Services
             _rentalRepositoryMock.Setup(r => r.GetRentalByIdAsync(It.IsAny<Guid>())).ReturnsAsync(rental);
             _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(accessory);
 
-            // Act
             await _service.AddAccessoryToRentalAsync(Guid.NewGuid(), Guid.NewGuid());
 
-            // Assert - calcula o esperado usando a mesma lógica do serviço
             var days = (rental.ExpectedEndDate.Date - rental.StartDate.Date).Days;
             if (days <= 0) days = 1;
             var expectedTotal = 100m + (accessory.DailyRate * days);
@@ -448,10 +406,8 @@ namespace VehicleSystem.Tests.Services
             _rentalRepositoryMock.Setup(r => r.GetRentalByIdAsync(It.IsAny<Guid>())).ReturnsAsync(rental);
             _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(accessory);
 
-            // Act
             await _service.AddAccessoryToRentalAsync(Guid.NewGuid(), Guid.NewGuid());
 
-            // Assert - calcula o esperado usando a mesma lógica do serviço
             var days = (rental.ExpectedEndDate.Date - rental.StartDate.Date).Days;
             if (days <= 0) days = 1;
             var expectedTotal = 100m + (accessory.DailyRate * days);
@@ -476,10 +432,9 @@ namespace VehicleSystem.Tests.Services
         [Category("BusinessRule")]
         public async Task AddAccessoryToRentalAsync_RentalCanceled_ThrowsInvalidOperationException()
         {
-            // Arrange
             var rentalId = Guid.NewGuid();
             var accessoryId = Guid.NewGuid();
-            var rental = new TbRental { Status = RentalStatus.canceled.ToString() }; // usar o mesmo valor do enum
+            var rental = new TbRental { Status = RentalStatus.canceled.ToString() }; 
             var accessory = new TbAccessory { Id = accessoryId, DailyRate = 10m };
 
             _rentalRepositoryMock.Setup(r => r.GetRentalByIdAsync(rentalId)).ReturnsAsync(rental);
@@ -487,7 +442,6 @@ namespace VehicleSystem.Tests.Services
             // Setups extras para não falhar em chamadas posteriores (mesmo que exceção ocorra antes)
             _accessoryRepositoryMock.Setup(r => r.IsLinkedToRentalAsync(rentalId, accessoryId)).ReturnsAsync(false);
 
-            // Act & Assert
             var ex = Assert.ThrowsAsync<InvalidOperationException>(() => _service.AddAccessoryToRentalAsync(rentalId, accessoryId));
             Assert.That(ex.Message, Is.EqualTo("Não é possível atribuir acessórios a uma locação cancelada."));
             _accessoryRepositoryMock.Verify(r => r.LinkToRentalAsync(rentalId, accessoryId), Times.Never);
@@ -498,7 +452,6 @@ namespace VehicleSystem.Tests.Services
         [Category("BusinessRule")]
         public async Task AddAccessoryToRentalAsync_ValidRentalAndAccessory_UpdatesTotalAndLinksCorrectly()
         {
-            // Arrange
             var rentalId = Guid.NewGuid();
             var accessoryId = Guid.NewGuid();
             var startDate = DateTime.Now.Date;
@@ -510,10 +463,8 @@ namespace VehicleSystem.Tests.Services
             _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(accessoryId)).ReturnsAsync(accessory);
             _accessoryRepositoryMock.Setup(r => r.IsLinkedToRentalAsync(rentalId, accessoryId)).ReturnsAsync(false);
 
-            // Act
             await _service.AddAccessoryToRentalAsync(rentalId, accessoryId);
 
-            // Assert
             Assert.That(rental.TotalAmount, Is.EqualTo(140m));
             _rentalRepositoryMock.Verify(r => r.UpdateAsync(rental), Times.Once);
             _accessoryRepositoryMock.Verify(r => r.LinkToRentalAsync(rentalId, accessoryId), Times.Once);
@@ -523,7 +474,6 @@ namespace VehicleSystem.Tests.Services
         [Category("BusinessRule")]
         public async Task RemoveAccessoryFromRentalAsync_ValidLink_DecreasesTotalAndRemovesLink()
         {
-            // Arrange
             var rentalId = Guid.NewGuid();
             var accessoryId = Guid.NewGuid();
             var startDate = DateTime.Now.Date;
@@ -535,10 +485,8 @@ namespace VehicleSystem.Tests.Services
             _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(accessoryId)).ReturnsAsync(accessory);
             _accessoryRepositoryMock.Setup(r => r.IsLinkedToRentalAsync(rentalId, accessoryId)).ReturnsAsync(true);
 
-            // Act
             await _service.RemoveAccessoryFromRentalAsync(rentalId, accessoryId);
 
-            // Assert
             Assert.That(rental.TotalAmount, Is.EqualTo(110m));
             _accessoryRepositoryMock.Verify(r => r.RemoveLinkAsync(rentalId, accessoryId), Times.Once);
             _rentalRepositoryMock.Verify(r => r.UpdateAsync(rental), Times.Once);
@@ -548,7 +496,6 @@ namespace VehicleSystem.Tests.Services
         [Category("BusinessRule")]
         public async Task AddAccessoryToRentalAsync_DaysGreaterThanZero_CallsLinkAndUpdateAndUpdatesTotal()
         {
-            // Arrange - força days > 0
             var start = DateTime.Now.Date;
             var end = start.AddDays(3);
             var rental = new TbRental { StartDate = start, ExpectedEndDate = end, TotalAmount = 50m, Status = "active" };
@@ -560,7 +507,6 @@ namespace VehicleSystem.Tests.Services
             _accessoryRepositoryMock.Setup(r => r.LinkToRentalAsync(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(Task.CompletedTask);
             _rentalRepositoryMock.Setup(r => r.UpdateAsync(It.IsAny<TbRental>())).Returns(Task.CompletedTask);
 
-            // Act
             await _service.AddAccessoryToRentalAsync(Guid.NewGuid(), Guid.NewGuid());
 
             // Assert - 50 + (10 * 3) = 80
@@ -573,7 +519,6 @@ namespace VehicleSystem.Tests.Services
         [Category("BusinessRule")]
         public async Task AddAccessoryToRentalAsync_DatesEqual_UsesOneDayAndCallsLinkAndUpdate()
         {
-            // Arrange - força days == 0
             var date = DateTime.Now.Date;
             var rental = new TbRental { StartDate = date, ExpectedEndDate = date, TotalAmount = 0m, Status = "active" };
             var accessory = new TbAccessory { DailyRate = 20m };
@@ -584,7 +529,6 @@ namespace VehicleSystem.Tests.Services
             _accessoryRepositoryMock.Setup(r => r.LinkToRentalAsync(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(Task.CompletedTask);
             _rentalRepositoryMock.Setup(r => r.UpdateAsync(It.IsAny<TbRental>())).Returns(Task.CompletedTask);
 
-            // Act
             await _service.AddAccessoryToRentalAsync(Guid.NewGuid(), Guid.NewGuid());
 
             // Assert - 0 + (20 * 1) = 20
@@ -602,10 +546,8 @@ namespace VehicleSystem.Tests.Services
         [Category("Validation")]
         public void AddAccessoryToRentalAsync_RentalNotFound_ThrowsKeyNotFoundException()
         {
-            // Arrange
             _rentalRepositoryMock.Setup(r => r.GetRentalByIdAsync(It.IsAny<Guid>())).ReturnsAsync((TbRental)null!);
 
-            // Act & Assert
             var ex = Assert.ThrowsAsync<KeyNotFoundException>(() =>
                 _service.AddAccessoryToRentalAsync(Guid.NewGuid(), Guid.NewGuid()));
 
@@ -619,11 +561,9 @@ namespace VehicleSystem.Tests.Services
         [Category("Validation")]
         public void AddAccessoryToRentalAsync_RentalIdNotFound_ThrowsKeyNotFoundException()
         {
-            // Arrange
             var rentalId = Guid.NewGuid();
             _rentalRepositoryMock.Setup(r => r.GetRentalByIdAsync(rentalId)).ReturnsAsync((TbRental)null!);
 
-            // Act & Assert
             Assert.ThrowsAsync<KeyNotFoundException>(() =>
                 _service.AddAccessoryToRentalAsync(rentalId, Guid.NewGuid()));
         }
@@ -678,7 +618,6 @@ namespace VehicleSystem.Tests.Services
         [Category("BusinessRule")]
         public async Task RemoveAccessoryFromRentalAsync_DaysGreaterThanZero_DecreasesTotalCorrectly()
         {
-            // Arrange
             var start = DateTime.Now.Date;
             var end = start.AddDays(2); // 2 dias de diferença
             var rental = new TbRental { StartDate = start, ExpectedEndDate = end, TotalAmount = 200m };
@@ -688,7 +627,6 @@ namespace VehicleSystem.Tests.Services
             _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(accessory);
             _accessoryRepositoryMock.Setup(r => r.IsLinkedToRentalAsync(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(true);
 
-            // Act
             await _service.RemoveAccessoryFromRentalAsync(Guid.NewGuid(), accessory.Id);
 
             // Assert - Redução de (50 * 2 dias) = 100. Total final: 200 - 100 = 100.
@@ -702,7 +640,6 @@ namespace VehicleSystem.Tests.Services
         [Category("BusinessRule")]
         public async Task RemoveAccessoryFromRentalAsync_DaysGreaterThanZero_CalculatesReductionCorrectly()
         {
-            // Arrange
             var startDate = DateTime.Now.Date;
             var endDate = startDate.AddDays(4); // 4 dias de diferença
             var rental = new TbRental { StartDate = startDate, ExpectedEndDate = endDate, TotalAmount = 100m };
@@ -712,7 +649,6 @@ namespace VehicleSystem.Tests.Services
             _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(accessory);
             _accessoryRepositoryMock.Setup(r => r.IsLinkedToRentalAsync(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(true);
 
-            // Act
             await _service.RemoveAccessoryFromRentalAsync(Guid.NewGuid(), Guid.NewGuid());
 
             // Assert - Redução deve ser 10 * 4 = 40. Total final: 100 - 40 = 60.
@@ -726,7 +662,6 @@ namespace VehicleSystem.Tests.Services
         [Category("BusinessRule")]
         public async Task RemoveAccessoryFromRentalAsync_MultipleDays_ExecutesCorrectCalculation()
         {
-            // Arrange
             var start = DateTime.Now.Date;
             var end = start.AddDays(5); // 5 dias (força days > 0)
             var rental = new TbRental { StartDate = start, ExpectedEndDate = end, TotalAmount = 200m };
@@ -736,7 +671,6 @@ namespace VehicleSystem.Tests.Services
             _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(accessory);
             _accessoryRepositoryMock.Setup(r => r.IsLinkedToRentalAsync(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(true);
 
-            // Act
             await _service.RemoveAccessoryFromRentalAsync(Guid.NewGuid(), accessory.Id);
 
             // Assert - Redução de 10 * 5 = 50. Total: 200 - 50 = 150.
@@ -750,7 +684,6 @@ namespace VehicleSystem.Tests.Services
         [Category("BusinessRule")]
         public async Task RemoveAccessoryFromRentalAsync_PositivePeriod_ExecutesNormalCalculation()
         {
-            // Arrange
             var start = DateTime.Now.Date;
             var end = start.AddDays(3); // 3 dias de diferença
             var rental = new TbRental { StartDate = start, ExpectedEndDate = end, TotalAmount = 300m };
@@ -760,7 +693,6 @@ namespace VehicleSystem.Tests.Services
             _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(accessory);
             _accessoryRepositoryMock.Setup(r => r.IsLinkedToRentalAsync(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(true);
 
-            // Act
             await _service.RemoveAccessoryFromRentalAsync(Guid.NewGuid(), accessory.Id);
 
             // Assert - Redução de 50 * 3 = 150. Total: 300 - 150 = 150.
@@ -774,7 +706,6 @@ namespace VehicleSystem.Tests.Services
         [Category("BusinessRule")]
         public async Task RemoveAccessoryFromRentalAsync_PositiveDays_CalculatesCorrectReduction()
         {
-            // Arrange
             var start = DateTime.Now.Date;
             var end = start.AddDays(2); // Diferença de 2 dias (cai no else implícito do if days <= 0)
             var rental = new TbRental { StartDate = start, ExpectedEndDate = end, TotalAmount = 100m };
@@ -784,7 +715,6 @@ namespace VehicleSystem.Tests.Services
             _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(accessory);
             _accessoryRepositoryMock.Setup(r => r.IsLinkedToRentalAsync(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(true);
 
-            // Act
             await _service.RemoveAccessoryFromRentalAsync(Guid.NewGuid(), accessory.Id);
 
             // Assert - (10 * 2 dias) = 20 de redução. Total: 100 - 20 = 80.
@@ -798,10 +728,8 @@ namespace VehicleSystem.Tests.Services
         [Category("Validation")]
         public void RemoveAccessoryFromRentalAsync_RentalNotFound_ThrowsKeyNotFoundException()
         {
-            // Arrange
             _rentalRepositoryMock.Setup(r => r.GetRentalByIdAsync(It.IsAny<Guid>())).ReturnsAsync((TbRental?)null);
 
-            // Act & Assert
             Assert.ThrowsAsync<KeyNotFoundException>(() => _service.RemoveAccessoryFromRentalAsync(Guid.NewGuid(), Guid.NewGuid()));
         }
 
@@ -812,11 +740,9 @@ namespace VehicleSystem.Tests.Services
         [Category("Validation")]
         public void RemoveAccessoryFromRentalAsync_AccessoryNotFound_ThrowsKeyNotFoundException()
         {
-            // Arrange
             _rentalRepositoryMock.Setup(r => r.GetRentalByIdAsync(It.IsAny<Guid>())).ReturnsAsync(new TbRental());
             _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync((TbAccessory?)null);
 
-            // Act & Assert
             Assert.ThrowsAsync<KeyNotFoundException>(() => _service.RemoveAccessoryFromRentalAsync(Guid.NewGuid(), Guid.NewGuid()));
         }
 
@@ -867,7 +793,6 @@ namespace VehicleSystem.Tests.Services
         [Category("BusinessRule")]
         public async Task RemoveAccessoryFromRentalAsync_DatesAreEqual_UsesOneDayMinimum()
         {
-            // Arrange: força days == 0 para executar o ramo days <= 0
             var date = DateTime.Now.Date;
             var rental = new TbRental { StartDate = date, ExpectedEndDate = date, TotalAmount = 100m };
             var accessory = new TbAccessory { DailyRate = 20m };
@@ -878,7 +803,6 @@ namespace VehicleSystem.Tests.Services
             _accessoryRepositoryMock.Setup(r => r.RemoveLinkAsync(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(Task.CompletedTask);
             _rentalRepositoryMock.Setup(r => r.UpdateAsync(It.IsAny<TbRental>())).Returns(Task.CompletedTask);
 
-            // Act
             await _service.RemoveAccessoryFromRentalAsync(Guid.NewGuid(), Guid.NewGuid());
 
             // Assert - deve subtrair 1 dia * dailyRate
@@ -896,7 +820,6 @@ namespace VehicleSystem.Tests.Services
         [Category("BusinessRule")]
         public async Task AddAccessoryToRentalAsync_PositivePeriod_UpdatesTotalCorrectly()
         {
-            // Arrange
             var start = DateTime.Now.Date;
             var end = start.AddDays(3); // 3 dias de diferença (cobre o ramo 'false' do if days <= 0)
             var rental = new TbRental { StartDate = start, ExpectedEndDate = end, TotalAmount = 100m };
@@ -905,7 +828,6 @@ namespace VehicleSystem.Tests.Services
             _rentalRepositoryMock.Setup(r => r.GetRentalByIdAsync(It.IsAny<Guid>())).ReturnsAsync(rental);
             _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(accessory);
 
-            // Act
             await _service.AddAccessoryToRentalAsync(Guid.NewGuid(), Guid.NewGuid());
 
             // Assert - 100 (original) + (20 * 3 dias) = 160
@@ -919,7 +841,6 @@ namespace VehicleSystem.Tests.Services
         [Category("BusinessRule")]
         public async Task AddAccessoryToRentalAsync_PositivePeriod_CalculatesAndUpdatesTotal()
         {
-            // Arrange
             var start = DateTime.Now.Date;
             var end = start.AddDays(4); // 4 dias de diferença
             var rental = new TbRental { StartDate = start, ExpectedEndDate = end, TotalAmount = 100m };
@@ -928,7 +849,6 @@ namespace VehicleSystem.Tests.Services
             _rentalRepositoryMock.Setup(r => r.GetRentalByIdAsync(It.IsAny<Guid>())).ReturnsAsync(rental);
             _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(accessory);
 
-            // Act
             await _service.AddAccessoryToRentalAsync(Guid.NewGuid(), Guid.NewGuid());
 
             // Assert - (10 * 4 dias) + 100 = 140
@@ -943,7 +863,6 @@ namespace VehicleSystem.Tests.Services
         [Category("BusinessRule")]
         public async Task AddAccessoryToRentalAsync_ValidData_UpdatesRentalTotalAmount()
         {
-            // Arrange
             var start = DateTime.Now.Date;
             var rental = new TbRental { StartDate = start, ExpectedEndDate = start.AddDays(2), TotalAmount = 100m };
             var accessory = new TbAccessory { DailyRate = 50m };
@@ -951,10 +870,8 @@ namespace VehicleSystem.Tests.Services
             _rentalRepositoryMock.Setup(r => r.GetRentalByIdAsync(It.IsAny<Guid>())).ReturnsAsync(rental);
             _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(accessory);
 
-            // Act
             await _service.AddAccessoryToRentalAsync(Guid.NewGuid(), Guid.NewGuid());
 
-            // Assert - calcula o esperado a partir do próprio rental
             var days = (rental.ExpectedEndDate.Date - rental.StartDate.Date).Days;
             if (days <= 0) days = 1;
             var expected = 100m + (accessory.DailyRate * days);
@@ -969,17 +886,12 @@ namespace VehicleSystem.Tests.Services
         [Category("Validation")]
         public void AddAccessoryToRentalAsync_AccessoryNotFound_ThrowsKeyNotFoundException()
         {
-            // Arrange
             var rentalId = Guid.NewGuid();
             _rentalRepositoryMock.Setup(r => r.GetRentalByIdAsync(rentalId)).ReturnsAsync(new TbRental());
             _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync((TbAccessory?)null);
 
-            // Act & Assert
             Assert.ThrowsAsync<KeyNotFoundException>(() => _service.AddAccessoryToRentalAsync(rentalId, Guid.NewGuid()));
         }
-
-
-
 
         /// <summary>
         /// Sucesso: Garante cobertura da ramificação onde a diferença de dias é zero, forçando o cálculo para 1 dia.
@@ -988,7 +900,6 @@ namespace VehicleSystem.Tests.Services
         [Category("BusinessRule")]
         public async Task AddAccessoryToRentalAsync_DatesAreEqual_UsesOneDayMinimum()
         {
-            // Arrange
             var date = DateTime.Now.Date;
             var rental = new TbRental { StartDate = date, ExpectedEndDate = date, TotalAmount = 50m };
             var accessory = new TbAccessory { DailyRate = 20m };
@@ -999,7 +910,6 @@ namespace VehicleSystem.Tests.Services
             _accessoryRepositoryMock.Setup(r => r.LinkToRentalAsync(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(Task.CompletedTask);
             _rentalRepositoryMock.Setup(r => r.UpdateAsync(It.IsAny<TbRental>())).Returns(Task.CompletedTask);
 
-            // Act
             await _service.AddAccessoryToRentalAsync(Guid.NewGuid(), Guid.NewGuid());
 
             // Assert - Deve somar 20m (1 dia) ao total original
@@ -1011,7 +921,6 @@ namespace VehicleSystem.Tests.Services
         [Category("BusinessRule")]
         public async Task AddAccessoryToRentalAsync_ExpectedEndGreaterThanStart_UsesDaysAndUpdatesTotal()
         {
-            // Arrange
             var start = DateTime.Now.Date;
             var end = start.AddDays(2);
             var rental = new TbRental { StartDate = start, ExpectedEndDate = end, TotalAmount = 10m };
@@ -1023,10 +932,8 @@ namespace VehicleSystem.Tests.Services
             _accessoryRepositoryMock.Setup(r => r.LinkToRentalAsync(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(Task.CompletedTask);
             _rentalRepositoryMock.Setup(r => r.UpdateAsync(It.IsAny<TbRental>())).Returns(Task.CompletedTask);
 
-            // Act
             await _service.AddAccessoryToRentalAsync(Guid.NewGuid(), Guid.NewGuid());
 
-            // 10 + (15 * 2) = 40
             Assert.That(rental.TotalAmount, Is.EqualTo(40m));
             _rentalRepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<TbRental>()), Times.Once);
         }
@@ -1035,7 +942,6 @@ namespace VehicleSystem.Tests.Services
         [Category("BusinessRule")]
         public async Task AddAccessoryToRentalAsync_EndBeforeStart_UsesOneDayAndUpdatesTotal()
         {
-            // Arrange: ExpectedEndDate anterior a StartDate deve ser tratado como 1 dia
             var start = DateTime.Now.Date;
             var end = start.AddDays(-1);
             var rental = new TbRental { StartDate = start, ExpectedEndDate = end, TotalAmount = 5m };
@@ -1047,10 +953,8 @@ namespace VehicleSystem.Tests.Services
             _accessoryRepositoryMock.Setup(r => r.LinkToRentalAsync(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(Task.CompletedTask);
             _rentalRepositoryMock.Setup(r => r.UpdateAsync(It.IsAny<TbRental>())).Returns(Task.CompletedTask);
 
-            // Act
             await _service.AddAccessoryToRentalAsync(Guid.NewGuid(), Guid.NewGuid());
 
-            // 5 + (8 * 1) = 13
             Assert.That(rental.TotalAmount, Is.EqualTo(13m));
             _rentalRepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<TbRental>()), Times.Once);
         }

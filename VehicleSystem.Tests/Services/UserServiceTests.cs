@@ -45,14 +45,12 @@ namespace VehicleSystem.Tests.Services
         [Test]
         public void CreateUserAsync_QuandoEmailJaExistir_DeveLancarExcecao()
         {
-            // Arrange
             var userDto = new UserCreateDTO { Name = "Duplicado", Email = "existe@teste.com" };
 
             _repositoryMock
                 .Setup(x => x.ExistsByEmailAsync(userDto.Email))
                 .ReturnsAsync(true);
 
-            // Act & Assert
             var ex = Assert.ThrowsAsync<InvalidOperationException>(async () => 
                 await _service.CreateUserAsync(userDto));
 
@@ -133,10 +131,8 @@ namespace VehicleSystem.Tests.Services
         [Test]
         public void CreateUserAsync_ShouldThrow_WhenEmailIsMissing()
         {
-            // Arrange
             var dto = new UserCreateDTO { Name = "Ale", Email = "" }; 
 
-            // Act & Assert
             var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
                 await _service.CreateUserAsync(dto));
 

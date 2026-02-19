@@ -249,8 +249,6 @@ namespace VehicleSystem.Tests
             Assert.That(ex.Message, Is.EqualTo(Messages.PageInvalid));
         }
 
-        // --- TESTES DE ATUALIZAÇÃO DE LOCAÇÃO ---
-
         [Test]
         public async Task UpdateRentalDatesAsync_ShouldRecalculateTotalAmount_WhenDatesAreUpdated()
         {
@@ -307,7 +305,6 @@ namespace VehicleSystem.Tests
         [Test]
         public async Task CancelRentalAsync_ShouldCancelAndReleaseVehicle_WhenRentalIsActive()
         {
-            // Arrange
             var rentalId = Guid.NewGuid();
             var vehicleId = Guid.NewGuid();
             var vehicle = new TbVehicle { Id = vehicleId, Status = VehicleStatus.rented.ToString() };
@@ -325,10 +322,8 @@ namespace VehicleSystem.Tests
             _repositoryMock.Setup(r => r.SaveChangesAsync())
                            .Returns(Task.CompletedTask);
 
-            // Act
             var result = await _service.CancelRentalAsync(rentalId);
 
-            // Assert
             Assert.That(result.Status, Is.EqualTo(RentalStatus.canceled.ToString()));
             Assert.That(vehicle.Status, Is.EqualTo(VehicleStatus.available.ToString())); 
             _repositoryMock.Verify(r => r.SaveChangesAsync(), Times.Once);
@@ -337,7 +332,6 @@ namespace VehicleSystem.Tests
         [Test]
         public void CancelRentalAsync_ShouldThrow_WhenRentalIsNotActive()
         {
-            // Arrange
             var rentalId = Guid.NewGuid();
             var rental = new TbRental
             {
@@ -348,7 +342,6 @@ namespace VehicleSystem.Tests
             _repositoryMock.Setup(r => r.GetRentalByIdAsync(rentalId))
                            .ReturnsAsync(rental);
 
-            // Act & Assert
             var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
                 await _service.CancelRentalAsync(rentalId));
 

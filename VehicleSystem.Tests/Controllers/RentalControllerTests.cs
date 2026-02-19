@@ -25,8 +25,6 @@ namespace VehicleSystem.Tests.Controllers
             _controller = new RentalController(_service.Object);
         }
 
-        // --- TESTES DAS MENINAS (MANTIDOS E TRADUZIDOS) ---
-
         [Test]
         public async Task Create_ShouldReturn_400BadRequest_WhenModelStateIsInvalid()
         {

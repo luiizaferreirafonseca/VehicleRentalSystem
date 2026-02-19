@@ -14,7 +14,7 @@ namespace VehicleRentalSystem.Repositories
         }
 
         public async Task<TbRental?> GetRentalWithDetailsAsync(Guid rentalId)
-        {
+        {//
             // Realiza os Joins necessários usando Include para carregar os dados relacionados
             return await _context.TbRentals
                 .AsNoTracking()
