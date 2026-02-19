@@ -200,5 +200,30 @@ namespace VehicleSystem.Tests.Controllers
             Assert.That(result, Is.TypeOf<OkObjectResult>());
             _service.Verify(s => s.SearchRentalsByUserAsync(userId, status, page), Times.Once);
         }
+
+        [Test]
+        public async Task Search_ShouldReturn400WithProblemDetails_WhenInvalidOperationExceptionIsThrown()
+        {
+            var userId = Guid.NewGuid();
+            var status = "invalid";
+            var page = 1;
+
+            _service.Setup(s => s.SearchRentalsByUserAsync(userId, status, page))
+                        .ThrowsAsync(new InvalidOperationException("Invalid status"));
+
+            var result = await _controller.Search(userId, status, page);
+
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
+            var badRequest = result as BadRequestObjectResult;
+
+            Assert.That(badRequest?.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
+            Assert.That(badRequest?.Value, Is.TypeOf<ProblemDetails>());
+
+            var problem = badRequest?.Value as ProblemDetails;
+            Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status400BadRequest));
+            Assert.That(problem?.Title, Is.EqualTo("Operação inválida"));
+            Assert.That(problem?.Detail, Is.EqualTo("Invalid status"));
+        }
+
     }
 }
