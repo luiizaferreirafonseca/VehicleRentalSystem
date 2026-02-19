@@ -71,6 +71,50 @@ namespace VehicleSystem.Tests.Controllers
         }
 
         [Test]
+        public async Task Create_ShouldReturn_409Conflict_WhenInvalidOperationExceptionOccurs()
+        {
+            var dto = new RentalCreateDTO { UserId = Guid.NewGuid(), VehicleId = Guid.NewGuid() };
+
+            _service.Setup(s => s.CreateRentalAsync(dto))
+                    .ThrowsAsync(new InvalidOperationException("Vehicle is already rented"));
+
+            var result = await _controller.Create(dto);
+
+            Assert.That(result, Is.TypeOf<ConflictObjectResult>());
+            var conflict = result as ConflictObjectResult;
+
+            Assert.That(conflict?.StatusCode, Is.EqualTo(StatusCodes.Status409Conflict));
+            Assert.That(conflict?.Value, Is.TypeOf<ProblemDetails>());
+
+            var problem = conflict?.Value as ProblemDetails;
+            Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status409Conflict));
+            Assert.That(problem?.Title, Is.EqualTo("Conflito"));
+            Assert.That(problem?.Detail, Is.EqualTo("Vehicle is already rented"));
+        }
+
+        [Test]
+        public async Task Create_ShouldReturn_500InternalServerError_WhenUnhandledExceptionOccurs()
+        {
+            var dto = new RentalCreateDTO { UserId = Guid.NewGuid(), VehicleId = Guid.NewGuid() };
+
+            _service.Setup(s => s.CreateRentalAsync(dto))
+                    .ThrowsAsync(new Exception("Unexpected error"));
+
+            var result = await _controller.Create(dto);
+
+            Assert.That(result, Is.TypeOf<ObjectResult>());
+            var obj = result as ObjectResult;
+
+            Assert.That(obj?.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
+            Assert.That(obj?.Value, Is.TypeOf<ProblemDetails>());
+
+            var problem = obj?.Value as ProblemDetails;
+            Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status500InternalServerError));
+            Assert.That(problem?.Title, Is.EqualTo("Erro interno do servidor"));
+            Assert.That(problem?.Detail, Is.EqualTo("Unexpected error"));
+        }
+
+        [Test]
         public async Task Return_ShouldReturn_200Ok_WhenReturnIsSuccessful()
         {
             var rentalId = Guid.NewGuid();
@@ -91,6 +135,72 @@ namespace VehicleSystem.Tests.Controllers
 
             var result = await _controller.Search(userId, "Active", 1);
             Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task Return_ShouldReturn_404NotFound_WhenKeyNotFoundExceptionOccurs()
+        {
+            var rentalId = Guid.NewGuid();
+
+            _service.Setup(s => s.ReturnRentalAsync(rentalId))
+                    .ThrowsAsync(new KeyNotFoundException("Rental not found"));
+
+            var result = await _controller.Return(rentalId);
+
+            Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
+            var notFound = result as NotFoundObjectResult;
+
+            Assert.That(notFound?.StatusCode, Is.EqualTo(StatusCodes.Status404NotFound));
+            Assert.That(notFound?.Value, Is.TypeOf<ProblemDetails>());
+
+            var problem = notFound?.Value as ProblemDetails;
+            Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status404NotFound));
+            Assert.That(problem?.Title, Is.EqualTo("Erro! Locação não encontrada"));
+            Assert.That(problem?.Detail, Is.EqualTo("Rental not found"));
+        }
+
+        [Test]
+        public async Task Return_ShouldReturn_400BadRequest_WhenInvalidOperationExceptionOccurs()
+        {
+            var rentalId = Guid.NewGuid();
+
+            _service.Setup(s => s.ReturnRentalAsync(rentalId))
+                    .ThrowsAsync(new InvalidOperationException("Rental is not active"));
+
+            var result = await _controller.Return(rentalId);
+
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
+            var badRequest = result as BadRequestObjectResult;
+
+            Assert.That(badRequest?.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
+            Assert.That(badRequest?.Value, Is.TypeOf<ProblemDetails>());
+
+            var problem = badRequest?.Value as ProblemDetails;
+            Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status400BadRequest));
+            Assert.That(problem?.Title, Is.EqualTo("Erro! Operação Inválida"));
+            Assert.That(problem?.Detail, Is.EqualTo("Rental is not active"));
+        }
+
+        [Test]
+        public async Task Return_ShouldReturn_500InternalServerError_WhenUnhandledExceptionOccurs()
+        {
+            var rentalId = Guid.NewGuid();
+
+            _service.Setup(s => s.ReturnRentalAsync(rentalId))
+                    .ThrowsAsync(new Exception("Unexpected error"));
+
+            var result = await _controller.Return(rentalId);
+
+            Assert.That(result, Is.TypeOf<ObjectResult>());
+            var obj = result as ObjectResult;
+
+            Assert.That(obj?.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
+            Assert.That(obj?.Value, Is.TypeOf<ProblemDetails>());
+
+            var problem = obj?.Value as ProblemDetails;
+            Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status500InternalServerError));
+            Assert.That(problem?.Title, Is.EqualTo("Erro de servidor"));
+            Assert.That(problem?.Detail, Is.EqualTo("Unexpected error"));
         }
 
         [Test]
@@ -248,8 +358,6 @@ namespace VehicleSystem.Tests.Controllers
             Assert.That(problem?.Title, Is.EqualTo("Erro interno do servidor"));
             Assert.That(problem?.Detail, Is.EqualTo("Unexpected error"));
         }
-
-        // --- SEUS TESTES AJUSTADOS PARA PASSAR COM O CÓDIGO DELAS ---
 
         [Test]
         public async Task Get_ShouldReturn_200Ok_WhenRentalsAreFound()
