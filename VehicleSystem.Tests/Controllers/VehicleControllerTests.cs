@@ -39,12 +39,156 @@ namespace VehicleSystem.Tests.Controllers
         }
 
         [Test]
+        public async Task Create_ShouldReturn_400BadRequest_WhenModelStateIsInvalid()
+        {
+            var dto = new VehicleCreateDTO();
+            _controller.ModelState.AddModelError("Brand", "Required");
+
+            var result = await _controller.Create(dto);
+
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
+        }
+
+        [Test]
+        public async Task Create_ShouldReturn_409Conflict_WhenInvalidOperationExceptionIsThrown()
+        {
+            var dto = new VehicleCreateDTO { Brand = "Chevrolet", Model = "Onix", Year = 2022, DailyRate = 150m, LicensePlate = "ABC1234" };
+
+            _service.Setup(s => s.CreateVehicleAsync(dto))
+                    .ThrowsAsync(new InvalidOperationException("License plate already exists"));
+
+            var result = await _controller.Create(dto);
+
+            Assert.That(result, Is.TypeOf<ConflictObjectResult>());
+            var conflict = result as ConflictObjectResult;
+
+            Assert.That(conflict?.StatusCode, Is.EqualTo(StatusCodes.Status409Conflict));
+            Assert.That(conflict?.Value, Is.TypeOf<ProblemDetails>());
+
+            var problem = conflict?.Value as ProblemDetails;
+            Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status409Conflict));
+            Assert.That(problem?.Title, Is.EqualTo("Conflito"));
+            Assert.That(problem?.Detail, Is.EqualTo("License plate already exists"));
+        }
+
+        [Test]
+        public async Task Create_ShouldReturn_500InternalServerError_WhenUnhandledExceptionIsThrown()
+        {
+            var dto = new VehicleCreateDTO { Brand = "Chevrolet", Model = "Onix", Year = 2022, DailyRate = 150m, LicensePlate = "ABC1234" };
+
+            _service.Setup(s => s.CreateVehicleAsync(dto))
+                    .ThrowsAsync(new Exception("Unexpected error"));
+
+            var result = await _controller.Create(dto);
+
+            Assert.That(result, Is.TypeOf<ObjectResult>());
+            var obj = result as ObjectResult;
+
+            Assert.That(obj?.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
+            Assert.That(obj?.Value, Is.TypeOf<ProblemDetails>());
+
+            var problem = obj?.Value as ProblemDetails;
+            Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status500InternalServerError));
+            Assert.That(problem?.Title, Is.EqualTo("Erro interno do servidor"));
+            Assert.That(problem?.Detail, Is.EqualTo("Unexpected error"));
+        }
+
+        [Test]
         public async Task Delete_ShouldReturn_204NoContent_WhenRemovedSuccessfully()
         {
             var id = Guid.NewGuid();
             _service.Setup(s => s.RemoveVehicleAsync(id)).Returns(Task.CompletedTask);
             var result = await _controller.Delete(id);
             Assert.That(result, Is.TypeOf<NoContentResult>());
+        }
+
+        [Test]
+        public async Task Delete_ShouldReturn_400BadRequest_WhenInvalidOperationExceptionIsThrown()
+        {
+            var id = Guid.NewGuid();
+
+            _service.Setup(s => s.RemoveVehicleAsync(id))
+                    .ThrowsAsync(new InvalidOperationException("Invalid operation"));
+
+            var result = await _controller.Delete(id);
+
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
+            var badRequest = result as BadRequestObjectResult;
+
+            Assert.That(badRequest?.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
+            Assert.That(badRequest?.Value, Is.TypeOf<ProblemDetails>());
+
+            var problem = badRequest?.Value as ProblemDetails;
+            Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status400BadRequest));
+            Assert.That(problem?.Title, Is.EqualTo("Operação inválida"));
+            Assert.That(problem?.Detail, Is.EqualTo("Invalid operation"));
+        }
+
+        [Test]
+        public async Task Delete_ShouldReturn_404NotFound_WhenKeyNotFoundExceptionIsThrown()
+        {
+            var id = Guid.NewGuid();
+
+            _service.Setup(s => s.RemoveVehicleAsync(id))
+                    .ThrowsAsync(new KeyNotFoundException("Vehicle not found"));
+
+            var result = await _controller.Delete(id);
+
+            Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
+            var notFound = result as NotFoundObjectResult;
+
+            Assert.That(notFound?.StatusCode, Is.EqualTo(StatusCodes.Status404NotFound));
+            Assert.That(notFound?.Value, Is.TypeOf<ProblemDetails>());
+
+            var problem = notFound?.Value as ProblemDetails;
+            Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status404NotFound));
+            Assert.That(problem?.Title, Is.EqualTo("Não encontrado"));
+            Assert.That(problem?.Detail, Is.EqualTo("Vehicle not found"));
+        }
+
+        [Test]
+        public async Task Delete_ShouldReturn_500InternalServerError_WhenUnhandledExceptionIsThrown()
+        {
+            var id = Guid.NewGuid();
+
+            _service.Setup(s => s.RemoveVehicleAsync(id))
+                    .ThrowsAsync(new Exception("Unexpected error"));
+
+            var result = await _controller.Delete(id);
+
+            Assert.That(result, Is.TypeOf<ObjectResult>());
+            var obj = result as ObjectResult;
+
+            Assert.That(obj?.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
+            Assert.That(obj?.Value, Is.TypeOf<ProblemDetails>());
+
+            var problem = obj?.Value as ProblemDetails;
+            Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status500InternalServerError));
+            Assert.That(problem?.Title, Is.EqualTo("Erro interno do servidor"));
+            Assert.That(problem?.Detail, Is.EqualTo("Unexpected error"));
+        }
+
+        [Test]
+        public async Task Update_ShouldReturn_500InternalServerError_WhenUnhandledExceptionIsThrown()
+        {
+            var id = Guid.NewGuid();
+            var dto = new VehicleUpdateDTO { DailyRate = 200m, Year = 2025, Status = "rented" };
+
+            _service.Setup(s => s.UpdateVehicleAsync(id, dto))
+                    .ThrowsAsync(new Exception("Unexpected error"));
+
+            var result = await _controller.Update(id, dto);
+
+            Assert.That(result, Is.TypeOf<ObjectResult>());
+            var obj = result as ObjectResult;
+
+            Assert.That(obj?.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
+            Assert.That(obj?.Value, Is.TypeOf<ProblemDetails>());
+
+            var problem = obj?.Value as ProblemDetails;
+            Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status500InternalServerError));
+            Assert.That(problem?.Title, Is.EqualTo("Erro interno do servidor"));
+            Assert.That(problem?.Detail, Is.EqualTo("Unexpected error"));
         }
 
         [Test]
