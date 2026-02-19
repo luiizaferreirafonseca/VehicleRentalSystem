@@ -1,8 +1,5 @@
-<p align="center">
-  <img src="https://img.shields.io/github/languages/count/luiizaferreirafonseca/VehicleRentalSystem" />
-  <img src="https://img.shields.io/github/repo-size/luiizaferreirafonseca/VehicleRentalSystem" />
-  <img src="https://img.shields.io/github/last-commit/luiizaferreirafonseca/VehicleRentalSystem" />
-  <img src="https://img.shields.io/badge/feito%20por-Rentix%20Team-purple" />
+<p align="right">
+  <img src="https://img.shields.io/badge/feito%20por-RentGo%20Team-purple" />
   <img src="https://img.shields.io/badge/.NET-8.0-blueviolet" />
   <img src="https://img.shields.io/badge/PostgreSQL-EF%20Core-blue" />
   <img src="https://img.shields.io/badge/testes-135%20passaram-brightgreen" />
