@@ -48,8 +48,7 @@ vehicles/
 ├── docs/                          # Documentação do projeto
 │   ├── endpoints.md
 │   ├── architecture.md
-│   └── test-reports/
-│       └── tests.md
+│   └── tests.md
 ├── VehicleSystem/                 # Projeto principal
 │   ├── Controllers/               # Camada de apresentação (HTTP)
 │   ├── Services/                  # Camada de negócio
