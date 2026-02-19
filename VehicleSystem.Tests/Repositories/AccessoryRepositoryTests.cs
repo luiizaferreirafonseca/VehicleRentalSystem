@@ -29,7 +29,7 @@ namespace VehicleSystem.Tests.Repositories
 
             public object Execute(Expression expression)
             {
-                return _inner.Execute(expression);
+                return _inner.Execute(expression)!;
             }
 
             public TestAsyncQueryProvider(IQueryProvider inner)
@@ -64,7 +64,7 @@ namespace VehicleSystem.Tests.Repositories
                     var taskResultType = returnType.GetGenericArguments()[0];
                     var fromResult = typeof(Task).GetMethod(nameof(Task.FromResult))!.MakeGenericMethod(taskResultType);
                     var converted = Convert.ChangeType(result, taskResultType);
-                    return (TResult)fromResult.Invoke(null, new[] { converted });
+                    return (TResult)fromResult.Invoke(null, new[] { converted })!;
                 }
 
                 // If the caller expects a ValueTask<T>
@@ -84,7 +84,7 @@ namespace VehicleSystem.Tests.Repositories
                 }
 
                 // Otherwise return the result directly (for synchronous cases)
-                return (TResult)result;
+                return (TResult)result!;
             }
 
             public IAsyncEnumerable<TResult> ExecuteAsync<TResult>(Expression expression)
@@ -160,13 +160,13 @@ namespace VehicleSystem.Tests.Repositories
                 .Returns<T, CancellationToken>((entity, ct) =>
                 {
                     data.Add(entity);
-                    return new ValueTask<EntityEntry<T>>((EntityEntry<T>?)null);
+                    return new ValueTask<EntityEntry<T>>((EntityEntry<T>)null!);
                 });
 
             // Also support the synchronous Add(T) call so tests don't fail if code uses Add instead of AddAsync
             mockSet.Setup(d => d.Add(It.IsAny<T>()))
                 .Callback<T>(entity => data.Add(entity))
-                .Returns((T entity) => (EntityEntry<T>?)null);
+                .Returns((T entity) => (EntityEntry<T>)null!);
 
             mockSet.Setup(d => d.Remove(It.IsAny<T>()))
                 .Callback<T>(entity => data.Remove(entity));

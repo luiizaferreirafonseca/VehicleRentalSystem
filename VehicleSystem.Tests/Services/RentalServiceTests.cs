@@ -6,7 +6,6 @@ using VehicleRentalSystem.Repositories.interfaces;
 using VehicleRentalSystem.Services;
 using VehicleRentalSystem.Enums;
 using VehicleRentalSystem.Resources;
-using VehicleRentalSystem.Enums.VehicleRentalSystem.Enums;
 
 
 namespace VehicleSystem.Tests

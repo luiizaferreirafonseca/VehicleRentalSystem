@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using VehicleRentalSystem.DTO;
-using VehicleRentalSystem.Enums.VehicleRentalSystem.Enums;
+using VehicleRentalSystem.Enums;
 using VehicleRentalSystem.Models;
 using VehicleRentalSystem.Repositories.interfaces;
 using VehicleRentalSystem.Services;
@@ -514,7 +514,6 @@ namespace VehicleSystem.Tests.Services
             await _service.AddAccessoryToRentalAsync(rentalId, accessoryId);
 
             // Assert
-            var expectedAdd = 20m * 2; // 40
             Assert.That(rental.TotalAmount, Is.EqualTo(140m));
             _rentalRepositoryMock.Verify(r => r.UpdateAsync(rental), Times.Once);
             _accessoryRepositoryMock.Verify(r => r.LinkToRentalAsync(rentalId, accessoryId), Times.Once);
@@ -540,7 +539,6 @@ namespace VehicleSystem.Tests.Services
             await _service.RemoveAccessoryFromRentalAsync(rentalId, accessoryId);
 
             // Assert
-            var expectedSubtract = 30m * 3; // 90
             Assert.That(rental.TotalAmount, Is.EqualTo(110m));
             _accessoryRepositoryMock.Verify(r => r.RemoveLinkAsync(rentalId, accessoryId), Times.Once);
             _rentalRepositoryMock.Verify(r => r.UpdateAsync(rental), Times.Once);
