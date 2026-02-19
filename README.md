@@ -107,7 +107,7 @@ All technical documentation is available in Portuguese and English:
 | 🧪 **Tests** | Complete report of 135 tests by layer and module | [tests.md](./docs/tests.md) | [tests.en.md](./docs/tests.en.md) |
 | 🔬 **API Tests** | Insomnia collection with all endpoints pre-configured by module | [Insomnia.yaml](./docs/Insomnia.yaml) | — |
 | 🗄 **Database** | DDL script for creating the `sistema_locacao` schema and 7 tables | [scriptSQLcreate.sql](./docs/scriptSQLcreate.sql) | — |
-| 🌱 **Test Data** | Seed script with 3 vehicles, 3 users, 3 accessories and 1 complete rental | [scriptMassaTeste.sql](./docs/scriptMassaTeste.sql) | — |
+| 🌱 **Test Data** | Seed script with 3 vehicles, 3 users, 3 accessories and 1 complete rental | [scriptTestData.sql](./docs/scriptTestData.sql) | — |
 
 ---
 
@@ -157,7 +157,7 @@ CREATE TABLE sistema_locacao.tb_rating            ( ... );  -- Ratings
 
 #### 🌱 Seed the database with initial data
 
-After creating the tables, run the [`docs/scriptMassaTeste.sql`](./docs/scriptMassaTeste.sql) script to validate the schema creation and insert the first test records:
+After creating the tables, run the [`docs/scriptTestData.sql`](./docs/scriptTestData.sql) script to validate the schema creation and insert the first test records:
 
 - 3 vehicles (2 `available`, 1 `maintenance`)
 - 3 users

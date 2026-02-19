@@ -51,7 +51,10 @@ vehicles/
 │   ├── architecture.md
 │   ├── architecture.en.md
 │   ├── tests.md
-│   └── tests.en.md
+│   ├── tests.en.md
+│   ├── scriptSQLcreate.sql
+│   ├── scriptTestData.sql
+│   └── Insomnia.yaml
 ├── VehicleSystem/                 # Main project
 │   ├── Controllers/               # Presentation layer (HTTP)
 │   ├── Services/                  # Business logic layer
@@ -70,7 +73,8 @@ vehicles/
     ├── Services/                  # Service tests
     ├── Repositories/              # Repository tests
     ├── DTOs/                      # DTO tests
-    └── Application/Validators/    # Validator tests
+    ├── Application/Validators/    # Validator tests
+    └── coverage.ps1               # Coverage report script
 ```
 
 ---
@@ -341,6 +345,25 @@ dotnet test VehicleSystem.Tests/VehicleSystem.Tests.csproj
 # Run with coverage
 dotnet test --collect:"XPlat Code Coverage"
 ```
+
+#### 📊 Coverage report — automated script
+
+The script [`VehicleSystem.Tests/coverage.ps1`](../VehicleSystem.Tests/coverage.ps1) automates the entire flow:
+
+1. Runs tests with `--collect:"XPlat Code Coverage"`
+2. Locates the latest results directory inside `TestResults/`
+3. Generates a full HTML report via `reportgenerator`
+4. Opens the report automatically in the browser
+
+```powershell
+# From the solution root
+.\VehicleSystem.Tests\coverage.ps1
+```
+
+> ⚠️ Requires [ReportGenerator](https://github.com/danielpalme/ReportGenerator) installed as a global dotnet tool:
+> ```bash
+> dotnet tool install -g dotnet-reportgenerator-globaltool
+> ```
 
 ### Swagger UI
 
