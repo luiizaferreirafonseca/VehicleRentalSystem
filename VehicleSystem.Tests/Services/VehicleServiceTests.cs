@@ -229,5 +229,75 @@ namespace VehicleSystem.Tests
         }
 
         #endregion
+
+        [Test]
+        public async Task SearchVehiclesAsync_ShouldReturnVehicleDTOList_WhenVehiclesExist()
+        {
+            var status = "available";
+            var page = 1;
+
+            var vehiclesFromDb = new List<TbVehicle>
+        {
+            new TbVehicle
+            {
+                Id = Guid.NewGuid(),
+                Brand = "Chevrolet",
+                Model = "Onix",
+                Year = 2022,
+                DailyRate = 150m,
+                Status = "available",
+                LicensePlate = "ABC1D23"
+            },
+            new TbVehicle
+            {
+                Id = Guid.NewGuid(),
+                Brand = "Fiat",
+                Model = "Argo",
+                Year = 2021,
+                DailyRate = 140m,
+                Status = "available",
+                LicensePlate = "XYZ9K88"
+            }
+        };
+
+            _repositoryMock.Setup(r => r.SearchVehiclesAsync(status, page))
+                           .ReturnsAsync(vehiclesFromDb);
+
+            var result = await _service.SearchVehiclesAsync(status, page);
+
+            Assert.IsNotNull(result);
+            Assert.That(result.Count, Is.EqualTo(2));
+
+            Assert.That(result[0].Id, Is.EqualTo(vehiclesFromDb[0].Id));
+            Assert.That(result[0].Brand, Is.EqualTo("Chevrolet"));
+            Assert.That(result[0].Model, Is.EqualTo("Onix"));
+            Assert.That(result[0].Year, Is.EqualTo(2022));
+            Assert.That(result[0].DailyRate, Is.EqualTo(150m));
+            Assert.That(result[0].Status, Is.EqualTo("available"));
+            Assert.That(result[0].LicensePlate, Is.EqualTo("ABC1D23"));
+
+            Assert.That(result[1].Id, Is.EqualTo(vehiclesFromDb[1].Id));
+            Assert.That(result[1].Brand, Is.EqualTo("Fiat"));
+            Assert.That(result[1].Model, Is.EqualTo("Argo"));
+            Assert.That(result[1].Year, Is.EqualTo(2021));
+            Assert.That(result[1].DailyRate, Is.EqualTo(140m));
+            Assert.That(result[1].Status, Is.EqualTo("available"));
+            Assert.That(result[1].LicensePlate, Is.EqualTo("XYZ9K88"));
+        }
+
+        [Test]
+        public async Task SearchVehiclesAsync_ShouldReturnEmptyList_WhenNoVehiclesExist()
+        {
+            var status = "available";
+            var page = 1;
+
+            _repositoryMock.Setup(r => r.SearchVehiclesAsync(status, page))
+                           .ReturnsAsync(new List<TbVehicle>());
+
+            var result = await _service.SearchVehiclesAsync(status, page);
+
+            Assert.IsNotNull(result);
+            Assert.That(result.Count, Is.EqualTo(0));
+        }
     }
 }

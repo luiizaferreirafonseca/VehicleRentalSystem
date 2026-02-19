@@ -141,5 +141,92 @@ namespace VehicleSystem.Tests.Controllers
             var obj = result as ObjectResult;
             Assert.That(obj?.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
         }
+
+        [Test]
+        public async Task Search_ShouldReturn200WithBody_WhenServiceReturnsVehicles()
+        {
+            var status = "available";
+            var page = 1;
+
+            var response = new List<VehicleResponseDTO>
+            {
+                new() { Id = Guid.NewGuid(), Brand = "Toyota", Model = "Corolla", Status = "available" },
+                new() { Id = Guid.NewGuid(), Brand = "Honda",  Model = "Civic",   Status = "available" }
+            };
+
+            _service.Setup(s => s.SearchVehiclesAsync(status, page))
+                    .ReturnsAsync(response);
+
+            var result = await _controller.Search(status, page);
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+            var ok = result as OkObjectResult;
+
+            Assert.That(ok?.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+            Assert.That(ok?.Value, Is.TypeOf<List<VehicleResponseDTO>>());
+
+            var body = ok?.Value as List<VehicleResponseDTO>;
+            Assert.That(body, Has.Count.EqualTo(2));
+        }
+
+        [Test]
+        public async Task Search_ShouldReturn400WithProblemDetails_WhenInvalidOperationExceptionIsThrown()
+        {
+            var status = "invalid";
+            var page = 1;
+
+            _service.Setup(s => s.SearchVehiclesAsync(status, page))
+                    .ThrowsAsync(new InvalidOperationException("Invalid page"));
+
+            var result = await _controller.Search(status, page);
+
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
+            var badRequest = result as BadRequestObjectResult;
+
+            Assert.That(badRequest?.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
+            Assert.That(badRequest?.Value, Is.TypeOf<ProblemDetails>());
+
+            var problem = badRequest?.Value as ProblemDetails;
+            Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status400BadRequest));
+            Assert.That(problem?.Title, Is.EqualTo("Operação inválida"));
+            Assert.That(problem?.Detail, Is.EqualTo("Invalid page"));
+        }
+
+        [Test]
+        public async Task Search_ShouldReturn500WithProblemDetails_WhenUnhandledExceptionIsThrown()
+        {
+            var status = "available";
+            var page = 1;
+
+            _service.Setup(s => s.SearchVehiclesAsync(status, page))
+                    .ThrowsAsync(new Exception("Unexpected error"));
+
+            var result = await _controller.Search(status, page);
+
+            Assert.That(result, Is.TypeOf<ObjectResult>());
+            var obj = result as ObjectResult;
+
+            Assert.That(obj?.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
+            Assert.That(obj?.Value, Is.TypeOf<ProblemDetails>());
+
+            var problem = obj?.Value as ProblemDetails;
+            Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status500InternalServerError));
+            Assert.That(problem?.Title, Is.EqualTo("Erro interno do servidor"));
+            Assert.That(problem?.Detail, Is.EqualTo("Unexpected error"));
+        }
+
+        [Test]
+        public async Task Search_ShouldUseDefaultPageOne_WhenPageIsNotProvided()
+        {
+            var status = "available";
+
+            _service.Setup(s => s.SearchVehiclesAsync(status, 1))
+                    .ReturnsAsync(new List<VehicleResponseDTO>());
+
+            var result = await _controller.Search(status); 
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+            _service.Verify(s => s.SearchVehiclesAsync(status, 1), Times.Once);
+        }
     }
 }
