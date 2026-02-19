@@ -156,5 +156,97 @@ namespace VehicleSystem.Tests.Controllers
             Assert.That(problem!.Title, Is.EqualTo("Operação Inválida"));
             Assert.That(problem.Detail, Is.EqualTo("Rental is not active"));
         }
+
+        [Test]
+        public async Task Search_ShouldReturn200Ok_WithBody_WhenServiceReturnsRentals()
+        {
+            var userId = Guid.NewGuid();
+            var status = "active";
+            var page = 1;
+
+            var response = new List<RentalResponseDTO>
+            {
+                new() { Id = Guid.NewGuid(), UserId = userId, VehicleId = Guid.NewGuid(), Status = "active" },
+                new() { Id = Guid.NewGuid(), UserId = userId, VehicleId = Guid.NewGuid(), Status = "active" }
+            };
+
+            _service.Setup(s => s.SearchRentalsByUserAsync(userId, status, page))
+                        .ReturnsAsync(response);
+
+            var result = await _controller.Search(userId, status, page);
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+            var ok = result as OkObjectResult;
+
+            Assert.That(ok?.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+            Assert.That(ok?.Value, Is.TypeOf<List<RentalResponseDTO>>());
+
+            var body = ok?.Value as List<RentalResponseDTO>;
+            Assert.That(body, Has.Count.EqualTo(2));
+        }
+
+        [Test]
+        public async Task Search_ShouldCallServiceWithCorrectParameters()
+        {
+            var userId = Guid.NewGuid();
+            var status = "completed";
+            var page = 3;
+
+            _service.Setup(s => s.SearchRentalsByUserAsync(userId, status, page))
+                        .ReturnsAsync(new List<RentalResponseDTO>());
+
+            var result = await _controller.Search(userId, status, page);
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+            _service.Verify(s => s.SearchRentalsByUserAsync(userId, status, page), Times.Once);
+        }
+
+        [Test]
+        public async Task Search_ShouldReturn400WithProblemDetails_WhenInvalidOperationExceptionIsThrown()
+        {
+            var userId = Guid.NewGuid();
+            var status = "invalid";
+            var page = 1;
+
+            _service.Setup(s => s.SearchRentalsByUserAsync(userId, status, page))
+                        .ThrowsAsync(new InvalidOperationException("Invalid status"));
+
+            var result = await _controller.Search(userId, status, page);
+
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
+            var badRequest = result as BadRequestObjectResult;
+
+            Assert.That(badRequest?.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
+            Assert.That(badRequest?.Value, Is.TypeOf<ProblemDetails>());
+
+            var problem = badRequest?.Value as ProblemDetails;
+            Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status400BadRequest));
+            Assert.That(problem?.Title, Is.EqualTo("Operação inválida"));
+            Assert.That(problem?.Detail, Is.EqualTo("Invalid status"));
+        }
+
+        [Test]
+        public async Task Search_ShouldReturn500WithProblemDetails_WhenUnhandledExceptionIsThrown()
+        {
+            var userId = Guid.NewGuid();
+            var status = "active";
+            var page = 1;
+
+            _service.Setup(s => s.SearchRentalsByUserAsync(userId, status, page))
+                        .ThrowsAsync(new Exception("Unexpected error"));
+
+            var result = await _controller.Search(userId, status, page);
+
+            Assert.That(result, Is.TypeOf<ObjectResult>());
+            var obj = result as ObjectResult;
+
+            Assert.That(obj?.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
+            Assert.That(obj?.Value, Is.TypeOf<ProblemDetails>());
+
+            var problem = obj?.Value as ProblemDetails;
+            Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status500InternalServerError));
+            Assert.That(problem?.Title, Is.EqualTo("Erro interno do servidor"));
+            Assert.That(problem?.Detail, Is.EqualTo("Unexpected error"));
+        }
     }
 }
