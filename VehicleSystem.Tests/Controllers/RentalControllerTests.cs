@@ -156,5 +156,33 @@ namespace VehicleSystem.Tests.Controllers
             Assert.That(problem!.Title, Is.EqualTo("Operação Inválida"));
             Assert.That(problem.Detail, Is.EqualTo("Rental is not active"));
         }
+
+        [Test]
+        public async Task Search_ShouldReturn200Ok_WithBody_WhenServiceReturnsRentals()
+        {
+            var userId = Guid.NewGuid();
+            var status = "active";
+            var page = 1;
+
+            var response = new List<RentalResponseDTO>
+            {
+                new() { Id = Guid.NewGuid(), UserId = userId, VehicleId = Guid.NewGuid(), Status = "active" },
+                new() { Id = Guid.NewGuid(), UserId = userId, VehicleId = Guid.NewGuid(), Status = "active" }
+            };
+
+            _service.Setup(s => s.SearchRentalsByUserAsync(userId, status, page))
+                        .ReturnsAsync(response);
+
+            var result = await _controller.Search(userId, status, page);
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+            var ok = result as OkObjectResult;
+
+            Assert.That(ok?.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+            Assert.That(ok?.Value, Is.TypeOf<List<RentalResponseDTO>>());
+
+            var body = ok?.Value as List<RentalResponseDTO>;
+            Assert.That(body, Has.Count.EqualTo(2));
+        }
     }
 }
