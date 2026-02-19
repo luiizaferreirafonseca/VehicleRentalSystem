@@ -184,5 +184,21 @@ namespace VehicleSystem.Tests.Controllers
             var body = ok?.Value as List<RentalResponseDTO>;
             Assert.That(body, Has.Count.EqualTo(2));
         }
+
+        [Test]
+        public async Task Search_ShouldCallServiceWithCorrectParameters()
+        {
+            var userId = Guid.NewGuid();
+            var status = "completed";
+            var page = 3;
+
+            _service.Setup(s => s.SearchRentalsByUserAsync(userId, status, page))
+                        .ReturnsAsync(new List<RentalResponseDTO>());
+
+            var result = await _controller.Search(userId, status, page);
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+            _service.Verify(s => s.SearchRentalsByUserAsync(userId, status, page), Times.Once);
+        }
     }
 }
