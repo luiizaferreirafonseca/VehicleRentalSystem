@@ -443,7 +443,7 @@ namespace VehicleSystem.Tests.Services
             _accessoryRepositoryMock.Setup(r => r.IsLinkedToRentalAsync(rentalId, accessoryId)).ReturnsAsync(false);
 
             var ex = Assert.ThrowsAsync<InvalidOperationException>(() => _service.AddAccessoryToRentalAsync(rentalId, accessoryId));
-            Assert.That(ex.Message, Is.EqualTo("Não é possível atribuir acessórios a uma locação cancelada."));
+            Assert.That(ex.Message, Is.EqualTo("It is not possible to assign accessories to a canceled rental."));
             _accessoryRepositoryMock.Verify(r => r.LinkToRentalAsync(rentalId, accessoryId), Times.Never);
             _rentalRepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<TbRental>()), Times.Never);
         }
@@ -551,7 +551,7 @@ namespace VehicleSystem.Tests.Services
             var ex = Assert.ThrowsAsync<KeyNotFoundException>(() =>
                 _service.AddAccessoryToRentalAsync(Guid.NewGuid(), Guid.NewGuid()));
 
-            Assert.That(ex.Message, Is.EqualTo("Locação não encontrada."));
+            Assert.That(ex.Message, Is.EqualTo("Rental not found."));
         }
 
         /// <summary>

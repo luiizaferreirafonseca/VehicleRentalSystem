@@ -54,7 +54,7 @@ namespace VehicleSystem.Tests.Services
             var ex = Assert.ThrowsAsync<InvalidOperationException>(async () => 
                 await _service.CreateUserAsync(userDto));
 
-            Assert.That(ex.Message, Is.EqualTo("Este e-mail já está cadastrado no sistema."));
+            Assert.That(ex.Message, Is.EqualTo("This email is already registered in the system."));
             _repositoryMock.Verify(x => x.CreateUserAsync(It.IsAny<TbUser>()), Times.Never);
         }
 

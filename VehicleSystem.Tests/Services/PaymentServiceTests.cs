@@ -40,7 +40,7 @@ namespace VehicleSystem.Tests.Services
             var ex = Assert.ThrowsAsync<ArgumentException>(() =>
                 _service.RegisterPaymentAsync(Guid.Empty, dto));
 
-            Assert.That(ex!.Message, Does.Contain("identificador da locação"));
+            Assert.That(ex!.Message, Does.Contain("rental identifier"));
         }
 
         [Test]
@@ -76,7 +76,7 @@ namespace VehicleSystem.Tests.Services
             var ex = Assert.ThrowsAsync<InvalidOperationException>(() =>
                 _service.RegisterPaymentAsync(rentalId, dto));
 
-            Assert.That(ex!.Message, Does.Contain("locação cancelada"));
+            Assert.That(ex!.Message, Does.Contain("canceled rental"));
             _paymentRepositoryMock.Verify(p => p.AddPaymentAsync(It.IsAny<TbPayment>()), Times.Never);
         }
 
@@ -95,7 +95,7 @@ namespace VehicleSystem.Tests.Services
             var ex = Assert.ThrowsAsync<InvalidOperationException>(() =>
                 _service.RegisterPaymentAsync(rentalId, dto));
 
-            Assert.That(ex!.Message, Does.Contain("maior que zero"));
+            Assert.That(ex!.Message, Does.Contain("greater than zero"));
             _paymentRepositoryMock.Verify(p => p.AddPaymentAsync(It.IsAny<TbPayment>()), Times.Never);
         }
 
@@ -118,7 +118,7 @@ namespace VehicleSystem.Tests.Services
             var ex = Assert.ThrowsAsync<InvalidOperationException>(() =>
                 _service.RegisterPaymentAsync(rentalId, dto));
 
-            Assert.That(ex!.Message, Does.Contain("não pode exceder o valor total da locação"));
+            Assert.That(ex!.Message, Does.Contain("cannot exceed the total rental amount"));
             _paymentRepositoryMock.Verify(p => p.AddPaymentAsync(It.IsAny<TbPayment>()), Times.Never);
         }
 
