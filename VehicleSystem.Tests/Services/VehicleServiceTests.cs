@@ -98,7 +98,7 @@ namespace VehicleSystem.Tests
             var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
                 await _service.UpdateVehicleAsync(vehicleId, updateDto));
 
-            Assert.That(ex.Message, Is.EqualTo("Status inválido. Use: available, rented ou maintenance."));
+            Assert.That(ex.Message, Is.EqualTo("Invalid status. Use: available, rented or maintenance."));
         }
 
         [Test]
@@ -219,7 +219,7 @@ namespace VehicleSystem.Tests
             Assert.Multiple(() =>
             {
                 Assert.That(result.Vehicles, Is.Empty);
-                Assert.That(result.Message, Is.EqualTo("Não há veículos disponíveis para locação."));
+                Assert.That(result.Message, Is.EqualTo("There are no vehicles available for rental."));
             });
         }
 

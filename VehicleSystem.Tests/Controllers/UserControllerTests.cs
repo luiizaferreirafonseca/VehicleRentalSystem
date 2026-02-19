@@ -16,7 +16,7 @@ namespace VehicleSystem.Tests.Controllers
     {
         private Mock<IUserService> _serviceMock;
         private UserController _controller;
-
+        
         [SetUp]
         public void SetUp()
         {

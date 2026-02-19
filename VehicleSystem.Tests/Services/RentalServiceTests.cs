@@ -71,7 +71,7 @@ namespace VehicleSystem.Tests
             var ex = Assert.ThrowsAsync<InvalidOperationException>(async () => 
                 await _service.UpdateRentalDatesAsync(rentalId, updateDto));
             
-            Assert.That(ex.Message, Is.EqualTo("A nova data de devolução deve ser posterior à data de início."));
+            Assert.That(ex.Message, Is.EqualTo("The new return date must be later than the start date."));
         }
 
         [Test]
@@ -301,7 +301,7 @@ namespace VehicleSystem.Tests
             var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
                 await _service.UpdateRentalDatesAsync(rentalId, updateDto)); 
             
-            Assert.That(ex.Message, Does.StartWith("Só é permitido atualizar locações que estejam 'active'"));
+            Assert.That(ex.Message, Does.StartWith("Only rentals with status 'active' can be updated. Current status: completed"));
         }
 
         [Test]
@@ -347,7 +347,7 @@ namespace VehicleSystem.Tests
             var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
                 await _service.CancelRentalAsync(rentalId));
 
-            Assert.That(ex.Message, Does.Contain("Não é possível cancelar uma locação com status 'completed'"));
+            Assert.That(ex.Message, Does.Contain("It is not possible to cancel a rental with status 'completed'"));
         }
 
         [Test]
