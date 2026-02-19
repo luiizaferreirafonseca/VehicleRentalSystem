@@ -373,5 +373,93 @@ namespace VehicleSystem.Tests
             _repositoryMock.Verify(r => r.ExistsByLicensePlateAsync(It.IsAny<string>()), Times.Never);
             _repositoryMock.Verify(r => r.CreateVehicleAsync(It.IsAny<TbVehicle>()), Times.Never);
         }
+
+        [Test]
+        public void CreateVehicleAsync_ShouldThrow_WhenYearIsInvalid()
+        {
+            var dto = new VehicleCreateDTO
+            {
+                Brand = "Chevrolet",
+                Model = "Onix",
+                Year = 0,
+                DailyRate = 150m,
+                LicensePlate = "ABC1234"
+            };
+
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _service.CreateVehicleAsync(dto));
+
+            Assert.That(ex!.Message, Is.EqualTo(Messages.VehicleYearInvalid));
+
+            _repositoryMock.Verify(r => r.ExistsByLicensePlateAsync(It.IsAny<string>()), Times.Never);
+            _repositoryMock.Verify(r => r.CreateVehicleAsync(It.IsAny<TbVehicle>()), Times.Never);
+        }
+
+        [Test]
+        public void CreateVehicleAsync_ShouldThrow_WhenDailyRateIsInvalid()
+        {
+            var dto = new VehicleCreateDTO
+            {
+                Brand = "Chevrolet",
+                Model = "Onix",
+                Year = 2022,
+                DailyRate = 0m,
+                LicensePlate = "ABC1234"
+            };
+
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _service.CreateVehicleAsync(dto));
+
+            Assert.That(ex!.Message, Is.EqualTo(Messages.VehicleDailyRateInvalid));
+
+            _repositoryMock.Verify(r => r.ExistsByLicensePlateAsync(It.IsAny<string>()), Times.Never);
+            _repositoryMock.Verify(r => r.CreateVehicleAsync(It.IsAny<TbVehicle>()), Times.Never);
+        }
+
+        [Test]
+        public void CreateVehicleAsync_ShouldThrow_WhenLicensePlateIsEmpty()
+        {
+            var dto = new VehicleCreateDTO
+            {
+                Brand = "Chevrolet",
+                Model = "Onix",
+                Year = 2022,
+                DailyRate = 150m,
+                LicensePlate = " "
+            };
+
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _service.CreateVehicleAsync(dto));
+
+            Assert.That(ex!.Message, Is.EqualTo(Messages.VehicleLicensePlateRequired));
+
+            _repositoryMock.Verify(r => r.ExistsByLicensePlateAsync(It.IsAny<string>()), Times.Never);
+            _repositoryMock.Verify(r => r.CreateVehicleAsync(It.IsAny<TbVehicle>()), Times.Never);
+        }
+
+        [Test]
+        public void CreateVehicleAsync_ShouldThrow_WhenLicensePlateAlreadyExists()
+        {
+            var dto = new VehicleCreateDTO
+            {
+                Brand = "Chevrolet",
+                Model = "Onix",
+                Year = 2022,
+                DailyRate = 150m,
+                LicensePlate = " ABC1234 "
+            };
+
+            _repositoryMock.Setup(r => r.ExistsByLicensePlateAsync("ABC1234"))
+                           .ReturnsAsync(true);
+
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _service.CreateVehicleAsync(dto));
+
+            Assert.That(ex!.Message, Is.EqualTo(Messages.VehicleLicensePlateAlreadyExists));
+
+            _repositoryMock.Verify(r => r.ExistsByLicensePlateAsync("ABC1234"), Times.Once);
+            _repositoryMock.Verify(r => r.CreateVehicleAsync(It.IsAny<TbVehicle>()), Times.Never);
+        }
+
     }
 }
