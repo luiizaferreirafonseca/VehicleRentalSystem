@@ -299,5 +299,58 @@ namespace VehicleSystem.Tests
             Assert.IsNotNull(result);
             Assert.That(result.Count, Is.EqualTo(0));
         }
+
+        [Test]
+        public async Task CreateVehicleAsync_ShouldCreateVehicle_WhenRequestIsValid()
+        {
+            var dto = new VehicleCreateDTO
+            {
+                Brand = "Chevrolet",
+                Model = "Onix",
+                Year = 2022,
+                DailyRate = 150m,
+                LicensePlate = " ABC1234 "
+            };
+
+            _repositoryMock.Setup(r => r.ExistsByLicensePlateAsync("ABC1234"))
+                           .ReturnsAsync(false);
+
+            _repositoryMock.Setup(r => r.CreateVehicleAsync(It.IsAny<TbVehicle>()))
+                           .ReturnsAsync((TbVehicle v) => v);
+
+            var result = await _service.CreateVehicleAsync(dto);
+
+            Assert.IsNotNull(result);
+            Assert.That(result.Brand, Is.EqualTo("Chevrolet"));
+            Assert.That(result.Model, Is.EqualTo("Onix"));
+            Assert.That(result.Year, Is.EqualTo(2022));
+            Assert.That(result.DailyRate, Is.EqualTo(150m));
+            Assert.That(result.LicensePlate, Is.EqualTo("ABC1234"));
+            Assert.That(result.Status, Is.EqualTo(VehicleStatus.available.ToString()));
+
+            _repositoryMock.Verify(r => r.ExistsByLicensePlateAsync("ABC1234"), Times.Once);
+            _repositoryMock.Verify(r => r.CreateVehicleAsync(It.IsAny<TbVehicle>()), Times.Once);
+        }
+
+        [Test]
+        public void CreateVehicleAsync_ShouldThrow_WhenBrandIsEmpty()
+        {
+            var dto = new VehicleCreateDTO
+            {
+                Brand = " ",
+                Model = "Onix",
+                Year = 2022,
+                DailyRate = 150m,
+                LicensePlate = "ABC1234"
+            };
+
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _service.CreateVehicleAsync(dto));
+
+            Assert.That(ex!.Message, Is.EqualTo(Messages.VehicleBrandRequired));
+
+            _repositoryMock.Verify(r => r.ExistsByLicensePlateAsync(It.IsAny<string>()), Times.Never);
+            _repositoryMock.Verify(r => r.CreateVehicleAsync(It.IsAny<TbVehicle>()), Times.Never);
+        }
     }
 }
