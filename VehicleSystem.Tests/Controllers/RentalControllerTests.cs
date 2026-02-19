@@ -225,5 +225,28 @@ namespace VehicleSystem.Tests.Controllers
             Assert.That(problem?.Detail, Is.EqualTo("Invalid status"));
         }
 
+        [Test]
+        public async Task Search_ShouldReturn500WithProblemDetails_WhenUnhandledExceptionIsThrown()
+        {
+            var userId = Guid.NewGuid();
+            var status = "active";
+            var page = 1;
+
+            _service.Setup(s => s.SearchRentalsByUserAsync(userId, status, page))
+                        .ThrowsAsync(new Exception("Unexpected error"));
+
+            var result = await _controller.Search(userId, status, page);
+
+            Assert.That(result, Is.TypeOf<ObjectResult>());
+            var obj = result as ObjectResult;
+
+            Assert.That(obj?.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
+            Assert.That(obj?.Value, Is.TypeOf<ProblemDetails>());
+
+            var problem = obj?.Value as ProblemDetails;
+            Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status500InternalServerError));
+            Assert.That(problem?.Title, Is.EqualTo("Erro interno do servidor"));
+            Assert.That(problem?.Detail, Is.EqualTo("Unexpected error"));
+        }
     }
 }
