@@ -67,7 +67,7 @@ namespace VehicleSystem.Tests.Controllers
 
             var problem = conflict?.Value as ProblemDetails;
             Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status409Conflict));
-            Assert.That(problem?.Title, Is.EqualTo("Conflito"));
+            Assert.That(problem?.Title, Is.EqualTo("Conflict"));
             Assert.That(problem?.Detail, Is.EqualTo("License plate already exists"));
         }
 
@@ -89,7 +89,7 @@ namespace VehicleSystem.Tests.Controllers
 
             var problem = obj?.Value as ProblemDetails;
             Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status500InternalServerError));
-            Assert.That(problem?.Title, Is.EqualTo("Erro interno do servidor"));
+            Assert.That(problem?.Title, Is.EqualTo("Internal server error"));
             Assert.That(problem?.Detail, Is.EqualTo("Unexpected error"));
         }
 
@@ -120,7 +120,7 @@ namespace VehicleSystem.Tests.Controllers
 
             var problem = badRequest?.Value as ProblemDetails;
             Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status400BadRequest));
-            Assert.That(problem?.Title, Is.EqualTo("Operação inválida"));
+            Assert.That(problem?.Title, Is.EqualTo("Invalid operation"));
             Assert.That(problem?.Detail, Is.EqualTo("Invalid operation"));
         }
 
@@ -142,7 +142,7 @@ namespace VehicleSystem.Tests.Controllers
 
             var problem = notFound?.Value as ProblemDetails;
             Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status404NotFound));
-            Assert.That(problem?.Title, Is.EqualTo("Não encontrado"));
+            Assert.That(problem?.Title, Is.EqualTo("Not found"));
             Assert.That(problem?.Detail, Is.EqualTo("Vehicle not found"));
         }
 
@@ -164,7 +164,7 @@ namespace VehicleSystem.Tests.Controllers
 
             var problem = obj?.Value as ProblemDetails;
             Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status500InternalServerError));
-            Assert.That(problem?.Title, Is.EqualTo("Erro interno do servidor"));
+            Assert.That(problem?.Title, Is.EqualTo("Internal server error"));
             Assert.That(problem?.Detail, Is.EqualTo("Unexpected error"));
         }
 
@@ -187,7 +187,7 @@ namespace VehicleSystem.Tests.Controllers
 
             var problem = obj?.Value as ProblemDetails;
             Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status500InternalServerError));
-            Assert.That(problem?.Title, Is.EqualTo("Erro interno do servidor"));
+            Assert.That(problem?.Title, Is.EqualTo("Internal server error"));
             Assert.That(problem?.Detail, Is.EqualTo("Unexpected error"));
         }
 
@@ -332,7 +332,7 @@ namespace VehicleSystem.Tests.Controllers
 
             var problem = badRequest?.Value as ProblemDetails;
             Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status400BadRequest));
-            Assert.That(problem?.Title, Is.EqualTo("Operação inválida"));
+            Assert.That(problem?.Title, Is.EqualTo("Invalid operation"));
             Assert.That(problem?.Detail, Is.EqualTo("Invalid page"));
         }
 
@@ -355,7 +355,7 @@ namespace VehicleSystem.Tests.Controllers
 
             var problem = obj?.Value as ProblemDetails;
             Assert.That(problem?.Status, Is.EqualTo(StatusCodes.Status500InternalServerError));
-            Assert.That(problem?.Title, Is.EqualTo("Erro interno do servidor"));
+            Assert.That(problem?.Title, Is.EqualTo("Internal server error"));
             Assert.That(problem?.Detail, Is.EqualTo("Unexpected error"));
         }
 

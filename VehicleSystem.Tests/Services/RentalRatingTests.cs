@@ -26,7 +26,7 @@ namespace VehicleSystem.Tests
         public async Task EvaluateRentalAsync_ValidData_ReturnsTrue()
         {
             var rentalId = Guid.NewGuid();
-            var dto = new RatingCreateDTO { RentalId = rentalId, Rating = 5, Comment = "Ótimo!" };
+            var dto = new RatingCreateDTO { RentalId = rentalId, Rating = 5, Comment = "Great!" };
             var rental = new TbRental { Id = rentalId, Status = "Finalizada" };
 
             _rentalRepoMock.Setup(r => r.GetRentalByIdAsync(rentalId)).ReturnsAsync(rental);
@@ -45,7 +45,7 @@ namespace VehicleSystem.Tests
             var dto = new RatingCreateDTO { Rating = 6 }; 
 
             var ex = Assert.ThrowsAsync<Exception>(async () => await _service.EvaluateRentalAsync(dto));
-            Assert.That(ex.Message, Is.EqualTo("A nota deve estar entre 1 e 5."));
+            Assert.That(ex.Message, Is.EqualTo("The rating must be between 1 and 5."));
         }
 
         [Test]
@@ -58,7 +58,7 @@ namespace VehicleSystem.Tests
             _rentalRepoMock.Setup(r => r.GetRentalByIdAsync(rentalId)).ReturnsAsync(rental);
 
             var ex = Assert.ThrowsAsync<Exception>(async () => await _service.EvaluateRentalAsync(dto));
-            Assert.That(ex.Message, Is.EqualTo("Você só pode avaliar locações que já foram finalizadas."));
+            Assert.That(ex.Message, Is.EqualTo("You can only rate rentals that have been completed."));
         }
 
         [Test]
@@ -73,7 +73,7 @@ namespace VehicleSystem.Tests
             _ratingRepoMock.Setup(r => r.GetByRentalIdAsync(rentalId)).ReturnsAsync(existingRating);
 
             var ex = Assert.ThrowsAsync<Exception>(async () => await _service.EvaluateRentalAsync(dto));
-            Assert.That(ex.Message, Is.EqualTo("Esta locação já foi avaliada anteriormente."));
+            Assert.That(ex.Message, Is.EqualTo("This rental has already been rated."));
         }
     }
 }
