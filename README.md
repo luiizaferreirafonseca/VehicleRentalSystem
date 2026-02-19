@@ -50,9 +50,15 @@ This system was created as part of the **CodeRDI Diversity Program**.
 ---
 
 ## 📘 Documentation
-For a detailed technical overview of **RentGo**, including system architecture, API endpoints, database structure, business rules, and testing strategy, please access the full documentation below:
 
-👉 [Access Full Documentation](./docs/documentation.md)
+For a detailed technical overview of **RentGo**, please access the documents below:
+
+| Documento | Descrição |
+|-----------|-----------|
+| 📋 [Business Rules](./docs/business_rules.md) | Modelo de negócio, regras por domínio, fórmulas e implementações futuras |
+| 🗄️ [Database](./docs/db.md) | Entidades, relacionamentos, campos e ciclos de vida dos status |
+| 🏗️ [Architecture](./docs/architecture.md) | Visão geral da arquitetura do sistema |
+| 🧪 [Tests](./docs/tests.md) | Estratégia, cobertura e detalhamento dos testes automatizados |
 
 ---
 
