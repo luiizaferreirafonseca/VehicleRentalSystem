@@ -130,7 +130,6 @@ namespace VehicleSystem.Tests.Controllers
         public async Task UpdateDates_ShouldReturn_200Ok_WhenUpdateIsSuccessful()
         {
             var rentalId = Guid.NewGuid();
-            // AJUSTE: Usando NewExpectedEndDate conforme seu DTO
             var dto = new UpdateRentalDTO { NewExpectedEndDate = new DateTime(2026, 03, 01) };
             var response = new RentalResponseDTO { Id = rentalId, ExpectedEndDate = dto.NewExpectedEndDate };
 
