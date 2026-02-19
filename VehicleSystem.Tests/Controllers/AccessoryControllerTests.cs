@@ -31,8 +31,8 @@ namespace VehicleSystem.Tests.Controllers
         }
 
         /// <summary>
-        /// Garante que o endpoint retorne status 200 e uma lista vazia quando 
-        /// não houver acessórios cadastrados, evitando erros no processamento do front-end.
+        /// Ensures the endpoint returns HTTP 200 and an empty list when
+        /// no accessories are registered, preventing front-end processing errors.
         /// </summary>
         [Test]
         [Category("Unit")]
@@ -53,7 +53,7 @@ namespace VehicleSystem.Tests.Controllers
         }
 
         /// <summary>
-        /// Valida o retorno de dados populados quando existem acessórios na base.
+        /// Validates populated data return when accessories exist in the database.
         /// </summary>
         [Test]
         [Category("Unit")]
@@ -79,7 +79,7 @@ namespace VehicleSystem.Tests.Controllers
 
 
         /// <summary>
-        /// Testa a recuperação bem-sucedida de um acessório por ID.
+        /// Tests successful retrieval of an accessory by ID.
         /// </summary>
         [Test]
         [Category("Unit")]
@@ -95,8 +95,8 @@ namespace VehicleSystem.Tests.Controllers
         }
 
         /// <summary>
-        /// Verifica se o Controller bloqueia a requisição antes de chamar o serviço 
-        /// caso o formato do ID ou parâmetros sejam inválidos no ModelState.
+        /// Verifies that the controller blocks the request before calling the service
+        /// when the ID format or parameters are invalid in the ModelState.
         /// </summary>
         [Test]
         [Category("Unit")]
@@ -111,8 +111,8 @@ namespace VehicleSystem.Tests.Controllers
         }
 
         /// <summary>
-        /// Valida se o sistema retorna 404 e os ProblemDetails corretos 
-        /// quando o acessório solicitado não existe.
+        /// Validates that the system returns 404 with correct ProblemDetails
+        /// when the requested accessory does not exist.
         /// </summary>
         [Test]
         [Category("Unit")]
@@ -135,7 +135,7 @@ namespace VehicleSystem.Tests.Controllers
         }
 
         /// <summary>
-        /// Testa o tratamento de operações inválidas (Ex: tentar acessar acessório bloqueado).
+        /// Tests handling of invalid operations (e.g., attempting to access a blocked accessory).
         /// </summary>
         [Test]
         [Category("Unit")]
@@ -157,7 +157,7 @@ namespace VehicleSystem.Tests.Controllers
         }
 
         /// <summary>
-        /// Garante que exceções não tratadas retornem 500 para não expor stack trace ao cliente.
+        /// Ensures unhandled exceptions return 500 to avoid exposing stack traces to the client.
         /// </summary>
         [Test]
         [Category("Unit")]
@@ -181,7 +181,7 @@ namespace VehicleSystem.Tests.Controllers
         }
 
         /// <summary>
-        /// Fluxo principal de criação: Verifica se retorna 201 Created e o local do recurso.
+        /// Main creation flow: verifies that it returns 201 Created and the resource location.
         /// </summary>
         [Test]
         [Category("Unit")]
@@ -205,7 +205,7 @@ namespace VehicleSystem.Tests.Controllers
         }
 
         /// <summary>
-        /// Valida a regra de negócio de nomes duplicados via exceção de conflito.
+        /// Validates business rule for duplicate names via conflict exception.
         /// </summary>
         [Test]
         [Category("Unit")]
@@ -228,7 +228,7 @@ namespace VehicleSystem.Tests.Controllers
 
         [Test]
         /// <summary>
-        /// Valida se o ModelState impede a criação de acessório quando há erros de validação.
+        /// Validates that ModelState prevents accessory creation when validation errors exist.
         /// </summary>
         [Category("Unit")]
         [Property("Priority", "Medium")]
@@ -244,7 +244,7 @@ namespace VehicleSystem.Tests.Controllers
 
         [Test]
         /// <summary>
-        /// Garante que falhas inesperadas no serviço de criação retornem erro 500.
+        /// Ensures unexpected failures in creation service return 500 error.
         /// </summary>
         [Category("Unit")]
         [Property("Priority", "Low")]
@@ -262,7 +262,7 @@ namespace VehicleSystem.Tests.Controllers
 
 
         /// <summary>
-        /// Garante que o sistema valide se o corpo da requisição está vazio antes de processar.
+        /// Ensures the system validates if the request body is empty before processing.
         /// </summary>
         [Test]
         [Category("Vínculo")]
@@ -283,7 +283,7 @@ namespace VehicleSystem.Tests.Controllers
         }
 
         /// <summary>
-        /// Verifica se o ModelState inválido impede o vínculo de acessório ao aluguel.
+        /// Verifies that invalid ModelState prevents linking accessory to rental.
         /// </summary>
         [Test]
         [Category("Vínculo")]
@@ -298,7 +298,7 @@ namespace VehicleSystem.Tests.Controllers
         }
 
         /// <summary>
-        /// Garante que o RentalId vazio retorna erro 400 ao tentar vincular acessório.
+        /// Ensures empty RentalId returns 400 error when linking accessory.
         /// </summary>
         [Test]
         [Category("Vínculo")]
@@ -313,7 +313,7 @@ namespace VehicleSystem.Tests.Controllers
         }
 
         /// <summary>
-        /// Garante que o AccessoryId vazio retorna erro 400 ao tentar vincular acessório.
+        /// Ensures empty AccessoryId returns 400 error when linking accessory.
         /// </summary>
         [Test]
         [Category("Vínculo")]
@@ -328,7 +328,7 @@ namespace VehicleSystem.Tests.Controllers
         }
 
         /// <summary>
-        /// Verifica se o vínculo entre acessório e aluguel é realizado com sucesso.
+        /// Verifies that accessory and rental linking succeeds.
         /// </summary>
         [Test]
         [Category("Vínculo")]
@@ -354,7 +354,7 @@ namespace VehicleSystem.Tests.Controllers
         }
 
         /// <summary>
-        /// Valida se avisos (LogWarning) são gerados corretamente quando a chave não é encontrada.
+        /// Validates that LogWarning entries are generated correctly when key is not found.
         /// </summary>
         [Test]
         [Category("Vínculo")]
@@ -379,7 +379,7 @@ namespace VehicleSystem.Tests.Controllers
         }
 
         /// <summary>
-        /// Garante que falhas inesperadas no vínculo retornam erro 500 e log de erro.
+        /// Ensures unexpected failures during linking return 500 and log error.
         /// </summary>
         [Test]
         [Category("Vínculo")]
@@ -396,7 +396,7 @@ namespace VehicleSystem.Tests.Controllers
         }
 
         /// <summary>
-        /// Valida se conflitos de negócio no vínculo retornam erro 409.
+        /// Validates that business conflicts during linking return 409.
         /// </summary>
         [Test]
         [Category("Vínculo")]
@@ -415,7 +415,7 @@ namespace VehicleSystem.Tests.Controllers
         // --- GET /rental/{id}/accessories ---
 
         /// <summary>
-        /// Testa se a listagem de acessórios por aluguel retorna status 200.
+        /// Tests that listing accessories by rental returns status 200.
         /// </summary>
         [Test]
         [Category("Query")]
@@ -431,7 +431,7 @@ namespace VehicleSystem.Tests.Controllers
         }
 
         /// <summary>
-        /// Garante que a busca de acessórios por aluguel retorna 404 quando não encontrados.
+        /// Ensures accessory search by rental returns 404 when not found.
         /// </summary>
         [Test]
         [Category("Query")]
@@ -447,7 +447,7 @@ namespace VehicleSystem.Tests.Controllers
         }
 
         /// <summary>
-        /// Valida se conflitos de negócio na consulta retornam erro 409.
+        /// Validates that business conflicts in query return 409.
         /// </summary>
         [Test]
         [Category("Query")]
@@ -464,7 +464,7 @@ namespace VehicleSystem.Tests.Controllers
         }
 
         /// <summary>
-        /// Garante que falhas inesperadas na consulta retornam erro 500.
+        /// Ensures unexpected query failures return 500.
         /// </summary>
         [Test]
         [Category("Query")]
@@ -483,7 +483,7 @@ namespace VehicleSystem.Tests.Controllers
 
 
         /// <summary>
-        /// Valida a remoção do vínculo entre acessório e aluguel.
+        /// Validates removal of link between accessory and rental.
         /// </summary>
         [Test]
         [Category("Remoção")]
@@ -506,7 +506,7 @@ namespace VehicleSystem.Tests.Controllers
         }
 
         /// <summary>
-        /// Garante que a remoção de vínculo retorna 404 quando a chave não existe.
+        /// Ensures removal returns 404 when key does not exist.
         /// </summary>
         [Test]
         [Category("Remoção")]
@@ -522,9 +522,8 @@ namespace VehicleSystem.Tests.Controllers
 
             Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
         }
-
         /// <summary>
-        /// Valida se conflitos de negócio na remoção retornam erro 409.
+        /// Validates that business conflicts during removal return 409.
         /// </summary>
         [Test]
         [Category("Remoção")]
@@ -542,7 +541,7 @@ namespace VehicleSystem.Tests.Controllers
         }
 
         /// <summary>
-        /// Garante que falhas inesperadas na remoção retornam erro 500.
+        /// Ensures unexpected removal failures return 500.
         /// </summary>
         [Test]
         [Category("Remoção")]

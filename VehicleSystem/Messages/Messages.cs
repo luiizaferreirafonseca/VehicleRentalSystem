@@ -3,100 +3,99 @@
     public static class Messages
     {
         public const string UserIdRequired =
-            "O identificador do usuário é obrigatório.";
+            "The user identifier is required.";
 
         public const string VehicleIdRequired =
-            "O identificador do veículo é obrigatório.";
+            "The vehicle identifier is required.";
 
         public const string ExpectedEndDateRequired =
-            "A data final da locação é obrigatória.";
+            "The rental end date is required.";
 
         public const string ExpectedEndDateInvalid =
-            "A data final da locação deve ser maior que a data inicial.";
+            "The rental end date must be greater than the start date.";
 
         public const string UserNotFound =
-            "Usuário não encontrado.";
+            "User not found.";
 
         public const string VehicleNotFound =
-            "Veículo não encontrado.";
+            "Vehicle not found.";
 
         public const string VehicleNotAvailable =
-            "Veículo não está disponível para locação.";
+            "Vehicle is not available for rental.";
 
         public const string VehicleStatusUpdateFailed =
-            "Falha ao atualizar o status do veículo.";
+            "Failed to update vehicle status.";
 
         public const string RentalIdRequired =
-            "O identificador da locação é obrigatório.";
+            "The rental identifier is required.";
 
         public const string RentalNotFound =
-            "Locação não encontrada.";
+            "Rental not found.";
 
         public const string RentalNotActive =
-            "Não é possível devolver uma locação que não esteja ativa.";
+            "It is not possible to return a rental that is not active.";
 
         public const string VehicleBrandRequired =
-            "A marca do veículo é obrigatória.";
+            "Vehicle brand is required.";
 
         public const string VehicleModelRequired =
-            "O modelo do veículo é obrigatório.";
+            "Vehicle model is required.";
 
         public const string VehicleYearInvalid =
-            "O ano do veículo é inválido.";
+            "Vehicle year is invalid.";
 
         public const string VehicleDailyRateInvalid =
-            "O valor da diária deve ser maior que zero.";
+            "The daily rate must be greater than zero.";
 
         public const string VehicleLicensePlateRequired =
-            "A placa do veículo é obrigatória.";
+            "Vehicle license plate is required.";
 
         public const string VehicleLicensePlateAlreadyExists =
-            "Já existe um veículo cadastrado com essa placa.";
+            "A vehicle with this license plate already exists.";
 
         public const string VehicleCannotBeDeletedWhenRented =
-            "Não é possível remover um veículo com status 'rented'.";
+            "It is not possible to remove a vehicle with status 'rented'.";
 
         public const string VehicleDeleteFailed =
-            "Falha ao remover o veículo.";
+            "Failed to delete vehicle.";
 
         public const string UserNameMissing =
-            "Existe usuário cadastrado sem nome.";
+            "There is a registered user without a name.";
 
         public const string UserEmailMissing =
-            "Existe usuário cadastrado sem e-mail.";
+            "There is a registered user without an email.";
 
         public const string PageInvalid =
-            "A página deve ser maior ou igual a 1.";
+            "Page must be greater than or equal to 1.";
 
-        public const string PaymentRegisteredSuccess = 
-            "Pagamento registrado com sucesso.";
+        public const string PaymentRegisteredSuccess =
+            "Payment registered successfully.";
 
-        public const string PaymentRegisterFailed = 
-            "Falha ao registrar o pagamento.";
-        public const string AccessoryLinkedSuccess = 
-            "Acessório vinculado com sucesso à locação.";
+        public const string PaymentRegisterFailed =
+            "Failed to register payment.";
 
-        public const string AccessoryUnlinkedSuccess = 
-            "Acessório desvinculado com sucesso da locação.";
+        public const string AccessoryLinkedSuccess =
+            "Accessory successfully linked to rental.";
 
-        // Mensagens específicas para relatórios/exports
-        public const string InvalidFormat = "Formato inválido.";
-        public const string ReportNotFound = "Relatório não encontrado.";
-        public const string ReportNotFoundDetailFormat = "Relatório {0} não encontrado.";
+        public const string AccessoryUnlinkedSuccess =
+            "Accessory successfully unlinked from rental.";
 
+        // Report/export specific messages
+        public const string InvalidFormat = "Invalid format.";
+        public const string ReportNotFound = "Report not found.";
+        public const string ReportNotFoundDetailFormat = "Report {0} not found.";
 
-        // Mensagens genéricas/situacionais para controllers adicionadas para padronização
-        public const string InvalidOperation = "Operação inválida.";
-        public const string ServerError = "Erro de servidor.";
-        public const string NotFound = "Não encontrado";
-        public const string Conflict = "Conflito";
-        public const string ServerInternalError = "Erro interno do servidor";
-        public const string UnexpectedServerErrorDetail = "Ocorreu um erro inesperado ao processar sua solicitação.";
-        public const string RequestInvalid = "Requisição inválida";
-        public const string RequestBodyEmptyDetail = "O corpo da requisição está vazio ou inválido.";
-        public const string IdsInvalid = "Identificador inválido";
+        // Generic/controller-level messages for standardization
+        public const string InvalidOperation = "Invalid operation.";
+        public const string ServerError = "Server error.";
+        public const string NotFound = "Not found";
+        public const string Conflict = "Conflict";
+        public const string ServerInternalError = "Internal server error";
+        public const string UnexpectedServerErrorDetail = "An unexpected error occurred while processing your request.";
+        public const string RequestInvalid = "Invalid request";
+        public const string RequestBodyEmptyDetail = "The request body is empty or invalid.";
+        public const string IdsInvalid = "Invalid identifier";
 
-        public const string InvalidStatus = "Status inválido.";
-
+        public const string InvalidStatus = "Invalid status.";
     }
 }
