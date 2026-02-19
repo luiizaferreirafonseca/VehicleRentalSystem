@@ -5,10 +5,10 @@ namespace VehicleRentalSystem.DTO
 {
     public class PaymentCreateDTO
     {
-        [Range(0.01, double.MaxValue, ErrorMessage = "O valor do pagamento deve ser maior que zero.")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "The payment amount must be greater than zero.")]
         public decimal Amount { get; set; }
 
-        [Required(ErrorMessage = "O método de pagamento é obrigatório.")]
+        [Required(ErrorMessage = "The payment method is required.")]
         public VehicleRentalSystem.Enums.EnumPaymentMethod? PaymentMethod { get; set; }
     }
 }

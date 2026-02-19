@@ -11,13 +11,13 @@ namespace VehicleRentalSystem.DTO
         public decimal PenaltyFee { get; set; }
         public string Status { get; set; } = null!;
 
-        // Blocos de dados relacionados (Composição)
+        // Related data blocks (Composition)
         public VehicleSummaryDTO Vehicle { get; set; } = null!;
         public CustomerSummaryDTO Customer { get; set; } = null!;
         public List<PaymentResponseDto> Payments { get; set; } = new();
         public List<AccessoryReportDto> Accessories { get; set; } = new();
 
-        // Propriedades calculadas (Regra de Negócio de Relatório)
+        // Calculated properties (Report Business Rules)
         public decimal AmountPaid => Payments.Sum(p => p.Amount);
         public decimal AccessoriesTotal => Accessories.Sum(a => a.TotalPrice);
         public decimal BalanceDue => (TotalAmount + PenaltyFee + AccessoriesTotal) - AmountPaid;
@@ -37,7 +37,7 @@ namespace VehicleRentalSystem.DTO
         public DateTime EndDate { get; set; }
     }
 
-    // Records para os dados resumidos do join
+    // Records for summarized join data
     public record VehicleSummaryDTO(string Brand, string Model, string LicensePlate);
     public record CustomerSummaryDTO(string Name, string Document);
 }

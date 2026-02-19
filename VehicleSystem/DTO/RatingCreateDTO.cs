@@ -1,4 +1,4 @@
-namespace VehicleRentalSystem.DTO // Adicionei o "Rental" aqui
+namespace VehicleRentalSystem.DTO 
 {
     public class RatingCreateDTO
     {
