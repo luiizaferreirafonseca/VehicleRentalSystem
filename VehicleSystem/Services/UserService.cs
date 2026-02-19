@@ -48,7 +48,7 @@ namespace VehicleRentalSystem.Services
 
             var emailExists = await _repository.ExistsByEmailAsync(dto.Email);
             if (emailExists)
-                throw new InvalidOperationException("Este e-mail já está cadastrado no sistema.");
+                throw new InvalidOperationException("This email is already registered in the system.");
 
             var newUser = new TbUser
             {

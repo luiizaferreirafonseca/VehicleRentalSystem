@@ -20,24 +20,24 @@ namespace VehicleRentalSystem.Services
         {
             if (dto.Rating < 1 || dto.Rating > 5)
             {
-                throw new Exception("A nota deve estar entre 1 e 5.");
+                throw new Exception("The rating must be between 1 and 5.");
             }
 
             var rental = await _rentalRepository.GetRentalByIdAsync(dto.RentalId);
             if (rental == null)
             {
-                throw new Exception("Locação não encontrada.");
+                throw new Exception("Rental not found.");
             }
 
             if (rental.Status != "Finalizada")
             {
-                throw new Exception("Você só pode avaliar locações que já foram finalizadas.");
+                throw new Exception("You can only rate rentals that have been completed.");
             }
 
             var existingRating = await _ratingRepository.GetByRentalIdAsync(dto.RentalId);
             if (existingRating != null)
             {
-                throw new Exception("Esta locação já foi avaliada anteriormente.");
+                throw new Exception("This rental has already been rated.");
             }
 
             var newRating = new TbRating

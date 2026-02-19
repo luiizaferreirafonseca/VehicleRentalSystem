@@ -15,14 +15,14 @@ namespace VehicleRentalSystem.Repositories
 
         public async Task<TbRental?> GetRentalWithDetailsAsync(Guid rentalId)
         {//
-            // Realiza os Joins necessários usando Include para carregar os dados relacionados
+            // Performs the necessary joins using Include to load related data
             return await _context.TbRentals
                 .AsNoTracking()
-                .Include(r => r.Vehicle)   // Join com a tabela de Veículos
-                .Include(r => r.User)  // Join com a tabela de Usuários (cliente)
-                .Include(r => r.TbPayments)  // Join com a tabela de Pagamentos
-                .Include(r => r.TbRentalAccessories) // Join com a tabela de acessórios relacionados à locação
-                    .ThenInclude(ra => ra.Accessory) // Inclui os detalhes do acessório
+                .Include(r => r.Vehicle)   // Join with the Vehicles table
+                .Include(r => r.User)  // Join with the Users table (customer)
+                .Include(r => r.TbPayments) // Join with the Payments table
+                .Include(r => r.TbRentalAccessories) // Join with the rental-related accessories table
+                    .ThenInclude(ra => ra.Accessory) // Includes the accessory details
                 .FirstOrDefaultAsync(r => r.Id == rentalId);
         }
     }

@@ -99,7 +99,7 @@ namespace VehicleRentalSystem.Services
             var response = new VehicleListResponseDTO
             {
                 Vehicles = vehicles ?? new List<VehicleResponseDTO>(),
-                Message = (vehicles == null || vehicles.Count == 0) ? "Não há veículos disponíveis para locação." : null
+                Message = (vehicles == null || vehicles.Count == 0) ? "There are no vehicles available for rental." : null
             };
 
             return response;
@@ -121,7 +121,7 @@ namespace VehicleRentalSystem.Services
 
             if (!Enum.TryParse<VehicleStatus>(dto.Status.ToLower(), out var statusEnum))
             {
-                throw new InvalidOperationException("Status inválido. Use: available, rented ou maintenance.");
+                throw new InvalidOperationException("Invalid status. Use: available, rented or maintenance.");
             }
 
             vehicle.Year = dto.Year;

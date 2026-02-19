@@ -32,7 +32,7 @@ namespace VehicleRentalSystem.Services
         {
             var accessory = await _accessoryRepository.GetByIdAsync(id);
             if (accessory == null)
-                throw new KeyNotFoundException("Acessório não encontrado.");
+                throw new KeyNotFoundException("Accessory not found.");
 
             return new AccessoryResponseDto
             {
@@ -46,7 +46,7 @@ namespace VehicleRentalSystem.Services
         {
             var rentalExists = await _rentalRepository.GetRentalByIdAsync(rentalId);
             if (rentalExists == null)
-                throw new KeyNotFoundException("Locação não encontrada.");
+                throw new KeyNotFoundException("Rental not found.");
 
             var accessories = await _accessoryRepository.GetByRentalIdAsync(rentalId) ?? Enumerable.Empty<TbAccessory>();
 
@@ -68,7 +68,7 @@ namespace VehicleRentalSystem.Services
         {
             var existing = await _accessoryRepository.GetByNameAsync(dto.Name);
             if (existing != null)
-                throw new InvalidOperationException("Já existe um acessório cadastrado com este nome.");
+                throw new InvalidOperationException("An accessory with this name is already registered.");
 
             var accessory = new TbAccessory
             {
@@ -90,24 +90,24 @@ namespace VehicleRentalSystem.Services
         public async Task AddAccessoryToRentalAsync(Guid rentalId, Guid accessoryId)
         {
             if (rentalId == Guid.Empty || accessoryId == Guid.Empty)
-                throw new ArgumentException("Os identificadores de locação e acessório são obrigatórios.");
+                throw new ArgumentException("Rental and accessory identifiers are required.");
 
             var rental = await _rentalRepository.GetRentalByIdAsync(rentalId);
             if (rental == null)
-                throw new KeyNotFoundException("Locação não encontrada.");
+                throw new KeyNotFoundException("Rental not found.");
 
             if (rental.Status == RentalStatus.canceled.ToString())
-                throw new InvalidOperationException("Não é possível atribuir acessórios a uma locação cancelada.");
+                throw new InvalidOperationException("It is not possible to assign accessories to a canceled rental.");
 
             var accessory = await _accessoryRepository.GetByIdAsync(accessoryId);
             if (accessory == null)
-                throw new KeyNotFoundException("Acessório não encontrado.");
+                throw new KeyNotFoundException("Accessory not found.");
 
             var alreadyLinked = await _accessoryRepository.IsLinkedToRentalAsync(rentalId, accessoryId);
             if (alreadyLinked)
-                throw new InvalidOperationException("Este acessório já está vinculado a esta locação.");
+                throw new InvalidOperationException("This accessory is already linked to this rental.");
 
-                 await _accessoryRepository.LinkToRentalAsync(rentalId, accessoryId);
+            await _accessoryRepository.LinkToRentalAsync(rentalId, accessoryId);
 
             var days = GetEffectiveDays(rental);
             var accessoryTotalValue = CalculateAccessoryTotal(accessory.DailyRate, days);
@@ -122,14 +122,14 @@ namespace VehicleRentalSystem.Services
         public async Task RemoveAccessoryFromRentalAsync(Guid rentalId, Guid accessoryId)
         {
             var rental = await _rentalRepository.GetRentalByIdAsync(rentalId);
-            if (rental == null) throw new KeyNotFoundException("Locação não encontrada.");
+            if (rental == null) throw new KeyNotFoundException("Rental not found.");
 
             var accessory = await _accessoryRepository.GetByIdAsync(accessoryId);
-            if (accessory == null) throw new KeyNotFoundException("Acessório não encontrado.");
+            if (accessory == null) throw new KeyNotFoundException("Accessory not found.");
 
             var isLinked = await _accessoryRepository.IsLinkedToRentalAsync(rentalId, accessoryId);
             if (!isLinked)
-                throw new KeyNotFoundException("Este acessório não está vinculado a esta locação.");
+                throw new KeyNotFoundException("This accessory is not linked to this rental.");
 
             await _accessoryRepository.RemoveLinkAsync(rentalId, accessoryId);
 

@@ -22,7 +22,7 @@ namespace VehicleRentalSystem.Services
         public async Task<PaymentResponseDto> RegisterPaymentAsync(Guid rentalId, PaymentCreateDTO dto)
         {
             if (rentalId == Guid.Empty)
-                throw new ArgumentException("O identificador da locação é obrigatório.");
+                throw new ArgumentException("The rental identifier is required.");
 
             var rental = await _rentalRepository.GetRentalByIdAsync(rentalId);
 
@@ -30,16 +30,16 @@ namespace VehicleRentalSystem.Services
                 throw new KeyNotFoundException(Messages.RentalNotFound);
 
             if (rental.Status == RentalStatus.canceled.ToString())
-                throw new InvalidOperationException("Não é possível registrar pagamento em uma locação cancelada.");
+                throw new InvalidOperationException("It is not possible to register a payment for a canceled rental.");
 
             if (dto.Amount <= 0)
-                throw new InvalidOperationException("O valor do pagamento deve ser maior que zero.");
+                throw new InvalidOperationException("The payment amount must be greater than zero.");
 
             var totalPayments = await _paymentRepository.GetTotalPaymentsAsync(rentalId);
             var remaining = (rental.TotalAmount ?? 0m) - totalPayments;
 
             if (dto.Amount > remaining)
-                throw new InvalidOperationException("A soma dos pagamentos não pode exceder o valor total da locação.");
+                throw new InvalidOperationException("The sum of payments cannot exceed the total rental amount.");
 
             var paymentMethodString = dto.PaymentMethod?.ToString().ToLower() ?? string.Empty;
 

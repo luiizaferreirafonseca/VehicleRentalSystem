@@ -41,12 +41,12 @@ namespace VehicleRentalSystem.Services
         public async Task<RentalResponseDTO> GetRentalByIdAsync(Guid id)
         {
             if (id == Guid.Empty)
-                throw new InvalidOperationException("O identificador da locação é obrigatório.");
+                throw new InvalidOperationException("The rental identifier is required.");
 
             var rental = await _repository.GetRentalByIdAsync(id);
 
             if (rental == null)
-                throw new KeyNotFoundException("Locação não encontrada.");
+                throw new KeyNotFoundException("Rental not found.");
 
             var result = new RentalResponseDTO
             {
@@ -141,15 +141,15 @@ namespace VehicleRentalSystem.Services
         public async Task<RentalResponseDTO> CancelRentalAsync(Guid id)
         {
             if (id == Guid.Empty)
-                throw new InvalidOperationException("O ID da locação é obrigatório.");
+                throw new InvalidOperationException("The rental ID is required.");
 
             var rental = await _repository.GetRentalByIdAsync(id);
 
             if (rental == null)
-                throw new KeyNotFoundException("Locação não encontrada.");
+                throw new KeyNotFoundException("Rental not found.");
 
             if (rental.Status != RentalStatus.active.ToString())
-                throw new InvalidOperationException($"Não é possível cancelar uma locação com status '{rental.Status}'.");
+                throw new InvalidOperationException($"It is not possible to cancel a rental with status '{rental.Status}'.");
 
             rental.Status = RentalStatus.canceled.ToString();
 
@@ -182,13 +182,13 @@ namespace VehicleRentalSystem.Services
             var rental = await _repository.GetRentalByIdAsync(id);
 
             if (rental == null)
-                throw new KeyNotFoundException("Locação não encontrada.");
+                throw new KeyNotFoundException("Rental not found.");
 
             if (rental.Status != RentalStatus.active.ToString())
-                throw new InvalidOperationException($"Só é permitido atualizar locações que estejam 'active'. Status atual: {rental.Status}");
+                throw new InvalidOperationException($"Only rentals with status 'active' can be updated. Current status: {rental.Status}");
 
             if (updateDto.NewExpectedEndDate <= rental.StartDate)
-                throw new InvalidOperationException("A nova data de devolução deve ser posterior à data de início.");
+                throw new InvalidOperationException("The new return date must be later than the start date.");
 
             var days = (updateDto.NewExpectedEndDate.Date - rental.StartDate.Date).Days;
 
