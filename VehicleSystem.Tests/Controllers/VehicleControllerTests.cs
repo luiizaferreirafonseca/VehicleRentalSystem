@@ -69,9 +69,77 @@ namespace VehicleSystem.Tests.Controllers
             var vehicleId = Guid.NewGuid();
             var dto = new VehicleUpdateDTO { DailyRate = 200m };
             _service.Setup(s => s.UpdateVehicleAsync(vehicleId, dto)).ThrowsAsync(new KeyNotFoundException("Not Found"));
-            
+
             var result = await _controller.Update(vehicleId, dto);
             Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
+        }
+
+        // ─── GetAvailable ────────────────────────────────────────────────────────
+
+        [Test]
+        public async Task GetAvailable_ServicoRetornaVeiculos_Retorna200ComCorpo()
+        {
+            var response = new VehicleListResponseDTO
+            {
+                Vehicles = new List<VehicleResponseDTO>
+                {
+                    new() { Id = Guid.NewGuid(), Brand = "Toyota", Model = "Corolla", Status = "available" },
+                    new() { Id = Guid.NewGuid(), Brand = "Honda",  Model = "Civic",   Status = "available" }
+                }
+            };
+
+            _service.Setup(s => s.GetAvailableVehiclesAsync(1)).ReturnsAsync(response);
+
+            var result = await _controller.GetAvailable();
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+            var ok = result as OkObjectResult;
+            var body = ok?.Value as VehicleListResponseDTO;
+            Assert.That(body?.Vehicles, Has.Count.EqualTo(2));
+        }
+
+        [Test]
+        public async Task GetAvailable_ListaVazia_Retorna200ComListaVazia()
+        {
+            var response = new VehicleListResponseDTO { Vehicles = new List<VehicleResponseDTO>() };
+
+            _service.Setup(s => s.GetAvailableVehiclesAsync(1)).ReturnsAsync(response);
+
+            var result = await _controller.GetAvailable();
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+            var ok = result as OkObjectResult;
+            var body = ok?.Value as VehicleListResponseDTO;
+            Assert.That(body?.Vehicles, Is.Empty);
+        }
+
+        [Test]
+        public async Task GetAvailable_PaginaCustomizada_RepassaPageAoServico()
+        {
+            var response = new VehicleListResponseDTO
+            {
+                Vehicles = new List<VehicleResponseDTO> { new() { Id = Guid.NewGuid(), Status = "available" } }
+            };
+
+            _service.Setup(s => s.GetAvailableVehiclesAsync(3)).ReturnsAsync(response);
+
+            var result = await _controller.GetAvailable(page: 3);
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+            _service.Verify(s => s.GetAvailableVehiclesAsync(3), Times.Once);
+        }
+
+        [Test]
+        public async Task GetAvailable_LancaExcecao_Retorna500()
+        {
+            _service.Setup(s => s.GetAvailableVehiclesAsync(1))
+                .ThrowsAsync(new Exception("Erro inesperado"));
+
+            var result = await _controller.GetAvailable();
+
+            Assert.That(result, Is.TypeOf<ObjectResult>());
+            var obj = result as ObjectResult;
+            Assert.That(obj?.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
         }
     }
 }
