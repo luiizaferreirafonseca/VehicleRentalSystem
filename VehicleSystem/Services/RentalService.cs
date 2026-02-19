@@ -15,11 +15,11 @@ namespace VehicleRentalSystem.Services
         {
             _repository = repository;
         }
-        public List<RentalResponseDTO> GetRentals()
+        public async Task<List<RentalResponseDTO>> GetRentalsAsync()
         {
-            var rentalsFromDb = _repository.SelectRentals();
+            var rentalsFromDb = await _repository.GetRentalsAsync();
 
-            return rentalsFromDb.Select(rental => new RentalResponseDTO
+            var result = rentalsFromDb.Select(rental => new RentalResponseDTO
             {
                 Id = rental.Id,
                 StartDate = rental.StartDate,
@@ -34,19 +34,21 @@ namespace VehicleRentalSystem.Services
                 UserName = rental.User?.Name ?? "",
                 VehicleModel = rental.Vehicle?.Model ?? ""
             }).ToList();
+
+            return result;
         }
 
-        public RentalResponseDTO? GetRentalById(Guid id)
+        public async Task<RentalResponseDTO> GetRentalByIdAsync(Guid id)
         {
             if (id == Guid.Empty)
-                return null;
+                throw new InvalidOperationException("O identificador da locação é obrigatório.");
 
-            var rental = _repository.SelectRentalById(id);
+            var rental = await _repository.GetRentalByIdAsync(id);
 
             if (rental == null)
-                return null;
+                throw new KeyNotFoundException("Locação não encontrada.");
 
-            return new RentalResponseDTO
+            var result = new RentalResponseDTO
             {
                 Id = rental.Id,
                 StartDate = rental.StartDate,
@@ -61,6 +63,8 @@ namespace VehicleRentalSystem.Services
                 UserName = rental.User?.Name ?? "",
                 VehicleModel = rental.Vehicle?.Model ?? ""
             };
+
+            return result;
         }
 
         public async Task<RentalResponseDTO> CreateRentalAsync(RentalCreateDTO dto)
@@ -240,7 +244,17 @@ namespace VehicleRentalSystem.Services
 
             rental.Status = RentalStatus.completed.ToString();
 
-            rental.Vehicle.Status = VehicleStatus.available.ToString();
+            if (rental.Vehicle != null)
+            {
+                rental.Vehicle.Status = VehicleStatus.available.ToString();
+            }
+            else
+            {
+                await _repository.UpdateVehicleStatusAsync(
+                    rental.VehicleId,
+                    VehicleStatus.available.ToString()
+                );
+            }
 
             await _repository.SaveChangesAsync();
 

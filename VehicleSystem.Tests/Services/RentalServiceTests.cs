@@ -172,9 +172,10 @@ namespace VehicleSystem.Tests
         }
 
         [Test]
-        public void GetRentalById_ShouldReturnRentalDTO_WhenIdExists()
+        public async Task GetRentalByIdAsync_ShouldReturnRentalDTO_WhenIdExists()
         {
             var rentalId = Guid.NewGuid();
+
             var rentalFromDb = new TbRental
             {
                 Id = rentalId,
@@ -184,10 +185,10 @@ namespace VehicleSystem.Tests
                 Status = "active"
             };
 
-            _repositoryMock.Setup(r => r.SelectRentalById(rentalId))
-                           .Returns(rentalFromDb);
+            _repositoryMock.Setup(r => r.GetRentalByIdAsync(rentalId))
+                           .ReturnsAsync(rentalFromDb);
 
-            var result = _service.GetRentalById(rentalId);
+            var result = await _service.GetRentalByIdAsync(rentalId);
 
             Assert.IsNotNull(result);
             Assert.That(result.Id, Is.EqualTo(rentalId));
@@ -195,16 +196,17 @@ namespace VehicleSystem.Tests
             Assert.That(result.VehicleModel, Is.EqualTo("Onix"));
         }
 
+
         [Test]
-        public void GetRentalById_ShouldReturnNull_WhenIdDoesNotExist()
+        public void GetRentalByIdAsync_ShouldThrowKeyNotFoundException_WhenIdDoesNotExist()
         {
             var rentalId = Guid.NewGuid();
-            _repositoryMock.Setup(r => r.SelectRentalById(rentalId))
-                           .Returns((TbRental?)null);
 
-            var result = _service.GetRentalById(rentalId);
+            _repositoryMock.Setup(r => r.GetRentalByIdAsync(rentalId))
+                           .ReturnsAsync((TbRental?)null);
 
-            Assert.IsNull(result);
+            Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+                await _service.GetRentalByIdAsync(rentalId));
         }
 
         [Test]

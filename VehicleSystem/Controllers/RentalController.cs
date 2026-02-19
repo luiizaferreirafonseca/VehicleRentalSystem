@@ -23,18 +23,62 @@ public class RentalController : ControllerBase
     /// Returns the list of rentals.
     /// </summary>
     [HttpGet(Name = "GetAllRentals")]
-    public List<RentalResponseDTO> Get()
+    public async Task<IActionResult> Get()
     {
-        return _service.GetRentals();
+        try
+        {
+            var rentals = await _service.GetRentalsAsync();
+            return Ok(rentals);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
+            {
+                Status = StatusCodes.Status500InternalServerError,
+                Title = "Erro de servidor",
+                Detail = ex.Message
+            });
+        }
     }
 
     /// <summary>
     /// Returns a rental by its identifier.
     /// </summary>
     [HttpGet("{id:guid}")]
-    public RentalResponseDTO GetById(Guid id)
+    public async Task<IActionResult> GetById(Guid id)
     {
-        return _service.GetRentalById(id);
+        try
+        {
+            var rental = await _service.GetRentalByIdAsync(id);
+            return Ok(rental);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new ProblemDetails
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Title = "Operação inválida",
+                Detail = ex.Message
+            });
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new ProblemDetails
+            {
+                Status = StatusCodes.Status404NotFound,
+                Title = "Locação não encontrada",
+                Detail = ex.Message
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
+            {
+                Status = StatusCodes.Status500InternalServerError,
+                Title = "Erro de servidor",
+                Detail = ex.Message
+            });
+        }
     }
 
     /// <summary>

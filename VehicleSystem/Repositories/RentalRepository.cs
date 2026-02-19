@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿// RentalRepository.cs
+using Microsoft.EntityFrameworkCore;
 using VehicleRentalSystem.Models;
 using VehicleRentalSystem.Repositories.interfaces;
 
@@ -13,20 +14,12 @@ namespace VehicleRentalSystem.Repositories
             _postgresContext = postgresContext;
         }
 
-        public List<TbRental> SelectRentals()
+        public async Task<List<TbRental>> GetRentalsAsync()
         {
-            return _postgresContext.TbRentals
+            return await _postgresContext.TbRentals
                 .Include(r => r.User)
                 .Include(r => r.Vehicle)
-                .ToList();
-        }
-
-        public TbRental? SelectRentalById(Guid id)
-        {
-            return _postgresContext.TbRentals
-                .Include(r => r.User)
-                .Include(r => r.Vehicle)
-                .FirstOrDefault(r => r.Id == id);
+                .ToListAsync();
         }
 
         public async Task<TbUser?> GetUserById(Guid id)
@@ -57,7 +50,6 @@ namespace VehicleRentalSystem.Repositories
             return true;
         }
 
-
         public async Task<TbRental?> GetRentalByIdAsync(Guid id)
         {
             return await _postgresContext.TbRentals
@@ -76,6 +68,7 @@ namespace VehicleRentalSystem.Repositories
         {
             await _postgresContext.SaveChangesAsync();
         }
+
         public async Task<List<TbRental>> SearchRentalsByUserAsync(Guid userId, string? status, int page)
         {
             const int pageSize = 5;
