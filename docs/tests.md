@@ -369,3 +369,9 @@ Repository  →  PostgresContext InMemory        (EF Core InMemory)
 ```
 Aprovado! — Com falha: 0, Aprovado: 20, Ignorado: 0, Total: 20
 ```
+
+---
+
+## 📊 Cobertura de Código — Resumo Geral
+
+#image:'Tests.png'
