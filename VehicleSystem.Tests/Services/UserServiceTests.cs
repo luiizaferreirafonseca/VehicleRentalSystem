@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using VehicleRentalSystem.DTO;
@@ -138,5 +141,156 @@ namespace VehicleSystem.Tests.Services
 
             Assert.That(ex.Message, Is.EqualTo(Messages.UserEmailMissing));
         }
+
+        [Test]
+        public void CreateUserAsync_ShouldThrow_WhenNameIsMissing()
+        {
+            var dto = new UserCreateDTO { Name = "   ", Email = "ok@email.com" };
+
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _service.CreateUserAsync(dto));
+
+            Assert.That(ex!.Message, Is.EqualTo(Messages.UserNameMissing));
+
+            // valida que nem chega a consultar repo
+            _repositoryMock.Verify(r => r.ExistsByEmailAsync(It.IsAny<string>()), Times.Never);
+            _repositoryMock.Verify(r => r.CreateUserAsync(It.IsAny<TbUser>()), Times.Never);
+        }
+
+        [Test]
+        public void CreateUserAsync_ShouldThrow_WhenEmailIsWhitespace()
+        {
+            var dto = new UserCreateDTO { Name = "Ale", Email = "   " };
+
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _service.CreateUserAsync(dto));
+
+            Assert.That(ex!.Message, Is.EqualTo(Messages.UserEmailMissing));
+
+            _repositoryMock.Verify(r => r.ExistsByEmailAsync(It.IsAny<string>()), Times.Never);
+            _repositoryMock.Verify(r => r.CreateUserAsync(It.IsAny<TbUser>()), Times.Never);
+        }
+
+        [Test]
+        public async Task CreateUserAsync_ShouldTrimName_AndTrimLowerEmail_BeforeSaving()
+        {
+            var dto = new UserCreateDTO
+            {
+                Name = "  Ale Teste  ",
+                Email = "  ALE@TESTE.COM  "
+            };
+
+            _repositoryMock
+                .Setup(r => r.ExistsByEmailAsync(dto.Email))
+                .ReturnsAsync(false);
+
+            TbUser? captured = null;
+
+            _repositoryMock
+                .Setup(r => r.CreateUserAsync(It.IsAny<TbUser>()))
+                .Callback<TbUser>(u => captured = u)
+                .ReturnsAsync((TbUser u) => u); // devolve o mesmo que foi salvo
+
+            var result = await _service.CreateUserAsync(dto);
+
+            Assert.That(captured, Is.Not.Null);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(captured!.Name, Is.EqualTo("Ale Teste"));
+                Assert.That(captured.Email, Is.EqualTo("ale@teste.com"));
+                Assert.That(captured.Active, Is.True);
+                Assert.That(captured.Id, Is.Not.EqualTo(Guid.Empty));
+
+                // resposta também deve refletir o que veio do repositório
+                Assert.That(result.Name, Is.EqualTo("Ale Teste"));
+                Assert.That(result.Email, Is.EqualTo("ale@teste.com"));
+                Assert.That(result.Active, Is.True);
+            });
+
+            _repositoryMock.Verify(r => r.ExistsByEmailAsync(dto.Email), Times.Once);
+            _repositoryMock.Verify(r => r.CreateUserAsync(It.IsAny<TbUser>()), Times.Once);
+        }
+
+        [Test]
+        public async Task CreateUserAsync_ShouldReturnEmptyRentalsList()
+        {
+            var dto = new UserCreateDTO { Name = "Lu", Email = "lu@teste.com" };
+
+            _repositoryMock
+                .Setup(r => r.ExistsByEmailAsync(dto.Email))
+                .ReturnsAsync(false);
+
+            _repositoryMock
+                .Setup(r => r.CreateUserAsync(It.IsAny<TbUser>()))
+                .ReturnsAsync((TbUser u) => u);
+
+            var result = await _service.CreateUserAsync(dto);
+
+            Assert.That(result.Rentals, Is.Not.Null);
+            Assert.That(result.Rentals.Count, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void GetAllUsersAsync_ShouldThrow_WhenUserEmailIsMissing()
+        {
+            var usersFromDb = new List<TbUser>
+            {
+                new TbUser
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "ok",
+                    Email = "   ",
+                    Active = true,
+                    TbRentals = new List<TbRental>()
+                }
+            };
+
+            _repositoryMock.Setup(r => r.GetAllUsersAsync())
+                           .ReturnsAsync(usersFromDb);
+
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _service.GetAllUsersAsync());
+
+            Assert.That(ex!.Message, Is.EqualTo(Messages.UserEmailMissing));
+        }
+
+        [Test]
+        public async Task GetAllUsersAsync_ShouldMapEmptyRentals_WhenUserHasNoRentals()
+        {
+            var userId = Guid.NewGuid();
+
+            var usersFromDb = new List<TbUser>
+            {
+                new TbUser
+                {
+                    Id = userId,
+                    Name = "Rafa",
+                    Email = "rafa@email.com",
+                    Active = false,
+                    TbRentals = new List<TbRental>() // vazio
+                }
+            };
+
+            _repositoryMock.Setup(r => r.GetAllUsersAsync())
+                           .ReturnsAsync(usersFromDb);
+
+            var result = await _service.GetAllUsersAsync();
+
+            Assert.That(result.Count, Is.EqualTo(1));
+
+            var dto = result[0];
+            Assert.Multiple(() =>
+            {
+                Assert.That(dto.Id, Is.EqualTo(userId));
+                Assert.That(dto.Name, Is.EqualTo("Rafa"));
+                Assert.That(dto.Email, Is.EqualTo("rafa@email.com"));
+                Assert.That(dto.Active, Is.False);
+
+                Assert.That(dto.Rentals, Is.Not.Null);
+                Assert.That(dto.Rentals.Count, Is.EqualTo(0));
+            });
+        }
     }
 }
+
