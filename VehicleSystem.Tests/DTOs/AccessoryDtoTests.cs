@@ -8,7 +8,12 @@ namespace VehicleSystem.Tests.DTOs
     [Category("DTOs")]
     public class AccessoryDtoTests
     {
+        /// <summary>
+        /// Sucesso: Verifica que as propriedades padrão de AccessoryCreateDto são inicializadas corretamente.
+        /// </summary>
         [Test]
+        [Category("Unit")]
+        [Property("Priority", 1)]
         public void AccessoryCreateDto_Defaults_AreExpected()
         {
             var dto = new AccessoryCreateDto();
@@ -20,7 +25,12 @@ namespace VehicleSystem.Tests.DTOs
             });
         }
 
+        /// <summary>
+        /// Sucesso: Verifica que as propriedades padrão de AccessoryReportDto são inicializadas corretamente.
+        /// </summary>
         [Test]
+        [Category("Unit")]
+        [Property("Priority", 1)]
         public void AccessoryReportDto_Defaults_AreExpected()
         {
             var dto = new AccessoryReportDto();
@@ -38,7 +48,12 @@ namespace VehicleSystem.Tests.DTOs
             });
         }
 
+        /// <summary>
+        /// Sucesso: Verifica que as propriedades de AccessoryReportDto podem ser atribuídas e lidas corretamente.
+        /// </summary>
         [Test]
+        [Category("Unit")]
+        [Property("Priority", 2)]
         public void AccessoryReportDto_CanSetProperties()
         {
             var id = Guid.NewGuid();
@@ -69,7 +84,12 @@ namespace VehicleSystem.Tests.DTOs
             });
         }
 
+        /// <summary>
+        /// Sucesso: Verifica que as propriedades de AccessoryCreateDto podem ser atribuídas e lidas corretamente.
+        /// </summary>
         [Test]
+        [Category("Unit")]
+        [Property("Priority", 2)]
         public void AccessoryCreateDto_CanSetProperties()
         {
             var dto = new AccessoryCreateDto
@@ -85,7 +105,12 @@ namespace VehicleSystem.Tests.DTOs
             });
         }
 
+        /// <summary>
+        /// Sucesso: Verifica que as propriedades padrão de AccessoryResponseDto são inicializadas corretamente.
+        /// </summary>
         [Test]
+        [Category("Unit")]
+        [Property("Priority", 1)]
         public void AccessoryResponseDto_Defaults_AreExpected()
         {
             var dto = new AccessoryResponseDto();
@@ -98,7 +123,12 @@ namespace VehicleSystem.Tests.DTOs
             });
         }
 
+        /// <summary>
+        /// Sucesso: Verifica que as propriedades de AccessoryResponseDto podem ser atribuídas e lidas corretamente.
+        /// </summary>
         [Test]
+        [Category("Unit")]
+        [Property("Priority", 2)]
         public void AccessoryResponseDto_CanSetProperties()
         {
             var id = Guid.NewGuid();

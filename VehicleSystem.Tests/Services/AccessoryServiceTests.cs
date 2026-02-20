@@ -35,6 +35,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("Unit")]
+        [Property("Priority", 2)]
         public async Task GetAccessoriesAsync_NoAccessoriesFound_ReturnsEmptyList()
         {
             _accessoryRepositoryMock.Setup(r => r.GetAllAsync()).ReturnsAsync((IEnumerable<TbAccessory>)null!);
@@ -47,6 +48,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("Unit")]
+        [Property("Priority", 1)]
         public void GetAccessoryByIdAsync_IdNotFound_ThrowsKeyNotFoundException()
         {
             _accessoryRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync((TbAccessory)null!);
@@ -58,6 +60,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("Unit")]
+        [Property("Priority", 1)]
         public async Task GetAccessoriesByRentalIdAsync_ExistingAccessories_ReturnsMappedList()
         {
             var rentalId = Guid.NewGuid();
@@ -83,6 +86,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("Unit")]
+        [Property("Priority", 2)]
         public async Task GetAccessoriesByRentalIdAsync_WithAccessories_ReturnsMappedList()
         {
             var rentalId = Guid.NewGuid();
@@ -110,6 +114,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("Unit")]
+        [Property("Priority", 1)]
         public void GetAccessoriesByRentalIdAsync_RentalNotFound_ThrowsKeyNotFoundException()
         {
             _rentalRepositoryMock.Setup(r => r.GetRentalByIdAsync(It.IsAny<Guid>())).ReturnsAsync((TbRental)null!);
@@ -121,6 +126,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("Unit")]
+        [Property("Priority", 3)]
         public async Task GetAccessoriesByRentalIdAsync_RepositoryReturnsNull_CoversNullBranch()
         {
             var rentalId = Guid.NewGuid();
@@ -139,6 +145,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("Unit")]
+        [Property("Priority", 2)]
         public async Task GetAccessoriesByRentalIdAsync_ValidRental_ReturnsMappedDtoList()
         {
             var rentalId = Guid.NewGuid();
@@ -165,6 +172,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("Unit")]
+        [Property("Priority", 1)]
         public async Task GetAccessoryByIdAsync_ValidId_ReturnsMappedDto()
         {
             var id = Guid.NewGuid();
@@ -186,6 +194,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("Unit")]
+        [Property("Priority", 2)]
         public async Task GetAccessoryByIdAsync_ExistingId_ReturnsCorrectMapping()
         {
             var accessoryId = Guid.NewGuid();
@@ -207,6 +216,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("Unit")]
+        [Property("Priority", 3)]
         public async Task GetAccessoryByIdAsync_ExistingId_ExecutesMapping()
         {
             var id = Guid.NewGuid();
@@ -227,6 +237,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("Unit")]
+        [Property("Priority", 2)]
         public async Task GetAccessoryByIdAsync_ExistingAccessory_ReturnsMappedDto()
         {
             var id = Guid.NewGuid();
@@ -252,6 +263,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("Unit")]
+        [Property("Priority", 2)]
         public async Task CreateAccessoryAsync_ValidDto_ExecutesInternalInstantiation()
         {
             var dto = new AccessoryCreateDto { Name = "Assento Elevação", DailyRate = 15.5m };
@@ -270,6 +282,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("Unit")]
+        [Property("Priority", 1)]
         public async Task CreateAccessoryAsync_ValidData_PersistsAndReturnsDto()
         {
             var dto = new AccessoryCreateDto { Name = "Cadeira Infantil", DailyRate = 20.0m };
@@ -286,6 +299,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("Unit")]
+        [Property("Priority", 3)]
         public async Task CreateAccessoryAsync_ValidData_CoversEntityInstantiation()
         {
             var dto = new AccessoryCreateDto { Name = "Cadeira Bebê", DailyRate = 20m };
@@ -303,6 +317,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("Unit")]
+        [Property("Priority", 1)]
         public async Task CreateAccessoryAsync_ValidData_ReturnsAccessoryResponseDto()
         {
             var dto = new AccessoryCreateDto { Name = "Cadeira de Bebê", DailyRate = 25.50m };
@@ -324,6 +339,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("BusinessRule")]
+        [Property("Priority", 1)]
         public void CreateAccessoryAsync_DuplicateName_ThrowsInvalidOperationException()
         {
             var dto = new AccessoryCreateDto { Name = "GPS" };
@@ -338,6 +354,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("Unit")]
+        [Property("Priority", 2)]
         public async Task CreateAccessoryAsync_NewAccessory_CallsRepositoryWithCorrectData()
         {
             var dto = new AccessoryCreateDto { Name = "WiFi Hotspot", DailyRate = 5.0m };
@@ -360,6 +377,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("Validation")]
+        [Property("Priority", 1)]
         public void AddAccessoryToRentalAsync_GuidsAreEmpty_ThrowsArgumentException()
         {
             // Act & Assert
@@ -372,6 +390,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("BusinessRule")]
+        [Property("Priority", 2)]
         public async Task AddAccessoryToRentalAsync_MultipleDays_CalculatesTotalCorrectly()
         {
             var start = DateTime.Now.Date;
@@ -395,6 +414,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("BusinessRule")]
+        [Property("Priority", 2)]
         public async Task AddAccessoryToRentalAsync_MultipleDays_CalculatesAndUpdatesTotal()
         {
             // Arrange
@@ -420,6 +440,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("Validation")]
+        [Property("Priority", 1)]
         public void AddAccessoryToRentalAsync_EmptyGuids_ThrowsArgumentException()
         {
             Assert.ThrowsAsync<ArgumentException>(() => _service.AddAccessoryToRentalAsync(Guid.Empty, Guid.NewGuid()));
@@ -430,6 +451,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("BusinessRule")]
+        [Property("Priority", 1)]
         public async Task AddAccessoryToRentalAsync_RentalCanceled_ThrowsInvalidOperationException()
         {
             var rentalId = Guid.NewGuid();
@@ -448,8 +470,12 @@ namespace VehicleSystem.Tests.Services
             _rentalRepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<TbRental>()), Times.Never);
         }
 
+        /// <summary>
+        /// Sucesso: Verifica se o TotalAmount é atualizado e o vínculo é criado corretamente com dados válidos.
+        /// </summary>
         [Test]
         [Category("BusinessRule")]
+        [Property("Priority", 1)]
         public async Task AddAccessoryToRentalAsync_ValidRentalAndAccessory_UpdatesTotalAndLinksCorrectly()
         {
             var rentalId = Guid.NewGuid();
@@ -470,8 +496,12 @@ namespace VehicleSystem.Tests.Services
             _accessoryRepositoryMock.Verify(r => r.LinkToRentalAsync(rentalId, accessoryId), Times.Once);
         }
 
+        /// <summary>
+        /// Sucesso: Verifica se o TotalAmount é reduzido e o vínculo é removido corretamente com dados válidos.
+        /// </summary>
         [Test]
         [Category("BusinessRule")]
+        [Property("Priority", 1)]
         public async Task RemoveAccessoryFromRentalAsync_ValidLink_DecreasesTotalAndRemovesLink()
         {
             var rentalId = Guid.NewGuid();
@@ -492,8 +522,12 @@ namespace VehicleSystem.Tests.Services
             _rentalRepositoryMock.Verify(r => r.UpdateAsync(rental), Times.Once);
         }
 
+        /// <summary>
+        /// Sucesso: Verifica se LinkToRentalAsync e UpdateAsync são chamados e o total é calculado corretamente quando o período é maior que zero.
+        /// </summary>
         [Test]
         [Category("BusinessRule")]
+        [Property("Priority", 2)]
         public async Task AddAccessoryToRentalAsync_DaysGreaterThanZero_CallsLinkAndUpdateAndUpdatesTotal()
         {
             var start = DateTime.Now.Date;
@@ -515,8 +549,12 @@ namespace VehicleSystem.Tests.Services
             _rentalRepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<TbRental>()), Times.Once);
         }
 
+        /// <summary>
+        /// Sucesso: Verifica se o cálculo usa 1 dia mínimo, LinkToRentalAsync e UpdateAsync são chamados quando as datas são iguais.
+        /// </summary>
         [Test]
         [Category("BusinessRule")]
+        [Property("Priority", 2)]
         public async Task AddAccessoryToRentalAsync_DatesEqual_UsesOneDayAndCallsLinkAndUpdate()
         {
             var date = DateTime.Now.Date;
@@ -544,6 +582,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("Validation")]
+        [Property("Priority", 1)]
         public void AddAccessoryToRentalAsync_RentalNotFound_ThrowsKeyNotFoundException()
         {
             _rentalRepositoryMock.Setup(r => r.GetRentalByIdAsync(It.IsAny<Guid>())).ReturnsAsync((TbRental)null!);
@@ -559,6 +598,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("Validation")]
+        [Property("Priority", 1)]
         public void AddAccessoryToRentalAsync_RentalIdNotFound_ThrowsKeyNotFoundException()
         {
             var rentalId = Guid.NewGuid();
@@ -573,6 +613,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("BusinessRule")]
+        [Property("Priority", 1)]
         public void AddAccessoryToRentalAsync_AlreadyLinked_ThrowsInvalidOperationException()
         {
             var rentalId = Guid.NewGuid();
@@ -592,6 +633,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("BusinessRule")]
+        [Property("Priority", 2)]
         public async Task AddAccessoryToRentalAsync_SameDayDates_CalculatesMinimumOneDay()
         {
             var today = DateTime.Now.Date;
@@ -616,6 +658,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("BusinessRule")]
+        [Property("Priority", 2)]
         public async Task RemoveAccessoryFromRentalAsync_DaysGreaterThanZero_DecreasesTotalCorrectly()
         {
             var start = DateTime.Now.Date;
@@ -638,6 +681,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("BusinessRule")]
+        [Property("Priority", 2)]
         public async Task RemoveAccessoryFromRentalAsync_DaysGreaterThanZero_CalculatesReductionCorrectly()
         {
             var startDate = DateTime.Now.Date;
@@ -660,6 +704,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("BusinessRule")]
+        [Property("Priority", 2)]
         public async Task RemoveAccessoryFromRentalAsync_MultipleDays_ExecutesCorrectCalculation()
         {
             var start = DateTime.Now.Date;
@@ -682,6 +727,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("BusinessRule")]
+        [Property("Priority", 2)]
         public async Task RemoveAccessoryFromRentalAsync_PositivePeriod_ExecutesNormalCalculation()
         {
             var start = DateTime.Now.Date;
@@ -704,6 +750,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("BusinessRule")]
+        [Property("Priority", 2)]
         public async Task RemoveAccessoryFromRentalAsync_PositiveDays_CalculatesCorrectReduction()
         {
             var start = DateTime.Now.Date;
@@ -726,6 +773,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("Validation")]
+        [Property("Priority", 1)]
         public void RemoveAccessoryFromRentalAsync_RentalNotFound_ThrowsKeyNotFoundException()
         {
             _rentalRepositoryMock.Setup(r => r.GetRentalByIdAsync(It.IsAny<Guid>())).ReturnsAsync((TbRental?)null);
@@ -738,6 +786,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("Validation")]
+        [Property("Priority", 1)]
         public void RemoveAccessoryFromRentalAsync_AccessoryNotFound_ThrowsKeyNotFoundException()
         {
             _rentalRepositoryMock.Setup(r => r.GetRentalByIdAsync(It.IsAny<Guid>())).ReturnsAsync(new TbRental());
@@ -753,7 +802,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("Remoção")]
-        [Property("Priority", "Low")]
+        [Property("Priority", 1)]
         [Category("BusinessRule")]
         public void RemoveAccessoryFromRentalAsync_NotLinked_ThrowsKeyNotFoundException()
         {
@@ -770,6 +819,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("BusinessRule")]
+        [Property("Priority", 1)]
         public async Task RemoveAccessoryFromRentalAsync_ValidData_DecreasesTotalAmount()
         {
             var start = DateTime.Now.Date;
@@ -789,8 +839,12 @@ namespace VehicleSystem.Tests.Services
             _rentalRepositoryMock.Verify(r => r.UpdateAsync(rental), Times.Once);
         }
 
+        /// <summary>
+        /// Sucesso: Verifica se o cálculo usa 1 dia mínimo, RemoveLinkAsync e UpdateAsync são chamados quando as datas são iguais.
+        /// </summary>
         [Test]
         [Category("BusinessRule")]
+        [Property("Priority", 2)]
         public async Task RemoveAccessoryFromRentalAsync_DatesAreEqual_UsesOneDayMinimum()
         {
             var date = DateTime.Now.Date;
@@ -818,6 +872,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("BusinessRule")]
+        [Property("Priority", 2)]
         public async Task AddAccessoryToRentalAsync_PositivePeriod_UpdatesTotalCorrectly()
         {
             var start = DateTime.Now.Date;
@@ -839,6 +894,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("BusinessRule")]
+        [Property("Priority", 2)]
         public async Task AddAccessoryToRentalAsync_PositivePeriod_CalculatesAndUpdatesTotal()
         {
             var start = DateTime.Now.Date;
@@ -861,6 +917,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("BusinessRule")]
+        [Property("Priority", 1)]
         public async Task AddAccessoryToRentalAsync_ValidData_UpdatesRentalTotalAmount()
         {
             var start = DateTime.Now.Date;
@@ -884,6 +941,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("Validation")]
+        [Property("Priority", 1)]
         public void AddAccessoryToRentalAsync_AccessoryNotFound_ThrowsKeyNotFoundException()
         {
             var rentalId = Guid.NewGuid();
@@ -898,6 +956,7 @@ namespace VehicleSystem.Tests.Services
         /// </summary>
         [Test]
         [Category("BusinessRule")]
+        [Property("Priority", 2)]
         public async Task AddAccessoryToRentalAsync_DatesAreEqual_UsesOneDayMinimum()
         {
             var date = DateTime.Now.Date;
@@ -917,8 +976,12 @@ namespace VehicleSystem.Tests.Services
             _rentalRepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<TbRental>()), Times.Once);
         }
 
+        /// <summary>
+        /// Sucesso: Verifica se o total é atualizado corretamente quando a data final é posterior à data inicial.
+        /// </summary>
         [Test]
         [Category("BusinessRule")]
+        [Property("Priority", 2)]
         public async Task AddAccessoryToRentalAsync_ExpectedEndGreaterThanStart_UsesDaysAndUpdatesTotal()
         {
             var start = DateTime.Now.Date;
@@ -938,8 +1001,12 @@ namespace VehicleSystem.Tests.Services
             _rentalRepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<TbRental>()), Times.Once);
         }
         
+        /// <summary>
+        /// Sucesso: Verifica se o cálculo usa 1 dia mínimo quando a data final é anterior à data inicial.
+        /// </summary>
         [Test]
         [Category("BusinessRule")]
+        [Property("Priority", 3)]
         public async Task AddAccessoryToRentalAsync_EndBeforeStart_UsesOneDayAndUpdatesTotal()
         {
             var start = DateTime.Now.Date;

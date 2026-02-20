@@ -31,8 +31,12 @@ namespace VehicleSystem.Tests.Services
 
         #region RegisterPaymentAsync
 
+        /// <summary>
+        /// Falha: Lança ArgumentException quando o identificador de locação informado é vazio.
+        /// </summary>
         [Test]
         [Category("Validation")]
+        [Property("Priority", 1)]
         public void RegisterPaymentAsync_RentalIdEmpty_ThrowsArgumentException()
         {
             var dto = new PaymentCreateDTO { Amount = 100m, PaymentMethod = EnumPaymentMethod.PIX };
@@ -43,8 +47,12 @@ namespace VehicleSystem.Tests.Services
             Assert.That(ex!.Message, Does.Contain("rental identifier"));
         }
 
+        /// <summary>
+        /// Falha: Lança KeyNotFoundException quando a locação informada não é encontrada no banco de dados.
+        /// </summary>
         [Test]
         [Category("Validation")]
+        [Property("Priority", 1)]
         public void RegisterPaymentAsync_RentalNotFound_ThrowsKeyNotFoundException()
         {
             var rentalId = Guid.NewGuid();
@@ -61,8 +69,12 @@ namespace VehicleSystem.Tests.Services
             _paymentRepositoryMock.Verify(p => p.AddPaymentAsync(It.IsAny<TbPayment>()), Times.Never);
         }
 
+        /// <summary>
+        /// Falha: Lança InvalidOperationException quando a locação informada está com status cancelado.
+        /// </summary>
         [Test]
         [Category("BusinessRule")]
+        [Property("Priority", 2)]
         public void RegisterPaymentAsync_RentalCanceled_ThrowsInvalidOperationException()
         {
             var rentalId = Guid.NewGuid();
@@ -80,8 +92,12 @@ namespace VehicleSystem.Tests.Services
             _paymentRepositoryMock.Verify(p => p.AddPaymentAsync(It.IsAny<TbPayment>()), Times.Never);
         }
 
+        /// <summary>
+        /// Falha: Lança InvalidOperationException quando o valor do pagamento é igual ou inferior a zero.
+        /// </summary>
         [Test]
         [Category("Validation")]
+        [Property("Priority", 2)]
         public void RegisterPaymentAsync_AmountLessOrEqualZero_ThrowsInvalidOperationException()
         {
             var rentalId = Guid.NewGuid();
@@ -99,8 +115,12 @@ namespace VehicleSystem.Tests.Services
             _paymentRepositoryMock.Verify(p => p.AddPaymentAsync(It.IsAny<TbPayment>()), Times.Never);
         }
 
+        /// <summary>
+        /// Falha: Lança InvalidOperationException quando o valor do pagamento supera o saldo restante da locação.
+        /// </summary>
         [Test]
         [Category("BusinessRule")]
+        [Property("Priority", 2)]
         public void RegisterPaymentAsync_AmountGreaterThanRemaining_ThrowsInvalidOperationException()
         {
             var rentalId = Guid.NewGuid();
@@ -122,8 +142,12 @@ namespace VehicleSystem.Tests.Services
             _paymentRepositoryMock.Verify(p => p.AddPaymentAsync(It.IsAny<TbPayment>()), Times.Never);
         }
 
+        /// <summary>
+        /// Sucesso: Persiste o pagamento e retorna o DTO com todos os campos corretamente preenchidos.
+        /// </summary>
         [Test]
         [Category("Unit")]
+        [Property("Priority", 1)]
         public async Task RegisterPaymentAsync_ValidData_AddsPaymentAndReturnsResponse()
         {
             var rentalId = Guid.NewGuid();
@@ -177,8 +201,12 @@ namespace VehicleSystem.Tests.Services
 
         #region GetAllPaymentsAsync
 
+        /// <summary>
+        /// Falha: Retorna enumerável vazio quando o repositório retorna null.
+        /// </summary>
         [Test]
         [Category("Unit")]
+        [Property("Priority", 2)]
         public async Task GetAllPaymentsAsync_RepositoryReturnsNull_ReturnsEmptyEnumerable()
         {
             _paymentRepositoryMock
@@ -190,8 +218,12 @@ namespace VehicleSystem.Tests.Services
             Assert.That(result, Is.Empty);
         }
 
+        /// <summary>
+        /// Sucesso: Mapeia corretamente os pagamentos para DTOs e verifica a chamada ao repositório.
+        /// </summary>
         [Test]
         [Category("Unit")]
+        [Property("Priority", 1)]
         public async Task GetAllPaymentsAsync_WithPayments_MapsToDtos()
         {
             var rentalId = Guid.NewGuid();
