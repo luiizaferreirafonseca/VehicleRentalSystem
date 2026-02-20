@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Hosting;
@@ -31,6 +31,14 @@ public class RentalReportController : ControllerBase
     [HttpGet("{rentalId:guid}/export/{format?}")]
     public async Task<IActionResult> Export(Guid rentalId, string? format)
     {
+        if (rentalId == Guid.Empty)
+            return BadRequest(new ProblemDetails
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Title = Messages.InvalidOperation,
+                Detail = Messages.RentalIdRequired
+            });
+
         try
         {
             var fmt = (format ?? "txt").ToLowerInvariant();
@@ -102,16 +110,37 @@ public class RentalReportController : ControllerBase
     [HttpGet("{rentalId:guid}")]
     public async Task<ActionResult<RentalReportResponseDTO>> GetReport(Guid rentalId)
     {
-        var report = await _reportService.GetRentalReportAsync(rentalId);
-
-        if (report == null)
-            return NotFound(new ProblemDetails
+        if (rentalId == Guid.Empty)
+            return BadRequest(new ProblemDetails
             {
-                Status = StatusCodes.Status404NotFound,
-                Title = Messages.ReportNotFound,
-                Detail = string.Format(Messages.ReportNotFoundDetailFormat, rentalId)
+                Status = StatusCodes.Status400BadRequest,
+                Title = Messages.InvalidOperation,
+                Detail = Messages.RentalIdRequired
             });
 
-        return Ok(report);
+        try
+        {
+            var report = await _reportService.GetRentalReportAsync(rentalId);
+
+            if (report == null)
+                return NotFound(new ProblemDetails
+                {
+                    Status = StatusCodes.Status404NotFound,
+                    Title = Messages.ReportNotFound,
+                    Detail = string.Format(Messages.ReportNotFoundDetailFormat, rentalId)
+                });
+
+            return Ok(report);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "GetReport - unexpected error for RentalId={rentalId}", rentalId);
+            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
+            {
+                Status = StatusCodes.Status500InternalServerError,
+                Title = Messages.ServerError,
+                Detail = Messages.UnexpectedServerErrorDetail
+            });
+        }
     }
 }
