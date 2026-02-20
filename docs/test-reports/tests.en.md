@@ -369,3 +369,9 @@ Repository  →  PostgresContext InMemory        (EF Core InMemory)
 ```
 Passed! — Failed: 0, Passed: 20, Skipped: 0, Total: 20
 ```
+
+---
+
+## 📊 Code Coverage — Overall Summary
+
+#image:'Tests.png'
