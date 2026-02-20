@@ -23,6 +23,10 @@ namespace VehicleSystem.Tests
             _service = new RentalService(_repositoryMock.Object);
         }
 
+        /// <summary>
+        /// Validates that updating rental dates with valid data recalculates
+        /// the total amount correctly and persists the changes via the repository.
+        /// </summary>
         [Test]
         public async Task UpdateRentalDatesAsync_ValidData_ReturnsUpdatedRental()
         {
@@ -53,6 +57,10 @@ namespace VehicleSystem.Tests
             _repositoryMock.Verify(r => r.UpdateAsync(It.IsAny<TbRental>()), Times.Once);
         }
 
+        /// <summary>
+        /// Ensures that setting a new expected end date earlier than the start date
+        /// throws an InvalidOperationException with the correct message.
+        /// </summary>
         [Test]
         public void UpdateRentalDatesAsync_InvalidDate_ThrowsException()
         {
@@ -74,6 +82,10 @@ namespace VehicleSystem.Tests
             Assert.That(ex.Message, Is.EqualTo("The new return date must be later than the start date."));
         }
 
+        /// <summary>
+        /// Main rental creation flow: verifies that a valid DTO results in a correctly
+        /// mapped response with user name, vehicle model, daily rate, and calculated total amount.
+        /// </summary>
         [Test]
         public async Task CreateRentalAsync_ShouldReturnDTO_WhenDataIsValid()
         {
@@ -109,6 +121,10 @@ namespace VehicleSystem.Tests
             Assert.That(result.PenaltyFee, Is.EqualTo(0m));
         }
 
+        /// <summary>
+        /// Validates that an empty UserId is rejected before reaching the repository layer,
+        /// throwing an InvalidOperationException.
+        /// </summary>
         [Test]
         public void CreateRentalAsync_ShouldThrow_WhenUserIdIsEmpty()
         {
@@ -124,6 +140,10 @@ namespace VehicleSystem.Tests
                 await _service.CreateRentalAsync(dto));
         }
 
+        /// <summary>
+        /// Ensures that attempting to return a non-existent rental throws
+        /// a KeyNotFoundException with the correct message.
+        /// </summary>
         [Test]
         public void ReturnRentalAsync_ShouldThrow_WhenRentalNotFound()
         {
@@ -138,6 +158,10 @@ namespace VehicleSystem.Tests
             Assert.That(ex.Message, Is.EqualTo(Messages.RentalNotFound));
         }
 
+        /// <summary>
+        /// Verifies that a late return applies a positive penalty fee, marks the rental
+        /// as completed, and releases the vehicle back to available status.
+        /// </summary>
         [Test]
         public async Task ReturnRentalAsync_WithPenalty_WhenReturnedAfterExpectedDate()
         {
@@ -171,6 +195,10 @@ namespace VehicleSystem.Tests
             Assert.That(rental.Vehicle.Status, Is.EqualTo(VehicleStatus.available.ToString()));
         }
 
+        /// <summary>
+        /// Tests successful retrieval of a rental by ID, verifying that user name
+        /// and vehicle model are correctly mapped in the response DTO.
+        /// </summary>
         [Test]
         public async Task GetRentalByIdAsync_ShouldReturnRentalDTO_WhenIdExists()
         {
@@ -197,6 +225,9 @@ namespace VehicleSystem.Tests
         }
 
 
+        /// <summary>
+        /// Validates that querying a non-existent rental ID throws a KeyNotFoundException.
+        /// </summary>
         [Test]
         public void GetRentalByIdAsync_ShouldThrowKeyNotFoundException_WhenIdDoesNotExist()
         {
@@ -209,6 +240,10 @@ namespace VehicleSystem.Tests
                 await _service.GetRentalByIdAsync(rentalId));
         }
 
+        /// <summary>
+        /// Parameterized test that ensures rental search returns correctly mapped results
+        /// for each valid status value: active, completed, and canceled.
+        /// </summary>
         [Test]
         [TestCase("active")]
         [TestCase("completed")]
@@ -240,6 +275,10 @@ namespace VehicleSystem.Tests
             Assert.That(result[0].VehicleModel, Is.EqualTo("Civic"));
         }
 
+        /// <summary>
+        /// Ensures that a page number less than 1 is rejected with an
+        /// InvalidOperationException carrying the correct validation message.
+        /// </summary>
         [Test]
         public void SearchRentalsByUserAsync_ShouldThrow_WhenPageIsLessThanOne()
         {
@@ -251,6 +290,10 @@ namespace VehicleSystem.Tests
             Assert.That(ex.Message, Is.EqualTo(Messages.PageInvalid));
         }
 
+        /// <summary>
+        /// Validates that the total amount is correctly recalculated based on the
+        /// daily rate and the new date range after a successful date update.
+        /// </summary>
         [Test]
         public async Task UpdateRentalDatesAsync_ShouldRecalculateTotalAmount_WhenDatesAreUpdated()
         {
@@ -283,6 +326,10 @@ namespace VehicleSystem.Tests
             _repositoryMock.Verify(r => r.UpdateAsync(It.IsAny<TbRental>()), Times.Once);
         }
 
+        /// <summary>
+        /// Ensures that updating dates on a non-active rental throws an
+        /// InvalidOperationException describing the current invalid status.
+        /// </summary>
         [Test]
         public void UpdateRentalDatesAsync_ShouldThrow_WhenRentalIsNotActive()
         {
@@ -304,6 +351,10 @@ namespace VehicleSystem.Tests
             Assert.That(ex.Message, Does.StartWith("Only rentals with status 'active' can be updated. Current status: completed"));
         }
 
+        /// <summary>
+        /// Validates that canceling an active rental sets the status to canceled,
+        /// releases the vehicle to available, and saves the changes once.
+        /// </summary>
         [Test]
         public async Task CancelRentalAsync_ShouldCancelAndReleaseVehicle_WhenRentalIsActive()
         {
@@ -331,6 +382,10 @@ namespace VehicleSystem.Tests
             _repositoryMock.Verify(r => r.SaveChangesAsync(), Times.Once);
         }
 
+        /// <summary>
+        /// Ensures that attempting to cancel a rental that is not active throws
+        /// an InvalidOperationException with the correct status information.
+        /// </summary>
         [Test]
         public void CancelRentalAsync_ShouldThrow_WhenRentalIsNotActive()
         {
@@ -350,6 +405,10 @@ namespace VehicleSystem.Tests
             Assert.That(ex.Message, Does.Contain("It is not possible to cancel a rental with status 'completed'"));
         }
 
+        /// <summary>
+        /// Validates that an empty UserId is rejected before calling the repository,
+        /// throwing an InvalidOperationException with the correct message.
+        /// </summary>
         [Test]
         public void SearchRentalsByUserAsync_UserIdEmpty_ThrowsException()
         {
