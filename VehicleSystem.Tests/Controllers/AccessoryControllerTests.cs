@@ -36,7 +36,7 @@ namespace VehicleSystem.Tests.Controllers
         /// </summary>
         [Test]
         [Category("Unit")]
-        [Property("Priority", "Medium")]
+        [Property("Priority", 2)]
         public async Task Get_ShouldReturn_200OkWithEmptyList_WhenNoAccessoriesExist()
         {
             _serviceMock.Setup(s => s.GetAccessoriesAsync()).ReturnsAsync(new List<AccessoryResponseDto>());
@@ -57,7 +57,7 @@ namespace VehicleSystem.Tests.Controllers
         /// </summary>
         [Test]
         [Category("Unit")]
-        [Property("Priority", "High")]
+        [Property("Priority", 1)]
         public async Task Get_ShouldReturnList_WhenAccessoriesExist()
         {
             var fake = new List<AccessoryResponseDto>
@@ -83,7 +83,7 @@ namespace VehicleSystem.Tests.Controllers
         /// </summary>
         [Test]
         [Category("Unit")]
-        [Property("Priority", "High")]
+        [Property("Priority", 1)]
         public async Task GetById_ShouldReturn_200Ok_WhenExists()
         {
             var id = Guid.NewGuid();
@@ -100,7 +100,7 @@ namespace VehicleSystem.Tests.Controllers
         /// </summary>
         [Test]
         [Category("Unit")]
-        [Property("Priority", "Low")]
+        [Property("Priority", 3)]
         public async Task GetById_ShouldReturn_400_WhenModelStateIsInvalid()
         {
             _controller.ModelState.AddModelError("id", "Invalid Guid format");
@@ -116,7 +116,7 @@ namespace VehicleSystem.Tests.Controllers
         /// </summary>
         [Test]
         [Category("Unit")]
-        [Property("Priority", "High")]
+        [Property("Priority", 1)]
         public async Task GetById_ShouldReturn_404NotFound_WhenIdDoesNotExist()
         {
             var id = Guid.NewGuid();
@@ -139,6 +139,7 @@ namespace VehicleSystem.Tests.Controllers
         /// </summary>
         [Test]
         [Category("Unit")]
+        [Property("Priority", 2)]
         public async Task GetById_ShouldReturn_409_WhenInvalidOperationExceptionOccurs()
         {
             var id = Guid.NewGuid();
@@ -161,6 +162,7 @@ namespace VehicleSystem.Tests.Controllers
         /// </summary>
         [Test]
         [Category("Unit")]
+        [Property("Priority", 3)]
         public async Task GetById_ShouldReturn_500_WhenUnexpectedExceptionOccurs()
         {
             var id = Guid.NewGuid();
@@ -185,7 +187,7 @@ namespace VehicleSystem.Tests.Controllers
         /// </summary>
         [Test]
         [Category("Unit")]
-        [Property("Priority", "High")]
+        [Property("Priority", 1)]
         public async Task Create_ShouldReturn_201Created_WhenAccessoryCreatedSuccessfully()
         {
             var request = new AccessoryCreateDto { Name = "GPS", DailyRate = 15m };
@@ -209,6 +211,7 @@ namespace VehicleSystem.Tests.Controllers
         /// </summary>
         [Test]
         [Category("Unit")]
+        [Property("Priority", 1)]
         public async Task Create_ShouldReturn_409Conflict_WhenNameIsDuplicate()
         {
             var dto = new AccessoryCreateDto { Name = "GPS", DailyRate = 10m };
@@ -226,12 +229,12 @@ namespace VehicleSystem.Tests.Controllers
             });
         }
 
-        [Test]
         /// <summary>
         /// Validates that ModelState prevents accessory creation when validation errors exist.
         /// </summary>
+        [Test]
         [Category("Unit")]
-        [Property("Priority", "Medium")]
+        [Property("Priority", 2)]
         public async Task Create_ShouldReturn_400BadRequest_WhenModelStateIsInvalid()
         {
             var dto = new AccessoryCreateDto { Name = "" };
@@ -242,12 +245,12 @@ namespace VehicleSystem.Tests.Controllers
             Assert.That(actionResult.Result, Is.TypeOf<BadRequestObjectResult>());
         }
 
-        [Test]
         /// <summary>
         /// Ensures unexpected failures in creation service return 500 error.
         /// </summary>
+        [Test]
         [Category("Unit")]
-        [Property("Priority", "Low")]
+        [Property("Priority", 3)]
         public async Task Create_ShouldReturn_500_WhenUnexpectedException()
         {
             var dto = new AccessoryCreateDto { Name = "GPS", DailyRate = 10m };
@@ -266,6 +269,7 @@ namespace VehicleSystem.Tests.Controllers
         /// </summary>
         [Test]
         [Category("Vínculo")]
+        [Property("Priority", 1)]
         public async Task AddAccessoryToRental_ShouldReturn_400BadRequest_WhenRequestIsNull()
         {
             RentalAccessoryRequestDto? request = null;
@@ -287,7 +291,7 @@ namespace VehicleSystem.Tests.Controllers
         /// </summary>
         [Test]
         [Category("Vínculo")]
-        [Property("Priority", "Medium")]
+        [Property("Priority", 2)]
         public async Task AddAccessoryToRental_ShouldReturn_400_WhenModelStateIsInvalid()
         {
             _controller.ModelState.AddModelError("Key", "Error");
@@ -302,7 +306,7 @@ namespace VehicleSystem.Tests.Controllers
         /// </summary>
         [Test]
         [Category("Vínculo")]
-        [Property("Priority", "Low")]
+        [Property("Priority", 3)]
         public async Task AddAccessoryToRental_ShouldReturn_400_WhenOnlyRentalIdIsEmpty()
         {
             var req = new RentalAccessoryRequestDto { RentalId = Guid.Empty, AccessoryId = Guid.NewGuid() };
@@ -317,7 +321,7 @@ namespace VehicleSystem.Tests.Controllers
         /// </summary>
         [Test]
         [Category("Vínculo")]
-        [Property("Priority", "Low")]
+        [Property("Priority", 3)]
         public async Task AddAccessoryToRental_ShouldReturn_400_WhenOnlyAccessoryIdIsEmpty()
         {
             var req = new RentalAccessoryRequestDto { RentalId = Guid.NewGuid(), AccessoryId = Guid.Empty };
@@ -332,7 +336,7 @@ namespace VehicleSystem.Tests.Controllers
         /// </summary>
         [Test]
         [Category("Vínculo")]
-        [Property("Priority", "High")]
+        [Property("Priority", 1)]
         public async Task AddAccessoryToRental_ShouldReturn_200Ok_WhenRequestIsValid()
         {
             var rentalId = Guid.NewGuid();
@@ -359,6 +363,7 @@ namespace VehicleSystem.Tests.Controllers
         [Test]
         [Category("Vínculo")]
         [Category("Logging")]
+        [Property("Priority", 2)]
         public async Task AddAccessoryToRental_ShouldReturn_404_AndLogWarning_WhenKeyNotFound()
         {
             var req = new RentalAccessoryRequestDto { RentalId = Guid.NewGuid(), AccessoryId = Guid.NewGuid() };
@@ -383,7 +388,7 @@ namespace VehicleSystem.Tests.Controllers
         /// </summary>
         [Test]
         [Category("Vínculo")]
-        [Property("Priority", "Low")]
+        [Property("Priority", 3)]
         public async Task AddAccessoryToRental_ShouldReturn_500_AndLogError_WhenUnexpectedException()
         {
             var req = new RentalAccessoryRequestDto { RentalId = Guid.NewGuid(), AccessoryId = Guid.NewGuid() };
@@ -400,7 +405,7 @@ namespace VehicleSystem.Tests.Controllers
         /// </summary>
         [Test]
         [Category("Vínculo")]
-        [Property("Priority", "Medium")]
+        [Property("Priority", 2)]
         public async Task AddAccessoryToRental_ShouldReturn_409_WhenInvalidOperation()
         {
             var req = new RentalAccessoryRequestDto { RentalId = Guid.NewGuid(), AccessoryId = Guid.NewGuid() };
@@ -419,6 +424,7 @@ namespace VehicleSystem.Tests.Controllers
         /// </summary>
         [Test]
         [Category("Query")]
+        [Property("Priority", 1)]
         public async Task GetAccessoriesByRental_ShouldReturnList_WhenAccessoriesExist()
         {
             var rentalId = Guid.NewGuid();
@@ -435,7 +441,7 @@ namespace VehicleSystem.Tests.Controllers
         /// </summary>
         [Test]
         [Category("Query")]
-        [Property("Priority", "Medium")]
+        [Property("Priority", 2)]
         public async Task GetAccessoriesByRental_ShouldReturn_404_WhenNotFound()
         {
             var rentalId = Guid.NewGuid();
@@ -451,7 +457,7 @@ namespace VehicleSystem.Tests.Controllers
         /// </summary>
         [Test]
         [Category("Query")]
-        [Property("Priority", "Low")]
+        [Property("Priority", 3)]
         public async Task GetAccessoriesByRental_ShouldReturn_409_WhenInvalidOperation()
         {
             var rentalId = Guid.NewGuid();
@@ -468,7 +474,7 @@ namespace VehicleSystem.Tests.Controllers
         /// </summary>
         [Test]
         [Category("Query")]
-        [Property("Priority", "Low")]
+        [Property("Priority", 3)]
         public async Task GetAccessoriesByRental_ShouldReturn_500_WhenUnexpectedException()
         {
             var rentalId = Guid.NewGuid();
@@ -487,7 +493,7 @@ namespace VehicleSystem.Tests.Controllers
         /// </summary>
         [Test]
         [Category("Remoção")]
-        [Property("Priority", "High")]
+        [Property("Priority", 1)]
         public async Task RemoveAccessoryFromRental_ShouldReturn_200Ok()
         {
             var rentalId = Guid.NewGuid();
@@ -510,7 +516,7 @@ namespace VehicleSystem.Tests.Controllers
         /// </summary>
         [Test]
         [Category("Remoção")]
-        [Property("Priority", "Medium")]
+        [Property("Priority", 2)]
         public async Task RemoveAccessoryFromRental_ShouldReturn_404_WhenKeyNotFound()
         {
             var rentalId = Guid.NewGuid();
@@ -527,7 +533,7 @@ namespace VehicleSystem.Tests.Controllers
         /// </summary>
         [Test]
         [Category("Remoção")]
-        [Property("Priority", "Low")]
+        [Property("Priority", 3)]
         public async Task RemoveAccessoryFromRental_ShouldReturn_409_WhenInvalidOperation()
         {
             var rentalId = Guid.NewGuid();
@@ -545,7 +551,7 @@ namespace VehicleSystem.Tests.Controllers
         /// </summary>
         [Test]
         [Category("Remoção")]
-        [Property("Priority", "Low")]
+        [Property("Priority", 3)]
         public async Task RemoveAccessoryFromRental_ShouldReturn_500_WhenUnexpectedException()
         {
             var rentalId = Guid.NewGuid();

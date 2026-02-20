@@ -437,8 +437,8 @@ namespace VehicleSystem.Tests
             StartDate = DateTime.UtcNow,
             ExpectedEndDate = DateTime.UtcNow.AddDays(1),
             Status = RentalStatus.active.ToString(),
-            User = null,
-            Vehicle = null
+            User = null!,
+            Vehicle = null!
         }
     };
 

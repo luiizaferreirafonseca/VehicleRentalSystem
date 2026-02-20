@@ -182,7 +182,12 @@ namespace VehicleSystem.Tests.Repositories
             _repository = new AccessoryRepository(_contextMock.Object);
         }
 
+        /// <summary>
+        /// Sucesso: Persiste o acessório no banco de dados após a adição.
+        /// </summary>
         [Test]
+        [Category("Unit")]
+        [Property("Priority", 1)]
         public async Task AddAsync_AddsAccessory_ToDatabase()
         {
             var accessories = new List<TbAccessory>();
@@ -199,7 +204,12 @@ namespace VehicleSystem.Tests.Repositories
             Assert.That(accessories[0].Name, Is.EqualTo("GPS"));
         }
 
+        /// <summary>
+        /// Sucesso: Retorna o acessório correto quando o nome informado existe no banco de dados.
+        /// </summary>
         [Test]
+        [Category("Unit")]
+        [Property("Priority", 1)]
         public async Task GetByNameAsync_ReturnsAccessory_WhenExists()
         {
             var accessories = new List<TbAccessory>();
@@ -216,7 +226,12 @@ namespace VehicleSystem.Tests.Repositories
             Assert.That(result.Name, Is.EqualTo("Finder"));
         }
 
+        /// <summary>
+        /// Falha: Retorna null quando o nome informado não corresponde a nenhum acessório cadastrado.
+        /// </summary>
         [Test]
+        [Category("Unit")]
+        [Property("Priority", 2)]
         public async Task GetByNameAsync_ReturnsNull_WhenNotFound()
         {
             var accessories = new List<TbAccessory>();
@@ -227,7 +242,12 @@ namespace VehicleSystem.Tests.Repositories
             Assert.That(result, Is.Null);
         }
 
+        /// <summary>
+        /// Sucesso: Retorna todos os acessórios cadastrados no banco de dados.
+        /// </summary>
         [Test]
+        [Category("Unit")]
+        [Property("Priority", 1)]
         public async Task GetAllAsync_ReturnsAllAccessories()
         {
             var accessory1 = new TbAccessory { Id = Guid.NewGuid(), Name = "A1", DailyRate = 1m };
@@ -245,7 +265,12 @@ namespace VehicleSystem.Tests.Repositories
             Assert.That(list.Any(a => a.Name == "A2"), Is.True);
         }
 
+        /// <summary>
+        /// Sucesso: Cria o vínculo entre locação e acessório com os preços calculados corretamente.
+        /// </summary>
         [Test]
+        [Category("Unit")]
+        [Property("Priority", 1)]
         public async Task LinkToRentalAsync_CreatesRentalAccessory_WithCorrectPrices()
         {
             var accessory = new TbAccessory { Id = Guid.NewGuid(), Name = "GPS", DailyRate = 12.5m };
@@ -272,7 +297,12 @@ namespace VehicleSystem.Tests.Repositories
             Assert.That(ra.Quantity, Is.EqualTo(1));
         }
 
+        /// <summary>
+        /// Sucesso: Cria o vínculo com preços zerados quando o acessório informado não é encontrado.
+        /// </summary>
         [Test]
+        [Category("Unit")]
+        [Property("Priority", 2)]
         public async Task LinkToRentalAsync_CreatesRentalAccessory_WithZeroPrices_WhenAccessoryNotFound()
         {
             var rental = new TbRental
@@ -304,7 +334,12 @@ namespace VehicleSystem.Tests.Repositories
             Assert.That(ra.Quantity, Is.EqualTo(1));
         }
 
+        /// <summary>
+        /// Sucesso: Retorna true quando o acessório está vinculado à locação e false quando não está.
+        /// </summary>
         [Test]
+        [Category("Unit")]
+        [Property("Priority", 1)]
         public async Task IsLinkedToRentalAsync_ReturnsTrueWhenLinked_AndFalseWhenNot()
         {
             var accessory = new TbAccessory { Id = Guid.NewGuid(), Name = "GPS", DailyRate = 5m };
@@ -330,7 +365,12 @@ namespace VehicleSystem.Tests.Repositories
             Assert.That(notLinked, Is.False);
         }
 
+        /// <summary>
+        /// Sucesso: Remove o vínculo existente entre a locação e o acessório informado.
+        /// </summary>
         [Test]
+        [Category("Unit")]
+        [Property("Priority", 1)]
         public async Task RemoveLinkAsync_RemovesExistingLink()
         {
             var accessory = new TbAccessory { Id = Guid.NewGuid(), Name = "GPS", DailyRate = 7m };
@@ -354,7 +394,12 @@ namespace VehicleSystem.Tests.Repositories
             Assert.That(rentalAccessories.Count, Is.EqualTo(0));
         }
 
+        /// <summary>
+        /// Sucesso: Retorna todos os acessórios vinculados à locação informada.
+        /// </summary>
         [Test]
+        [Category("Unit")]
+        [Property("Priority", 1)]
         public async Task GetByRentalIdAsync_ReturnsAccessories_LinkedToRental()
         {
             var accessory1 = new TbAccessory { Id = Guid.NewGuid(), Name = "GPS", DailyRate = 5m };

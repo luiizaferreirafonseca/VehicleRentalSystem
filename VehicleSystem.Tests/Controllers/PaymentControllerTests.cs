@@ -26,6 +26,10 @@ namespace VehicleSystem.Tests.Controllers
             _controller = new PaymentController(_paymentServiceMock.Object);
         }
 
+        /// <summary>
+        /// Ensures the endpoint returns HTTP 200 and the full payment list
+        /// when no filters are provided.
+        /// </summary>
         [Test]
         [Category("Unit")]
         [Property("Priority", "Medium")]
@@ -56,6 +60,10 @@ namespace VehicleSystem.Tests.Controllers
                 Times.Once);
         }
 
+        /// <summary>
+        /// Verifies that query filters (rentalId, method, date range) are forwarded
+        /// correctly to the service layer.
+        /// </summary>
         [Test]
         [Category("Unit")]
         [Property("Priority", "Medium")]
@@ -80,6 +88,10 @@ namespace VehicleSystem.Tests.Controllers
                 Times.Once);
         }
 
+        /// <summary>
+        /// Main payment registration flow: validates that valid input returns
+        /// HTTP 200 OK with the full payment response DTO.
+        /// </summary>
         [Test]
         [Category("Unit")]
         [Property("Priority", "High")]
@@ -127,6 +139,10 @@ namespace VehicleSystem.Tests.Controllers
                 Times.Once);
         }
 
+        /// <summary>
+        /// Validates that an invalid ModelState prevents the service from being called
+        /// and returns HTTP 400 Bad Request.
+        /// </summary>
         [Test]
         [Category("Unit")]
         [Property("Priority", "Medium")]
@@ -144,6 +160,10 @@ namespace VehicleSystem.Tests.Controllers
                 Times.Never);
         }
 
+        /// <summary>
+        /// Validates that a non-existent rental returns HTTP 404 Not Found
+        /// with the correct ProblemDetails title.
+        /// </summary>
         [Test]
         [Category("Unit")]
         [Property("Priority", "High")]
@@ -173,6 +193,10 @@ namespace VehicleSystem.Tests.Controllers
                 Times.Once);
         }
 
+        /// <summary>
+        /// Tests handling of business rule violations during payment registration,
+        /// expecting HTTP 400 Bad Request with the correct ProblemDetails.
+        /// </summary>
         [Test]
         [Category("Unit")]
         [Property("Priority", "High")]
@@ -202,6 +226,10 @@ namespace VehicleSystem.Tests.Controllers
                 Times.Once);
         }
 
+        /// <summary>
+        /// Ensures unhandled exceptions during payment registration return HTTP 500
+        /// to avoid exposing internal stack traces to the client.
+        /// </summary>
         [Test]
         [Category("Unit")]
         [Property("Priority", "Low")]

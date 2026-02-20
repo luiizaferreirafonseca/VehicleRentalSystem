@@ -30,7 +30,7 @@ namespace VehicleSystem.Tests
             var rental = new TbRental { Id = rentalId, Status = "completed" };
 
             _rentalRepoMock.Setup(r => r.GetRentalByIdAsync(rentalId)).ReturnsAsync(rental);
-            _ratingRepoMock.Setup(r => r.GetByRentalIdAsync(rentalId)).ReturnsAsync((TbRating)null);
+            _ratingRepoMock.Setup(r => r.GetByRentalIdAsync(rentalId)).ReturnsAsync((TbRating?)null);
 
             var result = await _service.EvaluateRentalAsync(dto);
 
