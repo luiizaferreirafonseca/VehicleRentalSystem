@@ -366,5 +366,67 @@ namespace VehicleSystem.Tests
                 r.SearchRentalsByUserAsync(It.IsAny<Guid>(), It.IsAny<string?>(), It.IsAny<int>()),
                 Times.Never);
         }
+
+        [Test]
+        public async Task GetRentalsAsync_ShouldMapEmptyStrings_WhenUserOrVehicleIsNull()
+        {
+            var rentalsFromDb = new List<TbRental>
+    {
+        new TbRental
+        {
+            Id = Guid.NewGuid(),
+            StartDate = DateTime.UtcNow,
+            ExpectedEndDate = DateTime.UtcNow.AddDays(1),
+            Status = RentalStatus.active.ToString(),
+            User = null,
+            Vehicle = null
+        }
+    };
+
+            _repositoryMock.Setup(r => r.GetRentalsAsync())
+                           .ReturnsAsync(rentalsFromDb);
+
+            var result = await _service.GetRentalsAsync();
+
+            Assert.That(result.Count, Is.EqualTo(1));
+            Assert.That(result[0].UserName, Is.EqualTo(""));
+            Assert.That(result[0].VehicleModel, Is.EqualTo(""));
+        }
+
+        [Test]
+        public void GetRentalByIdAsync_ShouldThrow_WhenIdIsEmpty()
+        {
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _service.GetRentalByIdAsync(Guid.Empty));
+
+            Assert.That(ex!.Message, Is.EqualTo("The rental identifier is required."));
+        }
+
+
+        [Test]
+        public void CreateRentalAsync_ShouldThrow_WhenUserNotFound()
+        {
+            var userId = Guid.NewGuid();
+            var vehicleId = Guid.NewGuid();
+
+            var dto = new RentalCreateDTO
+            {
+                UserId = userId,
+                VehicleId = vehicleId,
+                StartDate = new DateTime(2026, 02, 02),
+                ExpectedEndDate = new DateTime(2026, 02, 05)
+            };
+
+            _repositoryMock.Setup(r => r.GetUserById(userId))
+                           .ReturnsAsync((TbUser?)null);
+
+            var ex = Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+                await _service.CreateRentalAsync(dto));
+
+            Assert.That(ex!.Message, Is.EqualTo(Messages.UserNotFound));
+
+            _repositoryMock.Verify(r => r.GetVehicleById(It.IsAny<Guid>()), Times.Never);
+            _repositoryMock.Verify(r => r.CreateRentalAsync(It.IsAny<TbRental>()), Times.Never);
+        }
     }
 }
