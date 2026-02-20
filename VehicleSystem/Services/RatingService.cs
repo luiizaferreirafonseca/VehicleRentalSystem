@@ -1,4 +1,5 @@
 using VehicleRentalSystem.DTO;
+using VehicleRentalSystem.Enums;
 using VehicleRentalSystem.Models;
 using VehicleRentalSystem.Repositories.interfaces;
 using VehicleRentalSystem.Services.interfaces;
@@ -29,7 +30,7 @@ namespace VehicleRentalSystem.Services
                 throw new Exception("Rental not found.");
             }
 
-            if (rental.Status != "Finalizada")
+            if (rental.Status != RentalStatus.completed.ToString()) 
             {
                 throw new Exception("You can only rate rentals that have been completed.");
             }

@@ -27,7 +27,7 @@ namespace VehicleSystem.Tests
         {
             var rentalId = Guid.NewGuid();
             var dto = new RatingCreateDTO { RentalId = rentalId, Rating = 5, Comment = "Great!" };
-            var rental = new TbRental { Id = rentalId, Status = "Finalizada" };
+            var rental = new TbRental { Id = rentalId, Status = "completed" };
 
             _rentalRepoMock.Setup(r => r.GetRentalByIdAsync(rentalId)).ReturnsAsync(rental);
             _ratingRepoMock.Setup(r => r.GetByRentalIdAsync(rentalId)).ReturnsAsync((TbRating)null);
@@ -66,7 +66,7 @@ namespace VehicleSystem.Tests
         {
             var rentalId = Guid.NewGuid();
             var dto = new RatingCreateDTO { RentalId = rentalId, Rating = 4 };
-            var rental = new TbRental { Id = rentalId, Status = "Finalizada" };
+            var rental = new TbRental { Id = rentalId, Status = "completed" };
             var existingRating = new TbRating();
 
             _rentalRepoMock.Setup(r => r.GetRentalByIdAsync(rentalId)).ReturnsAsync(rental);
