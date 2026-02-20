@@ -29,6 +29,17 @@ public class PaymentController : ControllerBase
         return Ok(payments);
     }
 
+    [HttpPatch]
+    public IActionResult RegisterPaymentMissingId()
+    {
+        return BadRequest(new ProblemDetails
+        {
+            Status = StatusCodes.Status400BadRequest,
+            Title = Messages.InvalidOperation,
+            Detail = Messages.RentalIdRequired
+        });
+    }
+
     [HttpPatch("{rentalId:guid}")]
     public async Task<IActionResult> RegisterPayment([FromRoute] Guid rentalId, [FromBody] PaymentCreateDTO dto)
     {
